@@ -14,13 +14,13 @@
 // FrontRight           motor         20              
 // BackLeft             motor         1               
 // BackRight            motor         10              
-// Controller1          controller                    
 // LiftDrivers          motor_group   2, 9            
 // Inertial             inertial      15              
 // North                distance      16              
 // South                distance      17              
 // East                 distance      18              
 // West                 distance      19              
+// Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -38,24 +38,65 @@ void pre_auton(void) {
   vexcodeInit();
 }
 
+bool isWall(distance dist){
+    if(dist.isObjectDetected() && dist.objectVelocity() == 0 && dist.objectSize() == sizeType::large){ //if the object is stationary and large, its probably a wall
+      return true;
+    }
+    else{
+      return false;
+    }
+}
+
+int getWallDistance(distance dist){
+    int ret = 0;
+
+    for(int i  = 0; i < 5; i++){
+      if(isWall(dist)){ //if the object is stationary and large, its probably a wall
+        ret += North.objectDistance(distanceUnits::mm);
+      }
+      wait(20, msec); 
+    }
+
+    ret = ret / 5;
+  
+    if(ret == 0){
+      ret = -1;
+    }
+
+    return ret;
+}
+
+bool isValidCombo(int x, int y){
+  if(x != -1 && y != -1){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
 /*
-Return the bot's UFC using distance sensors. No input arguments; returns an array with the millimeter x and y coords in it.
-THIS WILL LOCK UP THE BOT FOR SEVERAL SECONDS! Current implementation requires the bot to orient to zero heading to get a position lock.
+Use the bot's inertial sensor to orient to a heading.
 */
 
 void orientToHeading(int h){
   int currHeading = Inertial.heading();
   if(currHeading > h){
-    while(Inertial.heading() <= (h - 0.5) || Inertial.heading() >= (h + 0.5)){
+    while(Inertial.heading() <= (h - 0.1) || Inertial.heading() >= (h + 0.1)){
       //turn left until heading is reached, then return
     }
   }
   else if(currHeading < h){
-    while(Inertial.heading() <= (h - 0.5) || Inertial.heading() >= (h + 0.5)){
+    while(Inertial.heading() <= (h - 0.1) || Inertial.heading() >= (h + 0.1)){
       //turn right until heading is reached, then return
     }
   }
 }
+
+/*
+Return the bot's UFC using distance sensors. No input arguments; returns an array with the millimeter x and y coords in it.
+THIS WILL LOCK UP THE BOT FOR A FEW SECONDS! Current implementation requires the bot to orient to zero heading to get a position lock.
+*/
 
 int * getUFC(){ 
   static int coords[2];
@@ -66,35 +107,92 @@ int * getUFC(){
 
   orientToHeading(0);
 
-  if(North.isObjectDetected() && North.objectVelocity() == 0 && North.objectSize() == sizeType::large){ //if the object is stationary and large, its probably a wall
-    northDistance = North.objectDistance(distanceUnits::mm);
+  northDistance = getWallDistance(North);
+  southDistance = getWallDistance(South);
+  eastDistance = getWallDistance(East);
+  westDistance = getWallDistance(West);
+
+  //Possible combos are NE, SE, SW, NW
+  //NE is an inverted measure
+  //SE is inverted on the x axis
+  //SW is a direct measure
+  //NW is inverted on the y axis
+  //12ft = 3657.6mm
+
+  static int NE[2];
+  static int SE[2];
+  static int SW[2];
+  static int NW[2];
+
+  int validPairs = 0;
+
+  if(isValidCombo(northDistance, eastDistance)){
+    NE[0] = (3657.6 - northDistance);
+    NE[1] = (3657.6 - eastDistance);
+    validPairs++;
   }
+  else{
+    NE[0] = 0;
+    NE[1] = 0;
+  }
+
+  if(isValidCombo(southDistance, eastDistance)){
+    SE[0] = southDistance;
+    SE[1] = (3657.6 - eastDistance);
+    validPairs++;
+  }
+  else{
+    SE[0] = 0;
+    SE[1] = 0;
+  }
+
+  if(isValidCombo(southDistance, westDistance)){
+    SW[0] = southDistance;
+    SW[1] = westDistance;
+    validPairs++;
+  }
+  else{
+    SW[0] = 0;
+    SW[1] = 0;
+  }
+
+  if(isValidCombo(northDistance, westDistance)){
+    NW[0] = (3657.6 - northDistance);
+    NW[1] = eastDistance;
+    validPairs++;
+  }
+  else{
+    NW[0] = 0;
+    NW[1] = 0;
+  }
+
+  int xCoord = (NE[1] + SE[1] + SW[1] + NW[1]) / validPairs;
+  int yCoord = (NE[0] + SE[0] + SW[0] + NW[0]) / validPairs;
+
+  coords[0] = xCoord;
+  coords[1] = yCoord;
   
   return coords;
 }
 
 /*
 Given the bot's current UFC and a destination UFC, move to the destination coordinates.
-Operates by orienting the bot to zero, then translating the required Y distance followed by the X distance. Does not account for obstacles; pathing around known
+Operates by orienting the bot to zero, then translating the required Y distance followed by the X distance, or vice versa. Does not account for obstacles; pathing around known
 objects will have to be handled with multiple goTo commands.
 
 NOTE: You can feed the destination UFC in to a subsequent goTo command, but drift from this will compound FAST. Best to run getUFC between moves if at all possible.
 */
 
-void goToUFC(int currX, int currY, int destX, int destY){
+void goToUFC(int currX, int currY, int destX, int destY, bool translationMode){
   
 }
 
 /*
-Use the bot's inertial sensor to orient to a fixed heading.
-*/
-
-/*
-Given a distance in mm and a "movement manner" (e.g. fwd, back, left, right), this will move the bot that distance that way.
+Given a distance in mm and a "movement mode" (e.g. fwd, back, left, right), this will move the bot that distance that way.
 This function will be calibrated specifically to our bot, as the required revs will be calculated based off the distance travelled in one rev.  
 */
 
-void moveDistance(int dist, std::string manner){
+void moveDistance(int dist, int mode){ //1 fwd, 2 back, 3 left, 4 right
 
 }
 
