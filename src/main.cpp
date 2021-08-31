@@ -10,17 +10,15 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// FrontLeft            motor         12              
-// FrontRight           motor         20              
-// BackLeft             motor         1               
-// BackRight            motor         10              
-// LiftDrivers          motor_group   2, 9            
-// Inertial             inertial      15              
-// North                distance      16              
-// South                distance      17              
-// East                 distance      18              
-// West                 distance      19              
+// FrontLeft            motor         1               
+// FrontRight           motor         16              
+// BackLeft             motor         9               
+// BackRight            motor         19              
 // Controller1          controller                    
+// FwdLiftMotor         motor         13              
+// LeftLiftMotor        motor         11              
+// RightLiftMotor       motor         12              
+// RearLiftMotor        motor         15              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -47,7 +45,7 @@ bool isWall(distance dist){
     }
 }
 
-int getWallDistance(distance dist){
+/*int getWallDistance(distance dist){
     int ret = 0;
 
     for(int i  = 0; i < 5; i++){
@@ -64,7 +62,7 @@ int getWallDistance(distance dist){
     }
 
     return ret;
-}
+}*/
 
 bool isValidCombo(int x, int y){
   if(x != -1 && y != -1){
@@ -79,7 +77,7 @@ bool isValidCombo(int x, int y){
 Use the bot's inertial sensor to orient to a heading.
 */
 
-void orientToHeading(int h){
+/*void orientToHeading(int h){
   int currHeading = Inertial.heading();
   if(currHeading > h){
     while(Inertial.heading() <= (h - 0.1) || Inertial.heading() >= (h + 0.1)){
@@ -91,14 +89,14 @@ void orientToHeading(int h){
       //turn right until heading is reached, then return
     }
   }
-}
+}*/
 
 /*
 Return the bot's UFC using distance sensors. No input arguments; returns an array with the millimeter x and y coords in it.
 THIS WILL LOCK UP THE BOT FOR A FEW SECONDS! Current implementation requires the bot to orient to zero heading to get a position lock.
 */
 
-int * getUFC(){ 
+/*int * getUFC(){ 
   static int coords[2];
   int northDistance;
   int southDistance;
@@ -173,7 +171,7 @@ int * getUFC(){
   coords[1] = yCoord;
   
   return coords;
-}
+}*/
 
 /*
 Given the bot's current UFC and a destination UFC, move to the destination coordinates.
@@ -253,27 +251,78 @@ int tankTransmission(){ //Controls: Axes 3 and 2 control left and right fwd/bckw
   Brain.Screen.print("Mecanum lateral drive: ENABLED"); //should work
   Brain.Screen.newLine();
   while(true){
-    FrontLeft.spin(directionType::fwd, (Controller1.Axis2.position() + Controller1.Axis1.position()) * moveSpeed, percentUnits::pct);
-    BackLeft.spin(directionType::rev, (Controller1.Axis2.position() - Controller1.Axis1.position()) * moveSpeed, percentUnits::pct);
-    FrontRight.spin(directionType::fwd, (Controller1.Axis3.position() - Controller1.Axis1.position()) * moveSpeed, percentUnits::pct);
-    BackRight.spin(directionType::rev, (Controller1.Axis3.position() + Controller1.Axis1.position()) * moveSpeed, percentUnits::pct);
+    FrontLeft.spin(directionType::rev, (Controller1.Axis3.position() + Controller1.Axis1.position()) * moveSpeed, percentUnits::pct);
+    BackLeft.spin(directionType::rev, (Controller1.Axis3.position() - Controller1.Axis1.position()) * moveSpeed, percentUnits::pct);
+    FrontRight.spin(directionType::rev, (Controller1.Axis2.position() - Controller1.Axis1.position()) * moveSpeed, percentUnits::pct);
+    BackRight.spin(directionType::rev, (Controller1.Axis2.position() + Controller1.Axis1.position()) * moveSpeed, percentUnits::pct);
     wait(20, msec);
   }
   return 0;
 }
 
-int liftControl(){
+int fwdLiftControl(){
   //R1 up, R2 down
-  LiftDrivers.setVelocity(30, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
+  FwdLiftMotor.setVelocity(30, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
   while(true){
     if(Controller1.ButtonR1.pressing()){
-      LiftDrivers.spin(directionType::fwd);
+      FwdLiftMotor.spin(directionType::fwd);
     }
     else if(Controller1.ButtonR2.pressing()){
-      LiftDrivers.spin(directionType::rev);
+      FwdLiftMotor.spin(directionType::rev);
     }
     else{
-      LiftDrivers.stop(brakeType::hold);
+      FwdLiftMotor.stop(brakeType::hold);
+    }
+    wait(20, msec);
+  }
+  return 0;
+}
+
+int leftLiftControl(){
+  LeftLiftMotor.setVelocity(30, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
+  while(true){
+    if(Controller1.ButtonUp.pressing()){
+      LeftLiftMotor.spin(directionType::fwd);
+    }
+    else if(Controller1.ButtonDown.pressing()){
+      LeftLiftMotor.spin(directionType::rev);
+    }
+    else{
+      LeftLiftMotor.stop(brakeType::hold);
+    }
+    wait(20, msec);
+  }
+  return 0;
+}
+
+int rightLiftControl(){
+  RightLiftMotor.setVelocity(30, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
+  while(true){
+    if(Controller1.ButtonX.pressing()){
+      RightLiftMotor.spin(directionType::fwd);
+    }
+    else if(Controller1.ButtonB.pressing()){
+      RightLiftMotor.spin(directionType::rev);
+    }
+    else{
+      RightLiftMotor.stop(brakeType::hold);
+    }
+    wait(20, msec);
+  }
+  return 0;
+}
+
+int rearLiftControl(){
+  RearLiftMotor.setVelocity(30, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
+  while(true){
+    if(Controller1.ButtonL1.pressing()){
+      RearLiftMotor.spin(directionType::fwd);
+    }
+    else if(Controller1.ButtonL2.pressing()){
+      RearLiftMotor.spin(directionType::rev);
+    }
+    else{
+      RearLiftMotor.stop(brakeType::hold);
     }
     wait(20, msec);
   }
@@ -285,7 +334,10 @@ void usercontrol(void) {
   Brain.Screen.print("HAL 9000 v0.1 // (c) James Haywood 2021");
   Brain.Screen.newLine();
   task manualTransmissionTask = task(tankTransmission); //can be set between "tank" or "arcade"
-  task liftControlTask = task(liftControl); //control lift
+  task fwdLiftTask = task(fwdLiftControl); //control lift
+  task leftLiftTask = task(leftLiftControl);
+  task rightLiftTask = task(rightLiftControl);
+  task rearLiftTask = task(rearLiftControl);
 }
 
 int main() {

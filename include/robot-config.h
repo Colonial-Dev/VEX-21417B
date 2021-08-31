@@ -7,13 +7,11 @@ extern motor FrontLeft;
 extern motor FrontRight;
 extern motor BackLeft;
 extern motor BackRight;
-extern motor_group LiftDrivers;
-extern inertial Inertial;
-extern distance North;
-extern distance South;
-extern distance East;
-extern distance West;
 extern controller Controller1;
+extern motor FwdLiftMotor;
+extern motor LeftLiftMotor;
+extern motor RightLiftMotor;
+extern motor RearLiftMotor;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
