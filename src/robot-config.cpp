@@ -17,6 +17,7 @@ motor FwdLiftMotor = motor(PORT13, ratio18_1, false);
 motor LeftLiftMotor = motor(PORT11, ratio36_1, false);
 motor RightLiftMotor = motor(PORT12, ratio36_1, false);
 motor RearLiftMotor = motor(PORT15, ratio36_1, false);
+inertial Inertial = inertial(PORT5);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
