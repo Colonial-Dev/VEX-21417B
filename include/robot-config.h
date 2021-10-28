@@ -8,10 +8,10 @@ extern motor FrontRight;
 extern motor BackLeft;
 extern motor BackRight;
 extern controller Controller1;
-extern motor FwdLiftMotor;
+extern motor MainLiftLeft;
 extern motor LeftLiftMotor;
 extern motor RightLiftMotor;
-extern motor RearLiftMotor;
+extern motor MainLiftRight;
 extern inertial Inertial;
 
 /**

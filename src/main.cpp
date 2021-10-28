@@ -15,15 +15,16 @@
 // BackLeft             motor         9               
 // BackRight            motor         19              
 // Controller1          controller                    
-// FwdLiftMotor         motor         13              
+// MainLiftLeft         motor         13              
 // LeftLiftMotor        motor         11              
 // RightLiftMotor       motor         12              
-// RearLiftMotor        motor         15              
+// MainLiftRight        motor         15              
 // Inertial             inertial      5               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 #include "functions.h"
+#include "cmath"
 
 using namespace vex;
 
@@ -38,84 +39,78 @@ void pre_auton(void) {
   vexcodeInit();
 }
 
-bool isWall(distance dist){
-    if(dist.isObjectDetected() && dist.objectVelocity() == 0 && dist.objectSize() == sizeType::large){ //if the object is stationary and large, its probably a wall
-      return true;
-    }
-    else{
-      return false;
-    }
-}
-
-bool isValidCombo(int x, int y){
-  if(x != -1 && y != -1){
-    return true;
-  }
-  else{
-    return false;
-  }
-}
-
 /*
 Use the bot's inertial sensor to orient to a heading.
+The heading value provided will be treated as relative to 0 (e.g. the direction the bot was facing when turned on)
+So example: if you're facing 0 and call this method for 90, the bot will turn right 90 degrees
+Then if you call 0, it'll turn left 90 degrees
 */
 
-void orientToHeading(int h){
-  int currHeading = Inertial.heading();
-  if(currHeading > h){
-    while(Inertial.heading() <= (h - 0.1) || Inertial.heading() >= (h + 0.1)){
-      //turn left until heading is reached, then return
-    }
+void turnPID(double angle){
+
+  while(Inertial.isCalibrating())
+  {
+    wait(10,msec); 
   }
-  else if(currHeading < h){
-    while(Inertial.heading() <= (h - 0.1) || Inertial.heading() >= (h + 0.1)){
-      //turn right until heading is reached, then return
-    }
-  }
+
+	double threshold;
+	if(angle <= 0.0)
+  {
+		threshold = 1.5;
+	}
+	else
+  {
+		threshold = 0.7;
+	}
+
+	double error = angle - Inertial.rotation();
+	double integral;
+	double derivative;
+	double prevError;
+	double kp = 0.98;
+	double ki = 0.001;
+	double kd = 5.5;
+
+	while(fabs(error) > threshold)
+  {
+    error = angle - Inertial.rotation();
+		integral  = integral + error;
+
+		if(error == 0 || fabs(error) >= angle)
+    {
+			integral = 0;
+		}
+
+		derivative = error - prevError;
+		prevError = error;
+		double p = error * kp;
+		double i = integral * ki;
+		double d = derivative * kd;
+		double vel = p + i + d;
+
+    FrontLeft.spin(directionType::fwd, -vel, percentUnits::pct);
+    FrontRight.spin(directionType::fwd, vel, percentUnits::pct);
+    BackLeft.spin(directionType::fwd, -vel, percentUnits::pct);
+    BackRight.spin(directionType::fwd, vel, percentUnits::pct);
+
+		wait(15,msec);
+	}
+  FrontLeft.stop();
+  FrontRight.stop();
+  BackLeft.stop();
+  BackRight.stop();
 }
-
-double Kp = 0;
-//double Ki = 0;
-double Kd = 0;
-
-double error = 0;
-double lastError = 0;
-//double integral = 0;
-double derivative = 0;
-
-void drivePID(double dist){
-  while()
-  return;
-}
-
 
 void autonomous(void) {
-  orientToHeading(180);                                                                                                                        
+  turnPID(180);
+  wait(5,sec);
+  turnPID(0);                                                                                                                        
 }
 
 double moveSpeed = 1; //Global multiplier for drive motor speed; set from 0-1 to adjust max speed
 
-int arcadeTransmission(){ //Controls: Axis 2 is fwd/back. Axis 1 is turn. Axis 4 is lateral drive.
-  Brain.Screen.print("Transmission mode: ARCADE");
-  Brain.Screen.newLine();
-  Brain.Screen.print("Mecanum lateral drive: ENABLED"); //should work
-  Brain.Screen.newLine(); 
-  while(true){
-    FrontLeft.spin(directionType::fwd, (Controller1.Axis2.position() + Controller1.Axis1.position() + Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
-    BackLeft.spin(directionType::rev, (Controller1.Axis2.position() + Controller1.Axis1.position() - Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
-    FrontRight.spin(directionType::fwd, (Controller1.Axis2.position() - Controller1.Axis1.position() - Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
-    BackRight.spin(directionType::rev, (Controller1.Axis2.position() - Controller1.Axis1.position() + Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
-    wait(20, msec);
-  }
-  return 0;
-}
-
 int tankTransmission(){ //Controls: Axes 3 and 2 control left and right fwd/bckwd. Axis 4 controls lateral drive.
-  Brain.Screen.print("Transmission mode: TANK");
-  Brain.Screen.newLine();
-  Brain.Screen.print("Mecanum lateral drive: ENABLED"); //should work
-  Brain.Screen.newLine();
-  Brain.Screen.print("Current lift motor speed: " + liftSpeed);
+  Brain.Screen.print("Transmission mode: TANK/LATERAL");
   Brain.Screen.newLine();
   while(true){
     FrontLeft.spin(directionType::rev, (Controller1.Axis3.position() + Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
@@ -127,18 +122,22 @@ int tankTransmission(){ //Controls: Axes 3 and 2 control left and right fwd/bckw
   return 0;
 }
 
-int fwdLiftControl(){
+int mainLiftControl(){
   //R1 up, R2 down
-  FwdLiftMotor.setVelocity(liftSpeed, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
+  MainLiftLeft.setVelocity(liftSpeed, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
+  MainLiftRight.setVelocity(liftSpeed, percentUnits::pct);
   while(true){
     if(Controller1.ButtonR1.pressing()){
-      FwdLiftMotor.spin(directionType::fwd);
+      MainLiftLeft.spin(directionType::fwd);
+      MainLiftRight.spin(directionType::fwd);
     }
     else if(Controller1.ButtonR2.pressing()){
-      FwdLiftMotor.spin(directionType::rev);
+      MainLiftLeft.spin(directionType::rev);
+      MainLiftRight.spin(directionType::rev);
     }
     else{
-      FwdLiftMotor.stop(brakeType::hold);
+      MainLiftLeft.stop(brakeType::hold);
+      MainLiftRight.stop(brakeType::hold);
     }
     wait(20, msec);
   }
@@ -179,32 +178,14 @@ int rightLiftControl(){
   return 0;
 }
 
-int rearLiftControl(){
-  RearLiftMotor.setVelocity(liftSpeed, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
-  while(true){
-    if(Controller1.ButtonL2.pressing()){
-      RearLiftMotor.spin(directionType::fwd);
-    }
-    else if(Controller1.ButtonL1.pressing()){
-      RearLiftMotor.spin(directionType::rev);
-    }
-    else{
-      RearLiftMotor.stop(brakeType::hold);
-    }
-    wait(20, msec);
-  }
-  return 0;
-}
-
 //21417A 
 void usercontrol(void) {
-  Brain.Screen.print("HAL 9000 v0.1 // (c) James Haywood 2021");
+  Brain.Screen.print("HAL 9000 // (c) 21417A 2021");
   Brain.Screen.newLine();
   task manualTransmissionTask = task(tankTransmission); //can be set between "tank" or "arcade"
-  task fwdLiftTask = task(fwdLiftControl); //control lift
+  task mainLiftTask = task(mainLiftControl); //control lift
   task leftLiftTask = task(leftLiftControl);
   task rightLiftTask = task(rightLiftControl);
-  task rearLiftTask = task(rearLiftControl);
 }
 
 int main() {

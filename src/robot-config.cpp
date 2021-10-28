@@ -13,10 +13,10 @@ motor FrontRight = motor(PORT16, ratio18_1, false);
 motor BackLeft = motor(PORT9, ratio18_1, true);
 motor BackRight = motor(PORT19, ratio18_1, false);
 controller Controller1 = controller(primary);
-motor FwdLiftMotor = motor(PORT13, ratio18_1, false);
+motor MainLiftLeft = motor(PORT13, ratio36_1, true);
 motor LeftLiftMotor = motor(PORT11, ratio36_1, false);
 motor RightLiftMotor = motor(PORT12, ratio36_1, false);
-motor RearLiftMotor = motor(PORT15, ratio36_1, false);
+motor MainLiftRight = motor(PORT15, ratio36_1, false);
 inertial Inertial = inertial(PORT5);
 
 // VEXcode generated functions
