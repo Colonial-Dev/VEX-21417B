@@ -39,6 +39,49 @@ void pre_auton(void) {
   vexcodeInit();
 }
 
+/*Use inbuilt motor encoders to accurately drive forwards (and hopefully backwards) for provided distance
+Need to figure out the ratio of say 100 units to in/ft/whatever*/ 
+
+void drivePID(double clicks){
+  clicks = -clicks;
+  FrontLeft.resetPosition();
+  FrontRight.resetPosition();
+  double averagePosition = (FrontLeft.position(deg) + FrontRight.position(deg)) / 2;
+  double threshold = 10.0;
+	double error = clicks - averagePosition;
+
+	double derivative;
+	double prevError;
+
+	double kp = 0.1;//0.98;
+	double kd = 0.1;//5.5;
+
+  double rightPower = 0;
+  double leftPower = 0;
+
+  while (fabs(error) > threshold) {
+    averagePosition = (FrontLeft.position(deg) + FrontRight.position(deg)) / 2;
+	  error = clicks - averagePosition;
+    Brain.Screen.print(error);
+    Brain.Screen.newLine();
+    derivative = error - prevError;
+
+    rightPower = leftPower + (error * kp) + (derivative * kd);
+
+    FrontLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
+    FrontRight.spin(directionType::fwd, rightPower, percentUnits::pct);
+    BackLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
+    BackRight.spin(directionType::fwd, rightPower, percentUnits::pct);
+
+    prevError = error;
+    wait(20, msec);
+  }
+  FrontLeft.stop();
+  FrontRight.stop();
+  BackLeft.stop();
+  BackRight.stop();
+}
+
 /*
 Use the bot's inertial sensor to orient to a heading.
 The heading value provided will be treated as relative to 0 (e.g. the direction the bot was facing when turned on)
@@ -103,8 +146,10 @@ void turnPID(double angle){
 
 void autonomous(void) {
   turnPID(180);
-  wait(5,sec);
-  turnPID(0);                                                                                                                        
+  //wait(5,sec);
+  turnPID(0);
+  drivePID(1500);
+  drivePID(-1500);                                                                                                                        
 }
 
 double moveSpeed = 1; //Global multiplier for drive motor speed; set from 0-1 to adjust max speed
