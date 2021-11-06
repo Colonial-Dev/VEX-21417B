@@ -42,7 +42,7 @@ void pre_auton(void) {
 /*Use inbuilt motor encoders to accurately drive forwards (and hopefully backwards) for provided distance
 Need to figure out the ratio of say 100 units to in/ft/whatever*/ 
 
-void drivePID(double clicks){
+void drivePID(double clicks, bool sideways=false){
   clicks = -clicks;
   FrontLeft.resetPosition();
   FrontRight.resetPosition();
@@ -53,14 +53,19 @@ void drivePID(double clicks){
 	double derivative;
 	double prevError;
 
-	double kp = 0.1;//0.98;
+	double kp = 0.2;//0.98;
 	double kd = 0.1;//5.5;
 
   double rightPower = 0;
   double leftPower = 0;
 
   while (fabs(error) > threshold) {
-    averagePosition = (FrontLeft.position(deg) + FrontRight.position(deg)) / 2;
+    if(sideways){
+      averagePosition = FrontLeft.position(deg);
+    }
+    else{
+      averagePosition = (FrontLeft.position(deg) + FrontRight.position(deg)) / 2;
+    }
 	  error = clicks - averagePosition;
     Brain.Screen.print(error);
     Brain.Screen.newLine();
@@ -68,10 +73,19 @@ void drivePID(double clicks){
 
     rightPower = leftPower + (error * kp) + (derivative * kd);
 
-    FrontLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
-    FrontRight.spin(directionType::fwd, rightPower, percentUnits::pct);
-    BackLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
-    BackRight.spin(directionType::fwd, rightPower, percentUnits::pct);
+    if(!sideways){
+      FrontLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
+      FrontRight.spin(directionType::fwd, rightPower, percentUnits::pct);
+      BackLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
+      BackRight.spin(directionType::fwd, rightPower, percentUnits::pct);
+    }
+    else{
+      FrontLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
+      FrontRight.spin(directionType::fwd, -rightPower, percentUnits::pct);
+      BackLeft.spin(directionType::fwd, -rightPower, percentUnits::pct);
+      BackRight.spin(directionType::fwd, rightPower, percentUnits::pct);
+    }
+
 
     prevError = error;
     wait(20, msec);
@@ -145,11 +159,11 @@ void turnPID(double angle){
 }
 
 void autonomous(void) {
-  turnPID(180);
-  //wait(5,sec);
-  turnPID(0);
-  drivePID(1500);
-  drivePID(-1500);                                                                                                                        
+  turnPID(90);
+  drivePID(-1550,true);
+  LeftLiftMotor.rotateFor(fwd, 450, deg);
+  drivePID(1500, true);
+
 }
 
 double moveSpeed = 1; //Global multiplier for drive motor speed; set from 0-1 to adjust max speed
