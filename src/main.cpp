@@ -1,20 +1,5 @@
 #include "main.h"
-
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
-}
+#include "okapi/api.hpp"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -23,10 +8,8 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
-
-	pros::lcd::register_btn1_cb(on_center_button);
+	//pros::lcd::initialize();
+	//pros::lcd::set_text(1, "Hello PROS User!");
 }
 
 /**
@@ -73,20 +56,99 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
+void tankTransmission(){
+	pros::Motor left_wheels (9);
+  pros::Motor right_wheels (13);
+  pros::Controller master (CONTROLLER_MASTER);
+
+  while (true) {
+    left_wheels.move(master.get_analog(ANALOG_LEFT_Y));
+    right_wheels.move(master.get_analog(ANALOG_RIGHT_Y));
+    pros::delay(2);
+  }
+}
+
+//M6 - back lift
+//port 1 - front lift right
+//port 5 - front lift left
+//port 8 - claw motor
+void mainLiftControl(){
+  //R1 up, R2 down
+	pros::Motor right_motor (1);
+	pros::Motor left_motor (5);
+	right_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	left_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	pros::Controller master (CONTROLLER_MASTER);
+  while(true)
+	{
+		if(master.get_digital(DIGITAL_R1))
+		{
+			right_motor.move_velocity(200);
+			left_motor.move_velocity(-200);
+		}
+		else if(master.get_digital(DIGITAL_R2))
+		{
+			right_motor.move_velocity(-200);
+			left_motor.move_velocity(200);
+		}
+		else{
+			right_motor.move_velocity(0);
+			left_motor.move_velocity(0);
+		}
+		pros::delay(2);
+  }
+}
+
+void clampControl(){
+  //LI open , R2 close
+	pros::Motor motor (8);
+	motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	pros::Controller master (CONTROLLER_MASTER);
+  while(true)
+	{
+		if(master.get_digital(DIGITAL_L1))
+		{
+			motor.move_velocity(200);
+		}
+		else if(master.get_digital(DIGITAL_L2))
+		{
+			motor.move_velocity(-200);
+		}
+		else{
+			motor.move_velocity(0);
+		}
+		pros::delay(2);
+  }
+}
+
+void rearLiftControl(){
+  //LI open , R2 close
+	pros::Motor motor (6);
+	motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	pros::Controller master (CONTROLLER_MASTER);
+  while(true)
+	{
+		if(master.get_digital(DIGITAL_X))
+		{
+			motor.move_velocity(200);
+		}
+		else if(master.get_digital(DIGITAL_B))
+		{
+			motor.move_velocity(-200);
+		}
+		else{
+			motor.move_velocity(0);
+		}
+		pros::delay(2);
+  }
+}
+
+
+
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr(1);
-	pros::Motor right_mtr(2);
-
-	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_RIGHT_Y);
-
-		left_mtr = left;
-		right_mtr = right;
-		pros::delay(20);
-	}
+	pros::Task Transmission(tankTransmission);
+	pros::Task FrontLift(mainLiftControl);
+	pros::Task Clamp(clampControl);
+	pros::Task RearLift(rearLiftControl);
 }
