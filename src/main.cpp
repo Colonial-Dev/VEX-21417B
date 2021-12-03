@@ -1,262 +1,92 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:       main.cpp                                                  */
-/*    Author:       VEX                                                       */
-/*    Created:      Thu Sep 26 2019                                           */
-/*    Description:  Competition Template                                      */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
+#include "main.h"
 
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// FrontLeft            motor         1               
-// FrontRight           motor         16              
-// BackLeft             motor         9               
-// BackRight            motor         19              
-// Controller1          controller                    
-// MainLiftLeft         motor         13              
-// LeftLiftMotor        motor         11              
-// RightLiftMotor       motor         12              
-// MainLiftRight        motor         15              
-// Inertial             inertial      5               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
-#include "vex.h"
-#include "functions.h"
-#include "cmath"
-
-using namespace vex;
-
-// A global instance of competition
-competition Competition;
-int liftSpeed = 100;
-
-// define your global instances of motors and other devices here
-
-void pre_auton(void) {
-  // Initializing Robot Configuration. DO NOT REMOVE!
-  vexcodeInit();
-}
-
-/*Use inbuilt motor encoders to accurately drive forwards (and hopefully backwards) for provided distance
-Need to figure out the ratio of say 100 units to in/ft/whatever*/ 
-
-void drivePID(double clicks, bool sideways=false){
-  clicks = -clicks;
-  FrontLeft.resetPosition();
-  FrontRight.resetPosition();
-  double averagePosition = (FrontLeft.position(deg) + FrontRight.position(deg)) / 2;
-  double threshold = 10.0;
-	double error = clicks - averagePosition;
-
-	double derivative;
-	double prevError;
-
-	double kp = 0.2;//0.98;
-	double kd = 0.1;//5.5;
-
-  double rightPower = 0;
-  double leftPower = 0;
-
-  while (fabs(error) > threshold) {
-    if(sideways){
-      averagePosition = FrontLeft.position(deg);
-    }
-    else{
-      averagePosition = (FrontLeft.position(deg) + FrontRight.position(deg)) / 2;
-    }
-	  error = clicks - averagePosition;
-    Brain.Screen.print(error);
-    Brain.Screen.newLine();
-    derivative = error - prevError;
-
-    rightPower = leftPower + (error * kp) + (derivative * kd);
-
-    if(!sideways){
-      FrontLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
-      FrontRight.spin(directionType::fwd, rightPower, percentUnits::pct);
-      BackLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
-      BackRight.spin(directionType::fwd, rightPower, percentUnits::pct);
-    }
-    else{
-      FrontLeft.spin(directionType::fwd, rightPower, percentUnits::pct);
-      FrontRight.spin(directionType::fwd, -rightPower, percentUnits::pct);
-      BackLeft.spin(directionType::fwd, -rightPower, percentUnits::pct);
-      BackRight.spin(directionType::fwd, rightPower, percentUnits::pct);
-    }
-
-
-    prevError = error;
-    wait(20, msec);
-  }
-  FrontLeft.stop();
-  FrontRight.stop();
-  BackLeft.stop();
-  BackRight.stop();
-}
-
-/*
-Use the bot's inertial sensor to orient to a heading.
-The heading value provided will be treated as relative to 0 (e.g. the direction the bot was facing when turned on)
-So example: if you're facing 0 and call this method for 90, the bot will turn right 90 degrees
-Then if you call 0, it'll turn left 90 degrees
-*/
-
-void turnPID(double angle){
-
-  while(Inertial.isCalibrating())
-  {
-    wait(10,msec); 
-  }
-
-	double threshold;
-	if(angle <= 0.0)
-  {
-		threshold = 1.5;
+/**
+ * A callback function for LLEMU's center button.
+ *
+ * When this callback is fired, it will toggle line 2 of the LCD text between
+ * "I was pressed!" and nothing.
+ */
+void on_center_button() {
+	static bool pressed = false;
+	pressed = !pressed;
+	if (pressed) {
+		pros::lcd::set_text(2, "I was pressed!");
+	} else {
+		pros::lcd::clear_line(2);
 	}
-	else
-  {
-		threshold = 0.7;
+}
+
+/**
+ * Runs initialization code. This occurs as soon as the program is started.
+ *
+ * All other competition modes are blocked by initialize; it is recommended
+ * to keep execution time for this mode under a few seconds.
+ */
+void initialize() {
+	pros::lcd::initialize();
+	pros::lcd::set_text(1, "Hello PROS User!");
+
+	pros::lcd::register_btn1_cb(on_center_button);
+}
+
+/**
+ * Runs while the robot is in the disabled state of Field Management System or
+ * the VEX Competition Switch, following either autonomous or opcontrol. When
+ * the robot is enabled, this task will exit.
+ */
+void disabled() {}
+
+/**
+ * Runs after initialize(), and before autonomous when connected to the Field
+ * Management System or the VEX Competition Switch. This is intended for
+ * competition-specific initialization routines, such as an autonomous selector
+ * on the LCD.
+ *
+ * This task will exit when the robot is enabled and autonomous or opcontrol
+ * starts.
+ */
+void competition_initialize() {}
+
+/**
+ * Runs the user autonomous code. This function will be started in its own task
+ * with the default priority and stack size whenever the robot is enabled via
+ * the Field Management System or the VEX Competition Switch in the autonomous
+ * mode. Alternatively, this function may be called in initialize or opcontrol
+ * for non-competition testing purposes.
+ *
+ * If the robot is disabled or communications is lost, the autonomous task
+ * will be stopped. Re-enabling the robot will restart the task, not re-start it
+ * from where it left off.
+ */
+void autonomous() {}
+
+/**
+ * Runs the operator control code. This function will be started in its own task
+ * with the default priority and stack size whenever the robot is enabled via
+ * the Field Management System or the VEX Competition Switch in the operator
+ * control mode.
+ *
+ * If no competition control is connected, this function will run immediately
+ * following initialize().
+ *
+ * If the robot is disabled or communications is lost, the
+ * operator control task will be stopped. Re-enabling the robot will restart the
+ * task, not resume it from where it left off.
+ */
+void opcontrol() {
+	pros::Controller master(pros::E_CONTROLLER_MASTER);
+	pros::Motor left_mtr(1);
+	pros::Motor right_mtr(2);
+
+	while (true) {
+		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
+		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+		int left = master.get_analog(ANALOG_LEFT_Y);
+		int right = master.get_analog(ANALOG_RIGHT_Y);
+
+		left_mtr = left;
+		right_mtr = right;
+		pros::delay(20);
 	}
-
-	double error = angle - Inertial.rotation();
-	double integral;
-	double derivative;
-	double prevError;
-	double kp = 0.98;
-	double ki = 0.001;
-	double kd = 5.5;
-
-	while(fabs(error) > threshold)
-  {
-    error = angle - Inertial.rotation();
-		integral  = integral + error;
-
-		if(error == 0 || fabs(error) >= angle)
-    {
-			integral = 0;
-		}
-
-		derivative = error - prevError;
-		prevError = error;
-		double p = error * kp;
-		double i = integral * ki;
-		double d = derivative * kd;
-		double vel = p + i + d;
-
-    FrontLeft.spin(directionType::fwd, -vel, percentUnits::pct);
-    FrontRight.spin(directionType::fwd, vel, percentUnits::pct);
-    BackLeft.spin(directionType::fwd, -vel, percentUnits::pct);
-    BackRight.spin(directionType::fwd, vel, percentUnits::pct);
-
-		wait(15,msec);
-	}
-  FrontLeft.stop();
-  FrontRight.stop();
-  BackLeft.stop();
-  BackRight.stop();
-}
-
-void autonomous(void) {
-  turnPID(90);
-  drivePID(-1550,true);
-  LeftLiftMotor.rotateFor(fwd, 450, deg);
-  drivePID(1500, true);
-
-}
-
-double moveSpeed = 1; //Global multiplier for drive motor speed; set from 0-1 to adjust max speed
-
-int tankTransmission(){ //Controls: Axes 3 and 2 control left and right fwd/bckwd. Axis 4 controls lateral drive.
-  Brain.Screen.print("Transmission mode: TANK/LATERAL");
-  Brain.Screen.newLine();
-  while(true){
-    FrontLeft.spin(directionType::rev, (Controller1.Axis3.position() + Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
-    BackLeft.spin(directionType::rev, (Controller1.Axis3.position() - Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
-    FrontRight.spin(directionType::rev, (Controller1.Axis2.position() - Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
-    BackRight.spin(directionType::rev, (Controller1.Axis2.position() + Controller1.Axis4.position()) * moveSpeed, percentUnits::pct);
-    wait(20, msec);
-  }
-  return 0;
-}
-
-int mainLiftControl(){
-  //R1 up, R2 down
-  MainLiftLeft.setVelocity(liftSpeed, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
-  MainLiftRight.setVelocity(liftSpeed, percentUnits::pct);
-  while(true){
-    if(Controller1.ButtonR1.pressing()){
-      MainLiftLeft.spin(directionType::fwd);
-      MainLiftRight.spin(directionType::fwd);
-    }
-    else if(Controller1.ButtonR2.pressing()){
-      MainLiftLeft.spin(directionType::rev);
-      MainLiftRight.spin(directionType::rev);
-    }
-    else{
-      MainLiftLeft.stop(brakeType::hold);
-      MainLiftRight.stop(brakeType::hold);
-    }
-    wait(20, msec);
-  }
-  return 0;
-}
-
-int leftLiftControl(){
-  LeftLiftMotor.setVelocity(liftSpeed, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
-  while(true){
-    if(Controller1.ButtonUp.pressing()){
-      LeftLiftMotor.spin(directionType::fwd);
-    }
-    else if(Controller1.ButtonDown.pressing()){
-      LeftLiftMotor.spin(directionType::rev);
-    }
-    else{
-      LeftLiftMotor.stop(brakeType::hold);
-    }
-    wait(20, msec);
-  }
-  return 0;
-}
-
-int rightLiftControl(){
-  RightLiftMotor.setVelocity(liftSpeed, percentUnits::pct); //Adjust from 0-100 to determine speed of LiftDrivers
-  while(true){
-    if(Controller1.ButtonX.pressing()){
-      RightLiftMotor.spin(directionType::fwd);
-    }
-    else if(Controller1.ButtonB.pressing()){
-      RightLiftMotor.spin(directionType::rev);
-    }
-    else{
-      RightLiftMotor.stop(brakeType::hold);
-    }
-    wait(20, msec);
-  }
-  return 0;
-}
-
-//21417A 
-void usercontrol(void) {
-  Brain.Screen.print("HAL 9000 // (c) 21417A 2021");
-  Brain.Screen.newLine();
-  task manualTransmissionTask = task(tankTransmission); //can be set between "tank" or "arcade"
-  task mainLiftTask = task(mainLiftControl); //control lift
-  task leftLiftTask = task(leftLiftControl);
-  task rightLiftTask = task(rightLiftControl);
-}
-
-int main() {
-  // Set up callbacks for autonomous and driver control periods.
-  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
-
-  // Run the pre-autonomous function.
-  pre_auton();
-
-  // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-  }
 }
