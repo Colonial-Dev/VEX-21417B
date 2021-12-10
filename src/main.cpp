@@ -9,11 +9,17 @@ using namespace okapi;
 //Global UI constants
 //Not good design but what fucking ever
 bool ready = false;
-int auton_menustage = 0; //-1 indicates skip, 0 is side select, 1 is strat select, 2 is confirmation
-int testauton = 0; //testing switch variable
-int auton_side = 0; //0 indicates left, 1 indicates right
+string home_options[] = { "Run!", "Auton Select" , "Utilities", "Exit", "Left", "Right", "Direct Rush", "Middle Rush", "Confirm auton", "Abort auton", "Auto-alignment"};
+
+int auton_menustage = 0;
+int array_lowerbound = 0;
+int array_upperbound = 3;
+int array_index = 0;
+bool updateneeded = true;
+
+int auton_side = 2; //1 indicates left, 2 indicates right
 string auton_sidelabel = "Err";
-int auton_variant = 0; //1-?, indicates what moves to make
+int auton_variant = 1; //1-?, indicates what moves to make
 string auton_varlabel = "Err";
 
 //Global auton constants
@@ -24,7 +30,7 @@ std::shared_ptr<ChassisController> driveTrain =
     (
       {0.001, 0, 0.0001}, // Distance controller gains
       {0.001, 0, 0.0001}, // Turn controller gains
-      {0.001, 0, 0.0001}  // Angle controller gains
+      {1, 0, 0.0001}  // Angle controller gains
     )
     // Blue gearset, 4 in wheel diam, 9.5 in wheel track
     .withDimensions(AbstractMotor::gearset::blue, {{4_in, 9.5_in}, imev5BlueTPR})
@@ -33,9 +39,9 @@ std::shared_ptr<ChassisController> driveTrain =
 std::shared_ptr<AsyncMotionProfileController> pathFinder =
 AsyncMotionProfileControllerBuilder()
   .withLimits({
-    1.0, // Maximum linear velocity of the Chassis in m/s
-    2.0, // Maximum linear acceleration of the Chassis in m/s/s
-    10.0 // Maximum linear jerk of the Chassis in m/s/s/s
+    50.0, // Maximum linear velocity of the Chassis in m/s
+    5.0, // Maximum linear acceleration of the Chassis in m/s/s
+    1000.0 // Maximum linear jerk of the Chassis in m/s/s/s
   })
   .withOutput(driveTrain)
   .buildMotionProfileController();
@@ -64,90 +70,192 @@ AsyncMotionProfileControllerBuilder()
     .withMotor(6)
     .build();
 
-void live_status_screen()
+void alignLifts()
 {
-  pros::lcd::set_text(0, "      21417A - Running");
-  pros::lcd::set_text(1, "      21417A - Running");
-  pros::lcd::set_text(2, "      21417A - Running");
-  pros::lcd::set_text(3, "      21417A - Running");
-  pros::lcd::set_text(4, "      21417A - Running");
-  pros::lcd::set_text(5, "      21417A - Running");
-  pros::lcd::set_text(6, "      21417A - Running");
-  pros::lcd::set_text(7, "      21417A - Running");
+  rearLift->setTarget(5000);
+  frontClamp->setTarget(-360);
+  frontLiftLeft->setTarget(-4000);
+  frontLiftRight->setTarget(4000);
+
+  pros::delay(2000);
+
+  frontLiftLeft->reset();
+  frontLiftRight->reset();
+
+  frontLiftLeft->tarePosition();
+  frontLiftRight->tarePosition();
+
+  frontLiftLeft->setTarget(2750);
+  frontLiftRight->setTarget(-2750);
+
+  pros::delay(3000);
+
+  exit(0);
 }
 
-void select_left()
+void page_options(int dir)
 {
-  auton_side = 0;
-  auton_sidelabel = "left";
-  auton_menustage = 1;
+  if(dir == 0)
+  {
+    array_index++;
+  }
+  else
+  {
+    array_index--;
+  }
+  if(array_index > array_upperbound) { array_index = array_lowerbound; }
+  if(array_index < array_lowerbound) { array_index = array_upperbound; }
+  updateneeded = true;
 }
 
-void select_right()
+void change_menustage(int stage)
 {
-  auton_side = 1;
-  auton_sidelabel = "right";
-  auton_menustage = 1;
+
+  switch(stage)
+  {
+    case 1:
+      array_lowerbound = 4;
+      array_upperbound = 5;
+      array_index = 4;
+      break;
+
+    case 2:
+      array_lowerbound = 6;
+      array_upperbound = 7;
+      array_index = 6;
+      break;
+
+    case 3:
+      array_lowerbound = 8;
+      array_upperbound = 9;
+      array_index = 8;
+      break;
+
+    case 4:
+      array_lowerbound = 10;
+      array_upperbound = 10;
+      array_index = 10;
+      break;
+
+    default:
+      array_lowerbound = 0;
+      array_upperbound = 3;
+      array_index = 0;
+      break;
+  }
+
+  updateneeded = true;
+  return;
 }
 
-void select_direct()
+void select_option() //this too
 {
-  auton_variant = 1;
-  auton_varlabel = "Direct Rush";
-  auton_menustage = 2;
+  switch(array_index)
+  {
+    case 0:
+      ready = true;
+      break;
+
+    case 1:
+      change_menustage(1);
+      break;
+
+    case 2:
+      change_menustage(4);
+      break;
+
+    case 3:
+      exit(0);
+      break;
+
+    case 4:
+      auton_side = 1;
+      change_menustage(2);
+      break;
+
+    case 5:
+      auton_side = 2;
+      change_menustage(2);
+      break;
+
+    case 6:
+      auton_variant = 1;
+      change_menustage(3);
+      break;
+
+    case 7:
+      auton_variant = 2;
+      change_menustage(3);
+      break;
+
+    case 8:
+      ready = true;
+      break;
+
+    case 9:
+      change_menustage(0);
+      break;
+
+    case 10:
+      alignLifts();
+      break;
+
+    default:
+      change_menustage(0);
+      break;
+  }
+
+  updateneeded = true;
+  return;
 }
 
-void select_middle()
+void menuPrint(pros::Controller master)
 {
-  auton_variant = 2;
-  auton_varlabel = "Middle Rush";
-  auton_menustage = 2;
+    if(!pros::competition::is_connected()){pros::delay(50);}
+    else{pros::delay(10);}
+    master.set_text(0, 0, "> " + home_options[array_index] + "                    ");
 }
 
-void abort_auton()
+//R1/L1 to page through options
+//A to select
+void advanced_auton_select(pros::Controller master)
 {
-  auton_menustage = 0;
-}
-
-void confirm_auton()
-{
-  ready = true;
-}
-
-void auton_select()
-{
-  pros::lcd::initialize();
   ready = false;
   while(!ready)
   {
-    if(auton_menustage == 0)
+    if(pros::competition::is_connected()) {break;}
+
+
+    if(master.get_digital_new_press(DIGITAL_R1))
     {
-      pros::lcd::set_text(0, "      21417A - Auton Side?");
-      pros::lcd::set_text(5, "");
-      pros::lcd::set_text(6, "");
-      pros::lcd::set_text(7, "<Left>                   <Right>");
-      pros::lcd::register_btn0_cb(select_left);
-      pros::lcd::register_btn2_cb(select_right);
+      page_options(0);
     }
-    else if(auton_menustage == 1)
+
+    if(master.get_digital_new_press(DIGITAL_L1))
     {
-      pros::lcd::set_text(0, "      21417A - Auton Strategy?");
-      pros::lcd::set_text(7, "<Direct Rush>      <Middle Rush>");
-      pros::lcd::register_btn0_cb(select_direct);
-      pros::lcd::register_btn2_cb(select_middle);
+      page_options(1);
     }
-    else if(auton_menustage == 2)
+
+    if(master.get_digital_new_press(DIGITAL_A))
     {
-      pros::lcd::set_text(0, "      21417A - Confirm Auton");
-      pros::lcd::set_text(5, "Field side: " + auton_sidelabel);
-      pros::lcd::set_text(6, "Strategy: " + auton_varlabel);
-      pros::lcd::set_text(7, "<Abort>                <Confirm>");
-      pros::lcd::register_btn0_cb(abort_auton);
-      pros::lcd::register_btn2_cb(confirm_auton);
+      select_option();
     }
+
+    if(master.get_digital_new_press(DIGITAL_B))
+    {
+      change_menustage(0);
+    }
+
+    if(updateneeded)
+    {
+      updateneeded = false;
+      menuPrint(master);
+    }
+
     pros::delay(2);
   }
-  pros::Task StatusDisp(live_status_screen);
+  master.set_text(0, 0, "> Init complete...");
+  return;
 }
 
 /**
@@ -157,31 +265,71 @@ void auton_select()
  * to keep execution time for this mode under a few seconds.
  */
 
- //LCD screen text box has a 32 char width and 7 lines. Font is monospaced.
 void initialize()
 {
-  //auton_select();
-}
+  pros::Controller master(pros::E_CONTROLLER_MASTER);
+  master.set_text(0, 0, "> Initializing...");
+  advanced_auton_select(master);
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
-void disabled() {}
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {8.5_ft, 0_ft, 0_deg}},
+    "RushStraight"
+  );
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
-void competition_initialize()
-{
-  auton_select();
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {7_ft, 0_ft, 0_deg}},
+    "PeekOut"
+  );
+
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {6_ft, 0_ft, 0_deg}},
+    "PeekOutShort"
+  );
+
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {8.8_ft, 0_ft, 0_deg}},
+    "RushMiddle"
+  );
+
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {6.3_ft, 0_ft, 0_deg}},
+    "RushMiddleShort"
+  );
+
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {3.7_ft, 0_ft, 0_deg}},
+    "BackGrab"
+  );
+
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {10_ft, 0_ft, 0_deg}},
+    "BackGrabLong"
+  );
+
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {3_ft, 0_ft, 0_deg}},
+    "BackGrabShort"
+  );
+
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {1_ft, 0_ft, 0_deg}},
+    "BackGrabTiny"
+  );
+
+  pathFinder->generatePath({
+    {0_ft, 0_ft, 0_deg},
+    {4.5_ft, 0_ft, 0_deg}},
+    "Park"
+  );
 }
 
 /**
@@ -197,42 +345,115 @@ void competition_initialize()
  */
 void autonomous()
 {
-  pathFinder->generatePath({
-    {0_ft, 0_ft, 0_deg},  // Profile starting position, this will normally be (0, 0, 0)
-    {6.8_ft, 0_ft, 0_deg}}, // The next point in the profile, 3 feet forward
-    "A" // Profile name
-  );
+  //the below two lines should be uncommented for TESTING ONLY
+  //auton_side = 1;
+  //auton_variant = 2;
+  if(auton_side == 1)
+  {
+    if(auton_variant == 1)
+    {
+      driveTrain->turnAngle(30_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("RushStraight");
+      rearLift->setTarget(-5000);
+      frontClamp->setTarget(-360);
+      pathFinder->waitUntilSettled();
+      frontClamp->setTarget(360);
+      frontLiftRight->setTarget(500);
+      frontLiftLeft->setTarget(-500);
+      frontLiftLeft->waitUntilSettled();
+      pathFinder->setTarget("RushStraight", true);
+      pathFinder->waitUntilSettled();
+      driveTrain->turnAngle(-180_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("BackGrabTiny", true);
+      pathFinder->waitUntilSettled();
+      rearLift->setTarget(-1000);
+    }
+    else if(auton_variant == 2)
+    {
+      rearLift->setTarget(-5000);
+      frontClamp->setTarget(-360);
+      driveTrain->turnAngle(-180_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("BackGrabTiny", true);
+      pathFinder->waitUntilSettled();
+      rearLift->setTarget(-800);
+      rearLift->waitUntilSettled();
+      pathFinder->setTarget("BackGrabTiny");
+      pathFinder->waitUntilSettled();
+      driveTrain->turnAngle(200_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("PeekOutShort");
+      pathFinder->waitUntilSettled();
+      driveTrain->turnAngle(130_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("RushMiddleShort");
+      pathFinder->waitUntilSettled();
+      frontClamp->setTarget(360);
+      frontLiftRight->setTarget(700);
+      frontLiftLeft->setTarget(-700);
+      frontLiftLeft->waitUntilSettled();
+      pathFinder->setTarget("RushMiddleShort", true);
+      pathFinder->waitUntilSettled();
+      driveTrain->turnAngle(-150_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("Park", true);
+    }
+  }
 
-  pathFinder->setTarget("A");
-  pathFinder->waitUntilSettled();
-
-  /*frontClamp->setTarget(360);
-  rearLift->setTarget(1000);
-  frontLiftLeft->setTarget(-2000);
-  frontLiftRight->setTarget(2000);
-  driveTrain->moveDistance(3_m);
-  driveTrain->turnAngle(180_deg);
-  driveTrain->moveDistance(3_m);*/
+  else if(auton_side == 2)
+  {
+    if(auton_variant == 1)
+    {
+      pathFinder->setTarget("RushStraight");
+      rearLift->setTarget(-5000);
+      frontClamp->setTarget(-360);
+      pathFinder->waitUntilSettled();
+      frontClamp->setTarget(360);
+      frontLiftRight->setTarget(500);
+      frontLiftLeft->setTarget(-500);
+      driveTrain->turnAngle(-110_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("BackGrab", true);
+      pathFinder->waitUntilSettled();
+      rearLift->setTarget(-1000);
+      rearLift->waitUntilSettled();
+      driveTrain->turnAngle(110_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("Park", true);
+    }
+    else if(auton_variant == 2)
+    {
+      pathFinder->setTarget("PeekOut");
+      rearLift->setTarget(-5000);
+      frontClamp->setTarget(-360);
+      pathFinder->waitUntilSettled();
+      driveTrain->turnAngle(-140_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("BackGrabShort", true);
+      pathFinder->waitUntilSettled();
+      rearLift->setTarget(-800);
+      rearLift->waitUntilSettled();
+      driveTrain->turnAngle(-40_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("RushMiddle");
+      pathFinder->waitUntilSettled();
+      frontClamp->setTarget(360);
+      frontLiftRight->setTarget(700);
+      frontLiftLeft->setTarget(-700);
+      frontLiftLeft->waitUntilSettled();
+      pathFinder->setTarget("RushMiddle", true);
+      pathFinder->waitUntilSettled();
+      driveTrain->turnAngle(150_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("Park", true);
+      pathFinder->waitUntilSettled();
+    }
+  }
 }
 
 //OPCONTROL TASKS BELOW THIS POINT//
-
-void refreshControllerScreen()
-{
-  double battLevel = pros::battery::get_capacity();
-
-  string status = "";
-  if(pros::competition::is_connected()){ status += "COMP // ";  }
-  else{ status += "TEST // "; }
-  if(pros::competition::is_autonomous() && !pros::competition::is_disabled()){ status += "AUTON"; }
-  else if(pros::competition::is_disabled()){ status += "DSBLD"; }
-  else{ status += "DRIVE"; }
-  status += " // " + std::to_string(battLevel) + "%";
-
-  pros::Controller master (CONTROLLER_MASTER);
-  master.clear();
-  master.print(1,18,status.c_str());
-}
 
 //port 9 is top left
 //port 15 is top right
