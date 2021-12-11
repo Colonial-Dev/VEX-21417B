@@ -9,7 +9,7 @@ using namespace okapi;
 //Global UI constants
 //Not good design but what fucking ever
 bool ready = false;
-string home_options[] = { "Run!", "Auton Select" , "Utilities", "Exit", "Left", "Right", "Direct Rush", "Middle Rush", "Confirm auton", "Abort auton", "Auto-alignment"};
+string home_options[] = { "Run!", "Auton Select" , "Utilities", "Exit", "Left", "Right", "Direct Rush", "Middle Rush", "Confirm auton", "Abort auton", "Auto-alignment", "Auton test"};
 
 int auton_menustage = 0;
 int array_lowerbound = 0;
@@ -133,7 +133,7 @@ void change_menustage(int stage)
 
     case 4:
       array_lowerbound = 10;
-      array_upperbound = 10;
+      array_upperbound = 11;
       array_index = 10;
       break;
 
@@ -170,26 +170,31 @@ void select_option() //this too
 
     case 4:
       auton_side = 1;
+      auton_sidelabel = "L";
       change_menustage(2);
       break;
 
     case 5:
       auton_side = 2;
+      auton_sidelabel = "R";
       change_menustage(2);
       break;
 
     case 6:
       auton_variant = 1;
+      auton_varlabel = "DR";
       change_menustage(3);
       break;
 
     case 7:
       auton_variant = 2;
+      auton_varlabel = "MR";
       change_menustage(3);
       break;
 
     case 8:
-      ready = true;
+      change_menustage(0);
+      home_options[0] = "Run! (ATN: " + auton_sidelabel + "/" + auton_varlabel + ")";
       break;
 
     case 9:
@@ -198,6 +203,10 @@ void select_option() //this too
 
     case 10:
       alignLifts();
+      break;
+
+    case 11:
+      autonomous();
       break;
 
     default:
