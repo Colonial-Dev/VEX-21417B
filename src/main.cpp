@@ -22,6 +22,8 @@ string auton_sidelabel = "Err";
 int auton_variant = 1; //1-?, indicates what moves to make
 string auton_varlabel = "Err";
 
+float multiplier = 1.0f;
+
 //Global auton constants
 std::shared_ptr<ChassisController> driveTrain =
   ChassisControllerBuilder()
@@ -464,6 +466,21 @@ void autonomous()
 
 //OPCONTROL TASKS BELOW THIS POINT//
 
+void infoPrint()
+{
+  pros::Controller master (CONTROLLER_MASTER);
+  while(true)
+  {
+    if(updateneeded)
+    {
+      updateneeded = false;
+      master.set_text(0, 0, "DRV // Throttle: " + std::to_string(multiplier) + "%");
+    }
+    pros::delay(50);
+  }
+  return;
+}
+
 //port 9 is top left
 //port 15 is top right
 //port 19 is bottom left
@@ -477,19 +494,20 @@ void tankTransmission(){
   top_right.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   btm_left.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   btm_right.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  float multiplier = 1.0f;
   pros::Controller master (CONTROLLER_MASTER);
 
   while (true) {
     if(master.get_digital_new_press(DIGITAL_A))
     {
-      multiplier += 0.25f;
+      multiplier += 0.2f;
+      updateneeded = true;
     }
     else if(master.get_digital_new_press(DIGITAL_Y))
     {
-      multiplier -= 0.25f;
+      multiplier -= 0.2f;
+      updateneeded = true;
     }
-    multiplier = std::clamp(multiplier, 0.0f, 1.0f);
+    multiplier = std::clamp(multiplier, 0.2f, 1.0f);
 
     top_left.move(master.get_analog(ANALOG_LEFT_Y) * multiplier);
 		btm_left.move(master.get_analog(ANALOG_LEFT_Y) * multiplier);
@@ -575,8 +593,11 @@ void rearLiftControl(){
 }
 
 void opcontrol() {
+  pros::Controller master (CONTROLLER_MASTER);
+  updateneeded = true;
 	pros::Task Transmission(tankTransmission);
 	pros::Task FrontLift(mainLiftControl);
 	pros::Task Clamp(clampControl);
 	pros::Task RearLift(rearLiftControl);
+  pros::Task Disp(infoPrint);
 }
