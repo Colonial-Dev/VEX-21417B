@@ -302,6 +302,11 @@
                 "version": "4.2.0"
             }
         },
-        "upload_options": {}
+        "upload_options": {
+            "compress_bin": true,
+            "description": "Complete C++/PROS competition suite for 21417A.",
+            "remote_name": "VEX-21417A",
+            "slot": 1
+        }
     }
 }

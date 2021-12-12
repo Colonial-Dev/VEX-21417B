@@ -6,21 +6,48 @@
 using namespace std;
 using namespace okapi;
 
+enum MenuLevels
+{
+  Home,
+  AutonSide,
+  AutonStrat,
+  AutonFinalize,
+  Utilities,
+  HotkeyMode
+};
+
+enum AutonSide
+{
+  Null,
+  Left,
+  Right,
+  Skills
+};
+
+enum AutonStrat
+{
+  DirectRush,
+  MiddleRush
+};
+
 //Global UI constants
 //Not good design but what fucking ever
 bool ready = false;
-string home_options[] = { "Run!", "Auton Select" , "Utilities", "Exit", "Left", "Right", "Direct Rush", "Middle Rush", "Confirm auton", "Abort auton", "Auto-alignment", "Auton test"};
+bool auton_test = false;
 
-int auton_menustage = 0;
+string home_options[] = { "Run!", "Auton Select" , "Utilities", "Exit", "Left", "Right", "Direct Rush", "Middle Rush", "Auton OK?", "Abort auton",
+"Hotkey mode", "Auto-alignment", "Auton test", "Skills auton", "Disable auton"};
+
+int auton_menustage = Home;
 int array_lowerbound = 0;
 int array_upperbound = 3;
 int array_index = 0;
 bool updateneeded = true;
 
-int auton_side = 2; //1 indicates left, 2 indicates right
-string auton_sidelabel = "Err";
-int auton_variant = 1; //1-?, indicates what moves to make
-string auton_varlabel = "Err";
+int auton_side = Right; //1 indicates left, 2 indicates right
+string auton_sidelabel = "DF";
+int auton_variant = DirectRush; //1-?, indicates what moves to make
+string auton_varlabel = "DF";
 
 float multiplier = 1.0f;
 
@@ -91,8 +118,6 @@ void alignLifts()
   frontLiftRight->setTarget(-2750);
 
   pros::delay(3000);
-
-  exit(0);
 }
 
 void page_options(int dir)
@@ -115,27 +140,33 @@ void change_menustage(int stage)
 
   switch(stage)
   {
-    case 1:
+    case AutonSide:
       array_lowerbound = 4;
       array_upperbound = 5;
       array_index = 4;
       break;
 
-    case 2:
+    case AutonStrat:
       array_lowerbound = 6;
       array_upperbound = 7;
       array_index = 6;
       break;
 
-    case 3:
+    case AutonFinalize:
       array_lowerbound = 8;
       array_upperbound = 9;
       array_index = 8;
       break;
 
-    case 4:
+    case Utilities:
+      array_lowerbound = 11;
+      array_upperbound = 14;
+      array_index = 11;
+      break;
+
+    case HotkeyMode: //hotkey mode
       array_lowerbound = 10;
-      array_upperbound = 11;
+      array_upperbound = 10;
       array_index = 10;
       break;
 
@@ -156,14 +187,15 @@ void select_option() //this too
   {
     case 0:
       ready = true;
+      home_options[0] = "Holding... (" + auton_sidelabel + "/" + auton_varlabel + ")" + "                                            end";
       break;
 
     case 1:
-      change_menustage(1);
+      change_menustage(AutonSide);
       break;
 
     case 2:
-      change_menustage(4);
+      change_menustage(Utilities);
       break;
 
     case 3:
@@ -171,48 +203,64 @@ void select_option() //this too
       break;
 
     case 4:
-      auton_side = 1;
+      auton_side = Left;
       auton_sidelabel = "L";
-      change_menustage(2);
+      change_menustage(AutonStrat);
       break;
 
     case 5:
-      auton_side = 2;
+      auton_side = Right;
       auton_sidelabel = "R";
-      change_menustage(2);
+      change_menustage(AutonStrat);
       break;
 
     case 6:
-      auton_variant = 1;
+      auton_variant = DirectRush;
       auton_varlabel = "DR";
-      change_menustage(3);
+      change_menustage(AutonFinalize);
+      home_options[8] = "Auton OK? (" + auton_sidelabel + "/" + auton_varlabel + ")";
       break;
 
     case 7:
-      auton_variant = 2;
+      auton_variant = MiddleRush;
       auton_varlabel = "MR";
-      change_menustage(3);
+      change_menustage(AutonFinalize);
+      home_options[8] = "Auton OK? (" + auton_sidelabel + "/" + auton_varlabel + ")";
       break;
 
     case 8:
-      change_menustage(0);
+      change_menustage(Home);
       home_options[0] = "Run! (ATN: " + auton_sidelabel + "/" + auton_varlabel + ")";
       break;
 
     case 9:
-      change_menustage(0);
-      break;
-
-    case 10:
-      alignLifts();
+      change_menustage(Home);
       break;
 
     case 11:
-      autonomous();
+      alignLifts();
+      exit(0);
+      break;
+
+    case 12:
+      auton_test = true;
+      ready = true;
+      break;
+
+    case 13:
+      auton_side = Skills;
+      home_options[0] = "Run! (ATN: SKLS)";
+      change_menustage(Home);
+      break;
+
+    case 14:
+      auton_side = Null;
+      home_options[0] = "Run! (ATN: NULL)";
+      change_menustage(Home);
       break;
 
     default:
-      change_menustage(0);
+      change_menustage(Home);
       break;
   }
 
@@ -224,7 +272,7 @@ void menuPrint(pros::Controller master)
 {
     if(!pros::competition::is_connected()){pros::delay(50);}
     else{pros::delay(10);}
-    master.set_text(0, 0, "> " + home_options[array_index] + "                    ");
+    master.set_text(0, 0, "> " + home_options[array_index] + "                                        end");
 }
 
 //R1/L1 to page through options
@@ -234,7 +282,7 @@ void advanced_auton_select(pros::Controller master)
   ready = false;
   while(!ready)
   {
-    if(pros::competition::is_connected()) {break;}
+    if(pros::competition::is_connected()) {return;}
 
 
     if(master.get_digital_new_press(DIGITAL_R1))
@@ -257,6 +305,30 @@ void advanced_auton_select(pros::Controller master)
       change_menustage(0);
     }
 
+    if(master.get_digital_new_press(DIGITAL_RIGHT))
+    {
+      change_menustage(5);
+    }
+
+    if(master.get_digital_new_press(DIGITAL_LEFT) && array_index == 10)
+    {
+      alignLifts();
+      exit(0);
+    }
+
+    if(master.get_digital_new_press(DIGITAL_UP) && array_index == 10)
+    {
+      auton_test = true;
+      pros::delay(50);
+      master.rumble("-");
+      pros::delay(1000);
+      master.rumble("-");
+      pros::delay(1000);
+      master.rumble("---");
+      pros::delay(1000);
+      return;
+    }
+
     if(updateneeded)
     {
       updateneeded = false;
@@ -265,7 +337,6 @@ void advanced_auton_select(pros::Controller master)
 
     pros::delay(2);
   }
-  master.set_text(0, 0, "> Init complete...");
   return;
 }
 
@@ -278,13 +349,9 @@ void advanced_auton_select(pros::Controller master)
 
 void initialize()
 {
-  pros::Controller master(pros::E_CONTROLLER_MASTER);
-  master.set_text(0, 0, "> Initializing...");
-  advanced_auton_select(master);
-
   pathFinder->generatePath({
     {0_ft, 0_ft, 0_deg},
-    {8.5_ft, 0_ft, 0_deg}},
+    {8.7_ft, 0_ft, 0_deg}},
     "RushStraight"
   );
 
@@ -314,7 +381,7 @@ void initialize()
 
   pathFinder->generatePath({
     {0_ft, 0_ft, 0_deg},
-    {3.7_ft, 0_ft, 0_deg}},
+    {4.7_ft, 0_ft, 0_deg}},
     "BackGrab"
   );
 
@@ -332,38 +399,44 @@ void initialize()
 
   pathFinder->generatePath({
     {0_ft, 0_ft, 0_deg},
-    {1_ft, 0_ft, 0_deg}},
+    {1.5_ft, 0_ft, 0_deg}},
     "BackGrabTiny"
   );
 
   pathFinder->generatePath({
     {0_ft, 0_ft, 0_deg},
-    {4.5_ft, 0_ft, 0_deg}},
+    {4.9_ft, 0_ft, 0_deg}},
     "Park"
   );
+
+  pros::Controller master(pros::E_CONTROLLER_MASTER);
+  advanced_auton_select(master);
+
+  if(auton_test)
+  {
+      autonomous();
+      exit(0);
+  }
+
+  while(true)
+  {
+      if(master.get_digital_new_press(DIGITAL_DOWN)){return;}
+      if(pros::competition::is_connected()){return;}
+      pros::delay(2);
+  }
+
 }
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
 void autonomous()
 {
   //the below two lines should be uncommented for TESTING ONLY
   //auton_side = 1;
   //auton_variant = 2;
-  if(auton_side == 1)
+  if(auton_side == Left)
   {
-    if(auton_variant == 1)
+    if(auton_variant == DirectRush)
     {
-      driveTrain->turnAngle(30_deg);
+      driveTrain->turnAngle(40_deg);
       driveTrain->waitUntilSettled();
       pathFinder->setTarget("RushStraight");
       rearLift->setTarget(-5000);
@@ -375,21 +448,21 @@ void autonomous()
       frontLiftLeft->waitUntilSettled();
       pathFinder->setTarget("RushStraight", true);
       pathFinder->waitUntilSettled();
-      driveTrain->turnAngle(-180_deg);
+      driveTrain->turnAngle(-200_deg);
       driveTrain->waitUntilSettled();
       pathFinder->setTarget("BackGrabTiny", true);
       pathFinder->waitUntilSettled();
-      rearLift->setTarget(-1000);
+      rearLift->setTarget(-700);
     }
-    else if(auton_variant == 2)
+    else if(auton_variant == MiddleRush)
     {
       rearLift->setTarget(-5000);
       frontClamp->setTarget(-360);
-      driveTrain->turnAngle(-180_deg);
+      driveTrain->turnAngle(-200_deg);
       driveTrain->waitUntilSettled();
       pathFinder->setTarget("BackGrabTiny", true);
       pathFinder->waitUntilSettled();
-      rearLift->setTarget(-800);
+      rearLift->setTarget(-700);
       rearLift->waitUntilSettled();
       pathFinder->setTarget("BackGrabTiny");
       pathFinder->waitUntilSettled();
@@ -399,23 +472,24 @@ void autonomous()
       pathFinder->waitUntilSettled();
       driveTrain->turnAngle(130_deg);
       driveTrain->waitUntilSettled();
-      pathFinder->setTarget("RushMiddleShort");
+      pathFinder->setTarget("RushMiddle");
       pathFinder->waitUntilSettled();
       frontClamp->setTarget(360);
       frontLiftRight->setTarget(700);
       frontLiftLeft->setTarget(-700);
       frontLiftLeft->waitUntilSettled();
-      pathFinder->setTarget("RushMiddleShort", true);
+      pathFinder->setTarget("RushMiddle", true);
       pathFinder->waitUntilSettled();
-      driveTrain->turnAngle(-150_deg);
+      driveTrain->turnAngle(-130_deg);
       driveTrain->waitUntilSettled();
       pathFinder->setTarget("Park", true);
+
     }
   }
 
-  else if(auton_side == 2)
+  else if(auton_side == Right)
   {
-    if(auton_variant == 1)
+    if(auton_variant == DirectRush)
     {
       pathFinder->setTarget("RushStraight");
       rearLift->setTarget(-5000);
@@ -424,17 +498,22 @@ void autonomous()
       frontClamp->setTarget(360);
       frontLiftRight->setTarget(500);
       frontLiftLeft->setTarget(-500);
-      driveTrain->turnAngle(-110_deg);
-      driveTrain->waitUntilSettled();
-      pathFinder->setTarget("BackGrab", true);
+      frontLiftLeft->waitUntilSettled();
+      pathFinder->setTarget("PeekOutShort", true);
       pathFinder->waitUntilSettled();
-      rearLift->setTarget(-1000);
-      rearLift->waitUntilSettled();
-      driveTrain->turnAngle(110_deg);
+      driveTrain->turnAngle(-240_deg);
       driveTrain->waitUntilSettled();
-      pathFinder->setTarget("Park", true);
+      pathFinder->setTarget("BackGrabShort", true);
+      pathFinder->waitUntilSettled();
+      rearLift->setTarget(-700);
+      rearLift->waitUntilSettled();
+      pathFinder->setTarget("BackGrabShort");
+      pathFinder->waitUntilSettled();
+      driveTrain->turnAngle(280_deg);
+      driveTrain->waitUntilSettled();
+      pathFinder->setTarget("BackGrabTiny", true);
     }
-    else if(auton_variant == 2)
+    else if(auton_variant == MiddleRush)
     {
       pathFinder->setTarget("PeekOut");
       rearLift->setTarget(-5000);
@@ -469,12 +548,17 @@ void autonomous()
 void infoPrint()
 {
   pros::Controller master (CONTROLLER_MASTER);
+  pros::Imu inertial(10);
   while(true)
   {
     if(updateneeded)
     {
       updateneeded = false;
-      master.set_text(0, 0, "DRV // Throttle: " + std::to_string(multiplier) + "%");
+      string throttle = std::to_string(multiplier * 100);
+      throttle.resize(3);
+      int trunc = (int)inertial.get_heading();
+      string heading = std::to_string(trunc);
+      master.set_text(0, 0, "THR " + throttle + "% / HDG " + heading);
     }
     pros::delay(50);
   }
