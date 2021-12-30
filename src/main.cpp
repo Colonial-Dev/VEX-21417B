@@ -3,101 +3,13 @@
 #include "okapi/api.hpp"
 #include <string>
 
+#include "enums.h"
+#include "ui_globals.h"
+#include "auton_constants.h"
+#include "menu.h"
+
 using namespace std;
 using namespace okapi;
-
-enum MenuLevels
-{
-  Home,
-  AutonSide,
-  AutonStrat,
-  AutonFinalize,
-  Utilities,
-  HotkeyMode
-};
-
-enum AutonSide
-{
-  Null,
-  Left,
-  Right,
-  Skills
-};
-
-enum AutonStrat
-{
-  DirectRush,
-  MiddleRush
-};
-
-//Global UI constants
-//Not good design but what fucking ever
-bool ready = false;
-bool auton_test = false;
-
-string home_options[] = { "Run!", "Auton Select" , "Utilities", "Exit", "Left", "Right", "Direct Rush", "Middle Rush", "Auton OK?", "Abort auton",
-"Hotkey mode", "Auto-alignment", "Auton test", "Skills auton", "Disable auton"};
-
-int auton_menustage = Home;
-int array_lowerbound = 0;
-int array_upperbound = 3;
-int array_index = 0;
-bool updateneeded = true;
-
-int auton_side = Right; //1 indicates left, 2 indicates right
-string auton_sidelabel = "DF";
-int auton_variant = DirectRush; //1-?, indicates what moves to make
-string auton_varlabel = "DF";
-
-float multiplier = 1.0f;
-
-//Global auton constants
-std::shared_ptr<ChassisController> driveTrain =
-  ChassisControllerBuilder()
-    .withMotors({9, -19}, {-15, 13})
-    .withGains
-    (
-      {0.001, 0, 0.0001}, // Distance controller gains
-      {0.001, 0, 0.0001}, // Turn controller gains
-      {1, 0, 0.0001}  // Angle controller gains
-    )
-    // Blue gearset, 4 in wheel diam, 9.5 in wheel track
-    .withDimensions(AbstractMotor::gearset::blue, {{4_in, 9.5_in}, imev5BlueTPR})
-    .build();
-
-std::shared_ptr<AsyncMotionProfileController> pathFinder =
-AsyncMotionProfileControllerBuilder()
-  .withLimits({
-    50.0, // Maximum linear velocity of the Chassis in m/s
-    5.0, // Maximum linear acceleration of the Chassis in m/s/s
-    1000.0 // Maximum linear jerk of the Chassis in m/s/s/s
-  })
-  .withOutput(driveTrain)
-  .buildMotionProfileController();
-
-  //Initialize PID front lift controller
-  std::shared_ptr<AsyncPositionController<double, double>> frontLiftRight =
-  AsyncPosControllerBuilder()
-    .withMotor(1)
-    .build();
-
-  //Initialize PID front lift controller
-  std::shared_ptr<AsyncPositionController<double, double>> frontLiftLeft =
-  AsyncPosControllerBuilder()
-    .withMotor(5)
-    .build();
-
-  //Initialize clamp controller
-  std::shared_ptr<AsyncPositionController<double, double>> frontClamp =
-  AsyncPosControllerBuilder()
-    .withMotor(8)
-    .build();
-
-  //Initialize PID rear lift controller
-  std::shared_ptr<AsyncPositionController<double, double>> rearLift =
-  AsyncPosControllerBuilder()
-    .withMotor(6)
-    .build();
 
 void alignLifts()
 {
