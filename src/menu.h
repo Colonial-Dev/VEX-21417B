@@ -2,11 +2,14 @@
 #define MENU_H
 //It's time to get funky
 
+bool displayUpdateFlag = true;
+
 class MenuItem
 {
   public:
     std::function<void()> operation;
     std::string name;
+    std::string extras = "";
 
     MenuItem(const std::function<void()>& action, std::string ident)
     {
@@ -14,7 +17,9 @@ class MenuItem
       name = ident;
     }
 
-    std::string GetName() { return name; }
+    std::string GetName() { return name + extras; }
+
+    void SetExtras(std::string str) { extras = str; }
 
     void DoOperation() { operation(); }
 };
@@ -38,12 +43,12 @@ class MenuManager
 {
   public:
     std::vector<MenuLevel> levels;
-    int level_index;
-    int item_index;
+    int level_index = 0;
+    int item_index = 0;
 
-  MenuManager(std::vector<MenuLevel> levelvec)
+  void Update(std::vector<MenuLevel> levelvec)
   {
-      levels = levelvec;
+    levels = levelvec;
   }
 
   void Page(bool direction)
@@ -55,6 +60,7 @@ class MenuManager
     else { item_index--; }
     if(item_index > items.size() - 1) { item_index = 0; }
     else if(item_index < 0) { item_index = items.size() - 1; }
+    displayUpdateFlag = true;
   }
 
   std::string GetCurrentItemName()
@@ -69,11 +75,11 @@ class MenuManager
     for(int i = 0; i < levels.size(); i++)
     {
       MenuLevel lv = levels.at(i);
-      if(lv.GetName() == name) { level_index = i; item_index = 0; return; }
+      if(lv.GetName() == name) { level_index = i; item_index = 0; displayUpdateFlag = true; return; }
     }
   }
 
-  void GotoItem(std::string name)
+  MenuItem GetItem(std::string name)
   {
     MenuLevel level = levels.at(level_index);
     std::vector<MenuItem> items = level.items;
@@ -81,7 +87,7 @@ class MenuManager
     for(int i = 0; i < items.size(); i++)
     {
       MenuItem it = items.at(i);
-      if(it.GetName() == name) { item_index = i; return; }
+      if(it.GetName() == name) { return it; }
     }
   }
 
@@ -90,6 +96,7 @@ class MenuManager
     MenuLevel level = levels.at(level_index);
     MenuItem item = level.items.at(item_index);
     item.DoOperation();
+    displayUpdateFlag = true;
   }
 };
 

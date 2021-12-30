@@ -11,224 +11,29 @@
 using namespace std;
 using namespace okapi;
 
-void alignLifts()
-{
-  rearLift->setTarget(5000);
-  frontClamp->setTarget(-360);
-  frontLiftLeft->setTarget(-4000);
-  frontLiftRight->setTarget(4000);
-
-  pros::delay(2000);
-
-  frontLiftLeft->reset();
-  frontLiftRight->reset();
-
-  frontLiftLeft->tarePosition();
-  frontLiftRight->tarePosition();
-
-  frontLiftLeft->setTarget(2750);
-  frontLiftRight->setTarget(-2750);
-
-  pros::delay(3000);
-}
-
-void page_options(int dir)
-{
-  if(dir == 0)
-  {
-    array_index++;
-  }
-  else
-  {
-    array_index--;
-  }
-  if(array_index > array_upperbound) { array_index = array_lowerbound; }
-  if(array_index < array_lowerbound) { array_index = array_upperbound; }
-  updateneeded = true;
-}
-
-void change_menustage(int stage)
-{
-
-  switch(stage)
-  {
-    case AutonSide:
-      array_lowerbound = 4;
-      array_upperbound = 5;
-      array_index = 4;
-      break;
-
-    case AutonStrat:
-      array_lowerbound = 6;
-      array_upperbound = 7;
-      array_index = 6;
-      break;
-
-    case AutonFinalize:
-      array_lowerbound = 8;
-      array_upperbound = 9;
-      array_index = 8;
-      break;
-
-    case Utilities:
-      array_lowerbound = 11;
-      array_upperbound = 14;
-      array_index = 11;
-      break;
-
-    case HotkeyMode: //hotkey mode
-      array_lowerbound = 10;
-      array_upperbound = 10;
-      array_index = 10;
-      break;
-
-    default:
-      array_lowerbound = 0;
-      array_upperbound = 3;
-      array_index = 0;
-      break;
-  }
-
-  updateneeded = true;
-  return;
-}
-
-void select_option() //this too
-{
-  switch(array_index)
-  {
-    case 0:
-      ready = true;
-      home_options[0] = "Holding... (" + auton_sidelabel + "/" + auton_varlabel + ")" + "                                            end";
-      break;
-
-    case 1:
-      change_menustage(AutonSide);
-      break;
-
-    case 2:
-      change_menustage(Utilities);
-      break;
-
-    case 3:
-      exit(0);
-      break;
-
-    case 4:
-      auton_side = Left;
-      auton_sidelabel = "L";
-      change_menustage(AutonStrat);
-      break;
-
-    case 5:
-      auton_side = Right;
-      auton_sidelabel = "R";
-      change_menustage(AutonStrat);
-      break;
-
-    case 6:
-      auton_variant = DirectRush;
-      auton_varlabel = "DR";
-      change_menustage(AutonFinalize);
-      home_options[8] = "Auton OK? (" + auton_sidelabel + "/" + auton_varlabel + ")";
-      break;
-
-    case 7:
-      auton_variant = MiddleRush;
-      auton_varlabel = "MR";
-      change_menustage(AutonFinalize);
-      home_options[8] = "Auton OK? (" + auton_sidelabel + "/" + auton_varlabel + ")";
-      break;
-
-    case 8:
-      change_menustage(Home);
-      home_options[0] = "Run! (ATN: " + auton_sidelabel + "/" + auton_varlabel + ")";
-      break;
-
-    case 9:
-      change_menustage(Home);
-      break;
-
-    case 11:
-      alignLifts();
-      exit(0);
-      break;
-
-    case 12:
-      auton_test = true;
-      ready = true;
-      break;
-
-    case 13:
-      auton_side = Skills;
-      home_options[0] = "Run! (ATN: SKLS)";
-      change_menustage(Home);
-      break;
-
-    case 14:
-      auton_side = Null;
-      home_options[0] = "Run! (ATN: NULL)";
-      change_menustage(Home);
-      break;
-
-    default:
-      change_menustage(Home);
-      break;
-  }
-
-  updateneeded = true;
-  return;
-}
-
 void menuPrint(pros::Controller master)
 {
     if(!pros::competition::is_connected()){pros::delay(50);}
     else{pros::delay(10);}
-    master.set_text(0, 0, "> " + home_options[array_index] + "                                        end");
+    master.set_text(0, 0, "> " + manager.GetCurrentItemName() + "                                        end");
 }
 
 //R1/L1 to page through options
 //A to select
 void advanced_auton_select(pros::Controller master)
 {
-  ready = false;
-  while(!ready)
+  readyToLaunch = false;
+  while(!readyToLaunch)
   {
     if(pros::competition::is_connected()) {return;}
+    if(master.get_digital_new_press(DIGITAL_R1)) { manager.Page(true); }
+    if(master.get_digital_new_press(DIGITAL_L1)) { manager.Page(false); }
+    if(master.get_digital_new_press(DIGITAL_A)) { manager.DoOperation(); }
+    if(master.get_digital_new_press(DIGITAL_B)) { manager.GotoLevel("Main"); }
 
-
-    if(master.get_digital_new_press(DIGITAL_R1))
-    {
-      page_options(0);
-    }
-
-    if(master.get_digital_new_press(DIGITAL_L1))
-    {
-      page_options(1);
-    }
-
-    if(master.get_digital_new_press(DIGITAL_A))
-    {
-      select_option();
-    }
-
-    if(master.get_digital_new_press(DIGITAL_B))
-    {
-      change_menustage(0);
-    }
-
-    if(master.get_digital_new_press(DIGITAL_RIGHT))
-    {
-      change_menustage(5);
-    }
-
-    if(master.get_digital_new_press(DIGITAL_LEFT) && array_index == 10)
-    {
-      alignLifts();
-      exit(0);
-    }
-
-    if(master.get_digital_new_press(DIGITAL_UP) && array_index == 10)
+    if(master.get_digital_new_press(DIGITAL_RIGHT)) { hotkeyMode = !hotkeyMode; }
+    if(master.get_digital_new_press(DIGITAL_LEFT) && hotkeyMode) { liftAlignmentFlag = true; return; }
+    if(master.get_digital_new_press(DIGITAL_UP) && hotkeyMode)
     {
       auton_test = true;
       pros::delay(50);
@@ -241,12 +46,7 @@ void advanced_auton_select(pros::Controller master)
       return;
     }
 
-    if(updateneeded)
-    {
-      updateneeded = false;
-      menuPrint(master);
-    }
-
+    if(displayUpdateFlag) { displayUpdateFlag = false; menuPrint(master); }
     pros::delay(2);
   }
   return;
@@ -261,6 +61,8 @@ void advanced_auton_select(pros::Controller master)
 
 void initialize()
 {
+  manager.Update(levels);
+
   pathFinder->generatePath({
     {0_ft, 0_ft, 0_deg},
     {8.7_ft, 0_ft, 0_deg}},
@@ -324,10 +126,28 @@ void initialize()
   pros::Controller master(pros::E_CONTROLLER_MASTER);
   advanced_auton_select(master);
 
-  if(auton_test)
+  if(autonTestFlag) { autonomous(); exit(0); }
+
+  if(liftAlignmentFlag)
   {
-      autonomous();
-      exit(0);
+    rearLift->setTarget(5000);
+    frontClamp->setTarget(-360);
+    frontLiftLeft->setTarget(-4000);
+    frontLiftRight->setTarget(4000);
+
+    pros::delay(2000);
+
+    frontLiftLeft->reset();
+    frontLiftRight->reset();
+
+    frontLiftLeft->tarePosition();
+    frontLiftRight->tarePosition();
+
+    frontLiftLeft->setTarget(2750);
+    frontLiftRight->setTarget(-2750);
+
+    pros::delay(3000);
+    abort(); //fucking STOP
   }
 
   while(true)
@@ -341,12 +161,9 @@ void initialize()
 
 void autonomous()
 {
-  //the below two lines should be uncommented for TESTING ONLY
-  //auton_side = 1;
-  //auton_variant = 2;
-  if(auton_side == Left)
+  if(targetAutonSide == Left)
   {
-    if(auton_variant == DirectRush)
+    if(targetAutonStrategy == DirectRush)
     {
       driveTrain->turnAngle(40_deg);
       driveTrain->waitUntilSettled();
@@ -366,7 +183,7 @@ void autonomous()
       pathFinder->waitUntilSettled();
       rearLift->setTarget(-700);
     }
-    else if(auton_variant == MiddleRush)
+    else if(targetAutonStrategy == MiddleRush)
     {
       rearLift->setTarget(-5000);
       frontClamp->setTarget(-360);
@@ -399,9 +216,9 @@ void autonomous()
     }
   }
 
-  else if(auton_side == Right)
+  else if(targetAutonSide == Right)
   {
-    if(auton_variant == DirectRush)
+    if(targetAutonStrategy == DirectRush)
     {
       pathFinder->setTarget("RushStraight");
       rearLift->setTarget(-5000);
@@ -425,7 +242,7 @@ void autonomous()
       driveTrain->waitUntilSettled();
       pathFinder->setTarget("BackGrabTiny", true);
     }
-    else if(auton_variant == MiddleRush)
+    else if(targetAutonStrategy == MiddleRush)
     {
       pathFinder->setTarget("PeekOut");
       rearLift->setTarget(-5000);
@@ -463,10 +280,10 @@ void infoPrint()
   pros::Imu inertial(10);
   while(true)
   {
-    if(updateneeded)
+    if(displayUpdateFlag)
     {
-      updateneeded = false;
-      string throttle = std::to_string(multiplier * 100);
+      displayUpdateFlag = false;
+      string throttle = std::to_string(throttleMultiplier * 100);
       throttle.resize(3);
       int trunc = (int)inertial.get_heading();
       string heading = std::to_string(trunc);
@@ -495,20 +312,20 @@ void tankTransmission(){
   while (true) {
     if(master.get_digital_new_press(DIGITAL_A))
     {
-      multiplier += 0.2f;
-      updateneeded = true;
+      throttleMultiplier += 0.2f;
+      displayUpdateFlag = true;
     }
     else if(master.get_digital_new_press(DIGITAL_Y))
     {
-      multiplier -= 0.2f;
-      updateneeded = true;
+      throttleMultiplier -= 0.2f;
+      displayUpdateFlag = true;
     }
-    multiplier = std::clamp(multiplier, 0.2f, 1.0f);
+    throttleMultiplier = std::clamp(throttleMultiplier, 0.2f, 1.0f);
 
-    top_left.move(master.get_analog(ANALOG_LEFT_Y) * multiplier);
-		btm_left.move(master.get_analog(ANALOG_LEFT_Y) * multiplier);
-    top_right.move(master.get_analog(ANALOG_RIGHT_Y) * multiplier);
-		btm_right.move(master.get_analog(ANALOG_RIGHT_Y) * multiplier);
+    top_left.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
+		btm_left.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
+    top_right.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
+		btm_right.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
     pros::delay(2);
   }
 }
@@ -590,7 +407,7 @@ void rearLiftControl(){
 
 void opcontrol() {
   pros::Controller master (CONTROLLER_MASTER);
-  updateneeded = true;
+  displayUpdateFlag = true;
 	pros::Task Transmission(tankTransmission);
 	pros::Task FrontLift(mainLiftControl);
 	pros::Task Clamp(clampControl);
