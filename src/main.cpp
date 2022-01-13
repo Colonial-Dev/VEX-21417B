@@ -38,7 +38,7 @@ void initialize()
     frontLiftLeft->setTarget(2750);
     frontLiftRight->setTarget(-2750);
 
-    pros::delay(3000);
+    pros::delay(3000);  
     abort(); //fucking STOP
   }
 
@@ -105,8 +105,10 @@ void turnPID(double angle)
 
 void autonomous()
 {
-  turnPID(90);
-  turnPID(-90);
+  pathFinder->setTarget("BackGrabShort");
+  pathFinder->waitUntilSettled();
+  //turnPID(90);
+  //turnPID(-90);
   return;
 
   if(targetAutonSide == Left)
@@ -132,7 +134,7 @@ void autonomous()
 
     }
   }
-  
+
 }
 
 //OPCONTROL TASKS BELOW THIS POINT//

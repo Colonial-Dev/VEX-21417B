@@ -4,16 +4,23 @@ using namespace okapi::literals;
 
 //Global auton constants
 pros::Imu inertialSensor (21);
+double GEAR_RATIO = 84.0/36.0;
 
 auto driveTrain = okapi::ChassisControllerBuilder()
   .withMotors({9, -19}, {-15, 13})
+  .withGains
+  (
+    {0.001, 0, 0.0001}, // Distance controller gains
+    {0.001, 0, 0.0001}, // Turn controller gains
+    {1, 0, 0.0001}  // Angle controller gains
+  )
   // Blue gearset, 4 in wheel diam, 9.5 in wheel track
-  .withDimensions(okapi::AbstractMotor::gearset::blue, {{4_in, 24.13_cm}, okapi::imev5BlueTPR})
+  .withDimensions(okapi::AbstractMotor::gearset::blue, {{4_in, 9.5_in}, okapi::imev5BlueTPR * GEAR_RATIO})
   .build();
 
 auto pathFinder = okapi::AsyncMotionProfileControllerBuilder()
-  .withOutput(driveTrain->getModel(), {{4_in, 24.13_cm}, okapi::imev5BlueTPR}, {okapi::AbstractMotor::gearset::blue})
-  .withLimits({.2, .41, 1})
+  .withLimits({10, 5, 10})
+  .withOutput(driveTrain->getModel(), {{4_in, 9.5_in}, okapi::imev5BlueTPR * GEAR_RATIO}, {okapi::AbstractMotor::gearset::blue, GEAR_RATIO})
   .buildMotionProfileController();
 
   //Initialize PID front lift controller
@@ -40,61 +47,7 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
   {
       pathFinder->generatePath({
         {0_ft, 0_ft, 0_deg},
-        {8.7_ft, 0_ft, 0_deg}},
-        "RushStraight"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {7_ft, 0_ft, 0_deg}},
-        "PeekOut"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {6_ft, 0_ft, 0_deg}},
-        "PeekOutShort"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {8.8_ft, 0_ft, 0_deg}},
-        "RushMiddle"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {6.3_ft, 0_ft, 0_deg}},
-        "RushMiddleShort"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {4.7_ft, 0_ft, 0_deg}},
-        "BackGrab"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {10_ft, 0_ft, 0_deg}},
-        "BackGrabLong"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {3_ft, 0_ft, 0_deg}},
+        {3_ft, 0_ft, -45_deg}},
         "BackGrabShort"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {1.5_ft, 0_ft, 0_deg}},
-        "BackGrabTiny"
-      );
-
-      pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {4.9_ft, 0_ft, 0_deg}},
-        "Park"
       );
   }
