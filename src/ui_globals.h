@@ -1,6 +1,4 @@
-#ifndef UI_GLOBALS_H
-#define UI_GLOBALS_H
-
+#pragma once
 #include "menu.h"
 
 //Global UI constants
@@ -58,4 +56,43 @@ std::vector<MenuLevel> levels
   {mainLevel}, {sideSelectionLevel}, {strategySelectionLevel}, {utilitiesLevel}
 };
 
-#endif
+void menuPrint(pros::Controller master)
+{
+    if(!pros::competition::is_connected()){pros::delay(50);}
+    else{pros::delay(10);}
+    master.set_text(0, 0, "> " + manager.GetCurrentItemName() + "                                        end");
+}
+
+//R1/L1 to page through options
+//A to select
+void advanced_auton_select(pros::Controller master)
+{
+  readyToLaunch = false;
+  while(!readyToLaunch)
+  {
+    if(pros::competition::is_connected()) {return;}
+    if(master.get_digital_new_press(DIGITAL_R1)) { manager.Page(true); }
+    if(master.get_digital_new_press(DIGITAL_L1)) { manager.Page(false); }
+    if(master.get_digital_new_press(DIGITAL_A)) { manager.DoOperation(); }
+    if(master.get_digital_new_press(DIGITAL_B)) { manager.GotoLevel("Main"); }
+
+    if(master.get_digital_new_press(DIGITAL_RIGHT)) { hotkeyMode = !hotkeyMode; }
+    if(master.get_digital_new_press(DIGITAL_LEFT) && hotkeyMode) { liftAlignmentFlag = true; return; }
+    if(master.get_digital_new_press(DIGITAL_UP) && hotkeyMode)
+    {
+      autonTestFlag = true;
+      pros::delay(50);
+      master.rumble("-");
+      pros::delay(1000);
+      master.rumble("-");
+      pros::delay(1000);
+      master.rumble("---");
+      pros::delay(1000);
+      return;
+    }
+
+    if(displayUpdateFlag) { displayUpdateFlag = false; menuPrint(master); }
+    pros::delay(2);
+  }
+  return;
+}

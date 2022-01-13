@@ -1,5 +1,4 @@
-#ifndef MENU_H
-#define MENU_H
+#pragma once
 //It's time to get funky
 
 bool displayUpdateFlag = true;
@@ -99,5 +98,3 @@ class MenuManager
     displayUpdateFlag = true;
   }
 };
-
-#endif

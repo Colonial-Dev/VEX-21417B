@@ -1,5 +1,4 @@
-#ifndef ENUMS_H
-#define ENUMS_H
+#pragma once
 
 enum MenuLevels
 {
@@ -26,5 +25,3 @@ enum AutonStrat
   MiddleRush, //Grab the colored goal as a counterweight, then pick up the middle mobile goal and return.
   ComplexRush //Cocaine
 };
-
-#endif
