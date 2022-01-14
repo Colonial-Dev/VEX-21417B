@@ -3,15 +3,18 @@
 #include "okapi/api.hpp"
 #include <string>
 
-#include "enums.h"
-#include "ui_globals.h"
-#include "auton_constants.h"
+#include "Enums.h"
+#include "InterfaceGlobals.h"
+#include "AutonomousConstants.h"
+#include "Macros.h"
+#include "BrainDisplay.h"
 
 using namespace std;
 using namespace okapi;
 
 void initialize()
 {
+  SplashDisplay();
   manager.Update(levels);
   initPaths();
 
@@ -38,7 +41,7 @@ void initialize()
     frontLiftLeft->setTarget(2750);
     frontLiftRight->setTarget(-2750);
 
-    pros::delay(3000);  
+    pros::delay(3000);
     abort(); //fucking STOP
   }
 
@@ -50,72 +53,30 @@ void initialize()
   }
 }
 
-void turnPID(double angle)
-{
-  pros::Motor top_left (9);
-	pros::Motor top_right (15, true);
-	pros::Motor btm_left (19, true);
-	pros::Motor btm_right (13);
-
-  while(inertialSensor.is_calibrating())
-  {
-    pros::delay(10);
-  }
-
-  double threshold = 1;
-  double error = angle - inertialSensor.get_rotation();
-  double integral;
-  double derivative;
-  double prevError;
-  double kp = 0.98;
-  double ki = 0.001;
-  double kd = 5.5;
-  double p;
-  double i;
-  double d;
-  double vel;
-
-  while(std::fabs(error) > threshold)
-  {
-    error = angle - inertialSensor.get_rotation();
-    integral = integral + error;
-
-    if(error == 0 || std::fabs(error) >= angle)
-    {
-      integral = 0;
-    }
-
-    derivative = error - prevError;
-    prevError = error;
-    p = error * kp;
-    i = integral * ki;
-    d = derivative * kd;
-    vel = p + i + d;
-
-    top_left.move_velocity(vel);
-    top_right.move_velocity(-vel);
-    btm_left.move_velocity(-vel);
-    btm_right.move_velocity(vel);
-  }
-  top_left.move_velocity(0);
-  top_right.move_velocity(0);
-  btm_left.move_velocity(0);
-  btm_right.move_velocity(0);
-}
-
 void autonomous()
 {
   pathFinder->setTarget("BackGrabShort");
   pathFinder->waitUntilSettled();
-  //turnPID(90);
-  //turnPID(-90);
   return;
 
   if(targetAutonSide == Left)
   {
     if(targetAutonStrategy == DirectRush)
     {
+      TURN(40)
+      PATH("RushStraight")
+      UNFOLD
+      WAIT
 
+      FRONT_CLAMP_CLOSE
+      MAIN_LIFT_UP
+      PATHBACK("RushStraight")
+      WAIT
+
+      TURN(-200)
+      PATH("BackGrabTiny")
+      WAIT
+      REAR_LIFT_UP
     }
     else if(targetAutonStrategy == MiddleRush)
     {
@@ -142,7 +103,6 @@ void autonomous()
 void infoPrint()
 {
   pros::Controller master (CONTROLLER_MASTER);
-  pros::Imu inertial(10);
   while(true)
   {
     if(displayUpdateFlag)
@@ -150,9 +110,7 @@ void infoPrint()
       displayUpdateFlag = false;
       string throttle = std::to_string(throttleMultiplier * 100);
       throttle.resize(3);
-      int trunc = (int)inertial.get_heading();
-      string heading = std::to_string(trunc);
-      master.set_text(0, 0, "THR " + throttle + "% / HDG " + heading);
+      master.set_text(0, 0, "THR " + throttle);
     }
     pros::delay(50);
   }

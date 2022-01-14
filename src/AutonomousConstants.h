@@ -2,7 +2,6 @@
 
 using namespace okapi::literals;
 
-//Global auton constants
 pros::Imu inertialSensor (21);
 double GEAR_RATIO = 84.0/36.0;
 
@@ -23,10 +22,10 @@ auto pathFinder = okapi::AsyncMotionProfileControllerBuilder()
   .withOutput(driveTrain->getModel(), {{4_in, 9.5_in}, okapi::imev5BlueTPR * GEAR_RATIO}, {okapi::AbstractMotor::gearset::blue, GEAR_RATIO})
   .buildMotionProfileController();
 
-  //Initialize PID front lift controller
-  auto frontLiftRight = okapi::AsyncPosControllerBuilder()
-    .withMotor(1)
-    .build();
+//Initialize PID front lift controller
+auto frontLiftRight = okapi::AsyncPosControllerBuilder()
+  .withMotor(1)
+  .build();
 
   //Initialize PID front lift controller
 auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
@@ -43,6 +42,7 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
     .withMotor(6)
     .build();
 
+  //Precalculates all Okapi paths used in auton.
   void initPaths()
   {
       pathFinder->generatePath({
