@@ -1,7 +1,7 @@
 #pragma once
 
-#define TURN(x)\
-driveTrain->turnAngle(x##_deg);\
+#define TURN(x) \
+driveTrain->turnAngle((x/2) * degree);\
 driveTrain->waitUntilSettled();
 
 #define PATH(path) pathFinder->setTarget(path);

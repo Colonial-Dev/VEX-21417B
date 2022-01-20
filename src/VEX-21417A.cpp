@@ -12,13 +12,17 @@
 using namespace std;
 using namespace okapi;
 
-void initialize()
+void initialize() 
 {
-  SplashDisplay();
+  splashDisplay();
   manager.Update(levels);
+  brainPrint("Menu system backend #00ff00 [OK]#");
+  brainPrint("#ffff00 [WARN]# Starting auton path precomputation!");
   initPaths();
+  brainPrint("Auton paths #00ff00 [OK]#");
 
   pros::Controller master(pros::E_CONTROLLER_MASTER);
+  brainPrint("Broadcasting menu system interface...");
   advanced_auton_select(master);
 
   if(autonTestFlag) { autonomous(); exit(0); }
@@ -55,28 +59,25 @@ void initialize()
 
 void autonomous()
 {
-  pathFinder->setTarget("BackGrabShort");
-  pathFinder->waitUntilSettled();
+  PATH("Test_None_Both")
+  WAIT
+  TURN(90)
+  PATH("Test_None_Both")
+  WAIT
+  TURN(90)
+  PATH("Test_None_Both")
+  WAIT
+  TURN(90)
+  PATH("Test_None_Both")
+  WAIT
+  TURN(90)
   return;
 
   if(targetAutonSide == Left)
   {
     if(targetAutonStrategy == DirectRush)
     {
-      TURN(40)
-      PATH("RushStraight")
-      UNFOLD
-      WAIT
-
-      FRONT_CLAMP_CLOSE
-      MAIN_LIFT_UP
-      PATHBACK("RushStraight")
-      WAIT
-
-      TURN(-200)
-      PATH("BackGrabTiny")
-      WAIT
-      REAR_LIFT_UP
+      
     }
     else if(targetAutonStrategy == MiddleRush)
     {
