@@ -27,28 +27,6 @@ void initialize()
 
   if(autonTestFlag) { autonomous(); exit(0); }
 
-  if(liftAlignmentFlag)
-  {
-    rearLift->setTarget(5000);
-    frontClamp->setTarget(-360);
-    frontLiftLeft->setTarget(-4000);
-    frontLiftRight->setTarget(4000);
-
-    pros::delay(2000);
-
-    frontLiftLeft->reset();
-    frontLiftRight->reset();
-
-    frontLiftLeft->tarePosition();
-    frontLiftRight->tarePosition();
-
-    frontLiftLeft->setTarget(2750);
-    frontLiftRight->setTarget(-2750);
-
-    pros::delay(3000);
-    abort(); //fucking STOP
-  }
-
   while(true)
   {
       if(master.get_digital_new_press(DIGITAL_DOWN)){return;}
@@ -59,20 +37,6 @@ void initialize()
 
 void autonomous()
 {
-  PATH("Test_None_Both")
-  WAIT
-  TURN(90)
-  PATH("Test_None_Both")
-  WAIT
-  TURN(90)
-  PATH("Test_None_Both")
-  WAIT
-  TURN(90)
-  PATH("Test_None_Both")
-  WAIT
-  TURN(90)
-  return;
-
   if(targetAutonSide == Left)
   {
     if(targetAutonStrategy == DirectRush)
@@ -95,6 +59,11 @@ void autonomous()
     {
 
     }
+  }
+
+  else if(targetAutonSide == Skills)
+  {
+    //Skills ATN
   }
 
 }

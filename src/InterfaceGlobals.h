@@ -41,13 +41,13 @@ std::vector<MenuItem> strategySelectionItems
 };
 MenuLevel strategySelectionLevel(strategySelectionItems, "AutonStrategySelection");
 
-MenuItem optionAutoAlignment([] { liftAlignmentFlag = true; readyToLaunch = true; }, "Auto-alignment");
+//MenuItem optionAutoAlignment([] { liftAlignmentFlag = true; readyToLaunch = true; }, "Auto-alignment");
 MenuItem optionAutonTest([] { autonTestFlag = true; readyToLaunch = true; }, "Auton Test");
 MenuItem optionSkillsAuton([] { targetAutonSide = Skills; manager.GotoLevel("Home"); }, "Skills Auton");
 MenuItem optionDisableAuton([] { targetAutonSide = Null, manager.GotoLevel("Home"); }, "Disable auton");
 std::vector<MenuItem> utilitiesItems
 {
-  {optionAutoAlignment}, {optionAutonTest}, {optionSkillsAuton}, {optionDisableAuton}
+  {optionAutonTest}, {optionSkillsAuton}, {optionDisableAuton}
 };
 MenuLevel utilitiesLevel(utilitiesItems, "Utilities");
 
