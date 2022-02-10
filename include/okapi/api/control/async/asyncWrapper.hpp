@@ -226,7 +226,7 @@ class AsyncWrapper : virtual public AsyncController<Input, Output> {
    * by the AsyncControllerFactory when making a new instance of this class.
    */
   void startThread() {
-    if (!task) {
+    if(!task) {
       task = new CrossplatformThread(trampoline, this, "AsyncWrapper");
     }
   }
@@ -253,7 +253,7 @@ class AsyncWrapper : virtual public AsyncController<Input, Output> {
   CrossplatformThread *task{nullptr};
 
   static void trampoline(void *context) {
-    if (context) {
+    if(context) {
       static_cast<AsyncWrapper *>(context)->loop();
     }
   }
@@ -261,7 +261,7 @@ class AsyncWrapper : virtual public AsyncController<Input, Output> {
   void loop() {
     auto rate = rateSupplier.get();
     while (!dtorCalled.load(std::memory_order_acquire) && !task->notifyTake(0)) {
-      if (!isDisabled()) {
+      if(!isDisabled()) {
         output->controllerSet(controller->step(input->controllerGet()));
       }
 
@@ -274,11 +274,11 @@ class AsyncWrapper : virtual public AsyncController<Input, Output> {
    * turned off, reset, and turned back on.
    */
   virtual void resumeMovement() {
-    if (isDisabled()) {
+    if(isDisabled()) {
       // This will grab the output *when disabled*
       output->controllerSet(controller->getOutput());
     } else {
-      if (hasFirstTarget) {
+      if(hasFirstTarget) {
         setTarget(lastTarget);
       }
     }

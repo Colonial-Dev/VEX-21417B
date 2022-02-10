@@ -17,13 +17,14 @@ void initialize()
   splashDisplay();
   manager.Update(levels);
   brainPrint("Menu system backend #00ff00 [OK]#");
-  brainPrint("#ffff00 [WARN]# Starting auton path precomputation!");
-  initPaths();
-  brainPrint("Auton paths #00ff00 [OK]#");
 
   pros::Controller master(pros::E_CONTROLLER_MASTER);
   brainPrint("Broadcasting menu system interface...");
   advanced_auton_select(master);
+
+  brainPrint("#ffff00 [WARN]# Starting auton path precomputation!");
+  initPaths(targetAutonSide, targetAutonStrategy);
+  brainPrint("Auton paths #00ff00 [OK]#");
 
   if(autonTestFlag) { autonomous(); exit(0); }
 
@@ -37,13 +38,16 @@ void initialize()
 
 void autonomous()
 {
+  if(targetAutonSide == Null) { return; }
+  if(autonTestFlag) { goto test; }
+  
   if(targetAutonSide == Left)
   {
-    if(targetAutonStrategy == DirectRush)
+    if(targetAutonStrategy == SimpleRush)
     {
-      
+    
     }
-    else if(targetAutonStrategy == MiddleRush)
+    else if(targetAutonStrategy == SpinRush)
     {
 
     }
@@ -51,11 +55,33 @@ void autonomous()
 
   else if(targetAutonSide == Right)
   {
-    if(targetAutonStrategy == DirectRush)
+    if(targetAutonStrategy == SimpleRush || SpinRush)
     {
+      test:
+      FRONT_CLAMP_OPEN
+      PATH("Rush_Parking_SmallNeutral_Right")
+      WAIT
+      FRONT_CLAMP_CLOSE
+      MAIN_LIFT_HOVER
+      PATHBACK("Rush_Parking_SmallNeutral_Right")
+      WAIT
 
+      if(targetAutonStrategy == SpinRush)
+      {
+        TURN(-90)
+        FRONT_CLAMP_OPEN
+        MAIN_LIFT_TARE
+        TURN(-45)
+        PATHBACK("Backgrab_Parking_AllianceGoal_Right")
+        WAIT
+        REAR_LIFT_UP
+        DELAY(1000)
+        PATH("Backgrab_Parking_AllianceGoal_Right")
+        WAIT
+      }
     }
-    else if(targetAutonStrategy == MiddleRush)
+
+    else if(targetAutonStrategy == SpinRush)
     {
 
     }
@@ -63,7 +89,9 @@ void autonomous()
 
   else if(targetAutonSide == Skills)
   {
-    //Skills ATN
+    THROTTLE(300)
+    REAR_LIFT_UP
+    DELAY(1000)
   }
 
 }

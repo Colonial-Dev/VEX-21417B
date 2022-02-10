@@ -20,7 +20,7 @@ struct Point {
    * @return This point specified in `StateMode::FRAME_TRANSFORMATION`.
    */
   Point inFT(const StateMode &imode) const {
-    if (imode == StateMode::FRAME_TRANSFORMATION) {
+    if(imode == StateMode::FRAME_TRANSFORMATION) {
       return *this;
     } else {
       return {y, x};

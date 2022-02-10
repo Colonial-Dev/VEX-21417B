@@ -146,7 +146,7 @@ failed to connect or an invalid id is given.
 			errno = EINVAL;					\
 			return PROS_ERR;				\
 	}										\
-	if (!internal_port_mutex_take(port)) {	\
+	if(!internal_port_mutex_take(port)) {	\
 		errno = EACCES;						\
 		return PROS_ERR;					\
 	}										\

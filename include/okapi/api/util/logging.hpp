@@ -72,7 +72,7 @@ class Logger {
   }
 
   template <typename T> void debug(T ilazyMessage) noexcept {
-    if (isDebugLevelEnabled() && logfile && timer) {
+    if(isDebugLevelEnabled() && logfile && timer) {
       std::scoped_lock lock(logfileMutex);
       fprintf(logfile,
               "%ld (%s) DEBUG: %s\n",
@@ -87,7 +87,7 @@ class Logger {
   }
 
   template <typename T> void info(T ilazyMessage) noexcept {
-    if (isInfoLevelEnabled() && logfile && timer) {
+    if(isInfoLevelEnabled() && logfile && timer) {
       std::scoped_lock lock(logfileMutex);
       fprintf(logfile,
               "%ld (%s) INFO: %s\n",
@@ -102,7 +102,7 @@ class Logger {
   }
 
   template <typename T> void warn(T ilazyMessage) noexcept {
-    if (isWarnLevelEnabled() && logfile && timer) {
+    if(isWarnLevelEnabled() && logfile && timer) {
       std::scoped_lock lock(logfileMutex);
       fprintf(logfile,
               "%ld (%s) WARN: %s\n",
@@ -117,7 +117,7 @@ class Logger {
   }
 
   template <typename T> void error(T ilazyMessage) noexcept {
-    if (isErrorLevelEnabled() && logfile && timer) {
+    if(isErrorLevelEnabled() && logfile && timer) {
       std::scoped_lock lock(logfileMutex);
       fprintf(logfile,
               "%ld (%s) ERROR: %s\n",
@@ -131,7 +131,7 @@ class Logger {
    * Closes the connection to the log file.
    */
   constexpr void close() noexcept {
-    if (logfile) {
+    if(logfile) {
       fclose(logfile);
       logfile = nullptr;
     }
@@ -163,12 +163,12 @@ extern std::shared_ptr<Logger> defaultLogger;
 
 struct DefaultLoggerInitializer {
   DefaultLoggerInitializer() {
-    if (count++ == 0) {
+    if(count++ == 0) {
       init();
     }
   }
   ~DefaultLoggerInitializer() {
-    if (--count == 0) {
+    if(--count == 0) {
       cleanup();
     }
   }

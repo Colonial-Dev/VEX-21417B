@@ -8,7 +8,7 @@ bool liftAlignmentFlag = false;
 bool hotkeyMode = false;
 int targetAutonSide = Right;
 std::string targetAutonSideLabel = "DF";
-int targetAutonStrategy = DirectRush;
+int targetAutonStrategy = SimpleRush;
 std::string targetAutonStrategyLabel = "DF";
 float throttleMultiplier = 1.0f;
 
@@ -32,12 +32,12 @@ std::vector<MenuItem> sideSelectionItems
 MenuLevel sideSelectionLevel(sideSelectionItems, "AutonSideSelection");
 
 MenuItem optionSelectSimpleRush([] {targetAutonStrategy = SimpleRush; targetAutonStrategyLabel = "SR"; manager.GotoLevel("Main"); }, "Simple Rush");
-MenuItem optionSelectDirectRush([] {targetAutonStrategy = DirectRush; targetAutonStrategyLabel = "DR"; manager.GotoLevel("Main"); }, "Direct Rush");
+MenuItem optionSelectSpinRush([] {targetAutonStrategy = SpinRush; targetAutonStrategyLabel = "DR"; manager.GotoLevel("Main"); }, "Spin Rush");
 MenuItem optionSelectMiddleRush([] {targetAutonStrategy = MiddleRush; targetAutonStrategyLabel = "MR"; manager.GotoLevel("Main"); }, "Middle Rush");
 MenuItem optionSelectComplexRush([] {targetAutonStrategy = ComplexRush; targetAutonStrategyLabel = "CR"; manager.GotoLevel("Main"); }, "Complex Rush");
 std::vector<MenuItem> strategySelectionItems
 {
-  {optionSelectSimpleRush}, {optionSelectDirectRush}, {optionSelectMiddleRush}, {optionSelectComplexRush}
+  {optionSelectSimpleRush}, {optionSelectSpinRush}, {optionSelectMiddleRush}, {optionSelectComplexRush}
 };
 MenuLevel strategySelectionLevel(strategySelectionItems, "AutonStrategySelection");
 
@@ -77,7 +77,6 @@ void advanced_auton_select(pros::Controller master)
     if(master.get_digital_new_press(DIGITAL_B)) { manager.GotoLevel("Main"); }
 
     if(master.get_digital_new_press(DIGITAL_RIGHT)) { hotkeyMode = !hotkeyMode; }
-    if(master.get_digital_new_press(DIGITAL_LEFT) && hotkeyMode) { liftAlignmentFlag = true; return; }
     if(master.get_digital_new_press(DIGITAL_UP) && hotkeyMode)
     {
       autonTestFlag = true;
