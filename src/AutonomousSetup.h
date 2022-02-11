@@ -1,5 +1,6 @@
 #pragma once
 #include "Enums.h"
+#include "Macros.h"
 
 using namespace okapi::literals;
 
@@ -12,7 +13,7 @@ auto driveTrain = okapi::ChassisControllerBuilder()
   (
     {0.001, 0, 0.0001}, // Distance controller gains
     {0.0035, 0.00025, 0.0001}, // Turn controller gains
-    {0.6, 0.001, 0.0001}  // Angle controller gains
+    {0.7, 0.001, 0.0001}  // Angle controller gains
   )
   // Blue gearset, 4 in wheel diam, 9.5 in wheel track
   .withDimensions({okapi::AbstractMotor::gearset::blue, GEAR_RATIO}, {{4_in, 9.5_in}, okapi::imev5BlueTPR * GEAR_RATIO})
@@ -48,29 +49,36 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
   //TYPE is the rough purpose of the path, such as rushing/back-grabbing a goal or field traversal,
   //ORIGIN is the presumed starting point of the path,
   //TARGET is the target of the path, such as a goal or general location on the field (e.g. the start position)
-  //SIDE is the field side the path is designed for. In some cases "Both" is used.
+  //SIDE is the field side the path is designed for. Not used in skills paths.
   void initSkillsPaths()
   {
-    //pathFinder->
-    //TBD
+    PATHGEN(1, 0, 0, "Traverse_Hop")
+    PATHGEN(4, 1, 0, "Rush_Parking_SmallNeutral")
+    PATHGEN(4, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
+    PATHGEN(3, 0, 0, "Traverse_ScoringZoneFar_AllianceGoal")
+    PATHGEN(5, 0, 0, "Traverse_ScoringZoneFar_LargeNeutral")
+    PATHGEN(5, 0, 0, "Traverse_LargeNeutral_ScoringZoneNear")
+    PATHGEN(3, 0, 0, "Traverse_ScoringZoneNear_AllianceGoal")
+    PATHGEN(3, 0, 0, "Traverse_ScoringZoneNear_SmallNeutral")
+    PATHGEN(5, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
+    PATHGEN(2, 0, 0, "Traverse_ScoringZoneFar_RampAllianceGoal")               
   }
 
   void initRightSimplePaths()
   {
-    pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {4_ft, 0_ft, 0_deg}},
-        "Rush_Parking_SmallNeutral_Right"
-    );
+    PATHGEN(4, 0, 0, "Rush_Parking_SmallNeutral_Right")
+    PATHGEN(3, 0, 0, "Return_SmallNeutral_ScoringZoneNear_Right")
+  }
+
+  void initLeftSimplePaths()
+  {
+    PATHGEN(4, 0, 0, "Rush_Parking_SmallNeutral_Left")
+    PATHGEN(4, 0, 0, "Return_SmallNeutral_ScoringZoneNear_Left")
   }
 
   void initRightSpinPaths()
   {
-    pathFinder->generatePath({
-        {0_ft, 0_ft, 0_deg},
-        {2_ft, 0_ft, 0_deg}},
-        "Backgrab_Parking_AllianceGoal_Right"
-    );
+    PATHGEN(1.4, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
   }
 
   //Precomputes Okapi paths used in standard auton.
@@ -91,6 +99,29 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
           {
             initRightSimplePaths();
             initRightSpinPaths();
+          }
+
+          default:
+          {
+            return;
+          }
+        }
+        return;
+      }
+
+            
+      if(side == Left)
+      {
+        switch (strategy)
+        {
+          case SimpleRush:
+          {
+            initLeftSimplePaths();
+          }
+
+          case SpinRush:
+          {
+            initLeftSimplePaths();
           }
 
           default:

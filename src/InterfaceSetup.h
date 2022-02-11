@@ -1,10 +1,11 @@
 #pragma once
 #include "ControllerMenu.h"
+#include "DisplaySuite.h"
+#include <string>
 
 //Global UI constants
 bool readyToLaunch = false;
 bool autonTestFlag = false;
-bool liftAlignmentFlag = false;
 bool hotkeyMode = false;
 int targetAutonSide = Right;
 std::string targetAutonSideLabel = "DF";
@@ -41,27 +42,23 @@ std::vector<MenuItem> strategySelectionItems
 };
 MenuLevel strategySelectionLevel(strategySelectionItems, "AutonStrategySelection");
 
-//MenuItem optionAutoAlignment([] { liftAlignmentFlag = true; readyToLaunch = true; }, "Auto-alignment");
 MenuItem optionAutonTest([] { autonTestFlag = true; readyToLaunch = true; }, "Auton Test");
-MenuItem optionSkillsAuton([] { targetAutonSide = Skills; manager.GotoLevel("Home"); }, "Skills Auton");
-MenuItem optionDisableAuton([] { targetAutonSide = Null, manager.GotoLevel("Home"); }, "Disable auton");
+MenuItem optionSkillsAuton([] { targetAutonSide = Skills; manager.GotoLevel("Main"); }, "Skills Auton");
+MenuItem optionDisableAuton([] { targetAutonSide = Null; manager.GotoLevel("Main"); }, "Disable Auton");
 std::vector<MenuItem> utilitiesItems
 {
   {optionAutonTest}, {optionSkillsAuton}, {optionDisableAuton}
 };
 MenuLevel utilitiesLevel(utilitiesItems, "Utilities");
 
+MenuItem hotkeyModeItem([] { manager.GotoLevel("Main"); }, "Hotkey mode");
+std::vector<MenuItem> hotkeyModeItems { {hotkeyModeItem} };
+MenuLevel hotkeyModeLevel(hotkeyModeItems, "Hotkey");
+
 std::vector<MenuLevel> levels
 {
-  {mainLevel}, {sideSelectionLevel}, {strategySelectionLevel}, {utilitiesLevel}
+  {mainLevel}, {sideSelectionLevel}, {strategySelectionLevel}, {utilitiesLevel}, {hotkeyModeLevel}
 };
-
-void menuPrint(pros::Controller master)
-{
-    if(!pros::competition::is_connected()){pros::delay(50);}
-    else{pros::delay(10);}
-    master.set_text(0, 0, "> " + manager.GetCurrentItemName() + "                                        end");
-}
 
 //R1/L1 to page through options
 //A to select
@@ -76,8 +73,12 @@ void advanced_auton_select(pros::Controller master)
     if(master.get_digital_new_press(DIGITAL_A)) { manager.DoOperation(); }
     if(master.get_digital_new_press(DIGITAL_B)) { manager.GotoLevel("Main"); }
 
-    if(master.get_digital_new_press(DIGITAL_RIGHT)) { hotkeyMode = !hotkeyMode; }
-    if(master.get_digital_new_press(DIGITAL_UP) && hotkeyMode)
+    if(master.get_digital_new_press(DIGITAL_RIGHT)) 
+    { 
+      if(manager.InHotkeyMode()) { manager.GotoLevel("Main"); }
+      else { manager.GotoLevel("Hotkey"); }
+    }
+    if(master.get_digital_new_press(DIGITAL_UP) && manager.InHotkeyMode())
     {
       autonTestFlag = true;
       pros::delay(50);
@@ -87,10 +88,13 @@ void advanced_auton_select(pros::Controller master)
       pros::delay(1000);
       master.rumble("---");
       pros::delay(1000);
+      master.set_text(0, 0, "Auton test START!" + spacerText);
       return;
     }
+    if(master.get_digital_new_press(DIGITAL_DOWN) && manager.InHotkeyMode()) { abort(); }
 
-    if(displayUpdateFlag) { displayUpdateFlag = false; menuPrint(master); }
+    if(readyToLaunch) { return; }
+    if(displayUpdateFlag) { displayUpdateFlag = false; controllerPrint(master, manager.GetCurrentItemName(), "> "); }
     pros::delay(2);
   }
   return;

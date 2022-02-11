@@ -68,6 +68,18 @@ class MenuManager
     std::vector<MenuItem> items = level.items;
     return items.at(item_index).name;
   }
+  
+  bool InHotkeyMode()
+  {
+    MenuLevel level = levels.at(level_index);
+    return level.name == "Hotkey";
+  }
+
+  std::string GetCurrentLevelName()
+  {
+    MenuLevel level = levels.at(level_index);
+    return level.name;
+  }
 
   void GotoLevel(std::string name) //"efficiency? what's that?"
   {
