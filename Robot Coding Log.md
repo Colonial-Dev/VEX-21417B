@@ -15,7 +15,7 @@ Basically, OO means your code is written to describe interactions between, well,
 
 Objects are created by defining a "class." Classes are like an interactive box for data. Not only do they hold certain information in "fields" (for example, you could make a Car object that has fields for its name, model, etc), but they also define "methods" that are used to interact with these fields. (Continuing the car analogy, you could have a Fuel method that adds fuel to a gas level field.) 
 
-Once you have a class, you can then *instantiate* it. This is where the true power of objects starts to show. Instantiation means you create an independent instance of that class, containing its own specific data - and you can instantiate as much as you want. You can make a whole showroom of Car objects, each of which is unique and compartamentalized.
+Once you have a class, you can then *instantiate* it. This is where the true power of objects starts to show. Instantiation means you create an independent instance of that class, containing its own specific data (provided alongside the instantiation command) - and you can instantiate as much as you want. You can make a whole showroom of Car objects, each of which is unique and compartamentalized.
 
 So, to bring object orientation to the menu system, I created a tiered hierarchy of menu component classes.
 - A MenuItem class, which holds its name and a list of arbitrary commands. It has a method to retrieve its name, and a method to execute the stored commands.
@@ -37,7 +37,7 @@ Macros hijack the chunking stage of the preprocessor to replace (or "expand") pr
 
 For example, in my code, I have this macro definition:
 ```cpp
-define MAIN_LIFT_HOVER \
+#define MAIN_LIFT_HOVER \
 frontLiftRight->setTarget(600);\
 frontLiftLeft->setTarget(-600);\
 frontLiftLeft->waitUntilSettled();
@@ -46,7 +46,7 @@ Without macros, if I want to raise the front lift from its starting position, I 
 
 With this macro, I can put `MAIN_LIFT_HOVER` wherever I want to get the same effect as writing the commands manually. Not only is this easier to write and read, it also makes changes easier, since I only have to edit the macro definition if the target values need tweaking.Macros can also take arguments. A good example is my `THROTTLE` macro:
 ```cpp
-define THROTTLE(x) \
+#define THROTTLE(x) \
 //The std::clamp just guards against setting the value to something 
 //invalid.
 driveTrain->setMaxVelocity(std::clamp(x, 0, 600)); 
