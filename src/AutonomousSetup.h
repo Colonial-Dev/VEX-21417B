@@ -80,7 +80,14 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
 
   void initRightSpinPaths()
   {
-    PATHGEN(1.4, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
+    PATHGEN(0.2, 0, 0, "JauntBack")
+    PATHGEN(1.6, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
+  }
+
+  void initRightMiddlePaths()
+  {
+    PATHGEN(5.7, 0, 0, "Rush_Parking_LargeNeutral_Right")
+    PATHGEN(1.9, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
   }
 
   //Precomputes Okapi paths used in standard auton.
@@ -101,6 +108,12 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
           {
             initRightSimplePaths();
             initRightSpinPaths();
+          }
+
+          case MiddleRush:
+          {
+            initRightSpinPaths();
+            initRightMiddlePaths();
           }
 
           default:

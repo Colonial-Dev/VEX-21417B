@@ -48,7 +48,7 @@ void autonomous()
 
   if(targetAutonSide == Left)
   {
-    if(targetAutonStrategy == SimpleRush || SpinRush)
+    if(targetAutonStrategy == SimpleRush || targetAutonStrategy == SpinRush)
     {
       FRONT_CLAMP_OPEN
       REAR_LIFT_DOWN
@@ -77,16 +77,15 @@ void autonomous()
 
   else if(targetAutonSide == Right)
   {
-    if(targetAutonStrategy == SimpleRush || SpinRush)
+    if(targetAutonStrategy == SimpleRush || targetAutonStrategy == SpinRush)
     {
       FRONT_CLAMP_OPEN
       REAR_LIFT_DOWN
       PATH("Rush_Parking_SmallNeutral_Right")
-      FRONT_CLAMP_CLOSE
-      MAIN_LIFT_HOVER
+      PICKUP_FRONT
       PATHBACK("Return_SmallNeutral_ScoringZoneNear_Right")
-      FRONT_CLAMP_OPEN
-      MAIN_LIFT_TARE
+      DROP_FRONT
+      PATH("JauntBack")
 
       if(targetAutonStrategy == SpinRush)
       {
@@ -94,13 +93,25 @@ void autonomous()
         PATHBACK("Backgrab_Parking_AllianceGoal_Right")
         REAR_LIFT_UP
         PATH("Backgrab_Parking_AllianceGoal_Right")
-        WAIT
         TURN(100)
       }
     }
     else if(targetAutonStrategy == MiddleRush)
     {
-    
+      FRONT_CLAMP_OPEN
+      REAR_LIFT_DOWN
+      TURN(-27)
+      PATH("Rush_Parking_LargeNeutral_Right")
+      PICKUP_FRONT
+      PATHBACK("Rush_Parking_LargeNeutral_Right")
+      DROP_FRONT
+      PATHBACK("JauntBack")
+      TURN(27)
+      TURN(-110)
+      PATHBACK("Backgrab_Parking_AllianceGoal_Right")
+      REAR_LIFT_UP
+      PATH("Backgrab_Parking_AllianceGoal_Right")
+      TURN(110)
     }
     else if(targetAutonStrategy == ComplexRush)
     {

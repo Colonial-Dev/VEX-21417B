@@ -22,9 +22,9 @@ pathFinder->setMaxVelocity(std::clamp(x, 0, 600));
 
 #define WAIT pathFinder->waitUntilSettled();
 
-#define PATH(path) pathFinder->setTarget(path); WAIT
+#define PATH(path) pathFinder->setTarget(path); pathFinder->waitUntilSettled();
 
-#define PATHBACK(path) pathFinder->setTarget(path, true); WAIT
+#define PATHBACK(path) pathFinder->setTarget(path, true); pathFinder->waitUntilSettled();
 
 #define MAIN_LIFT_HOVER \
 frontLiftRight->setTarget(600);\

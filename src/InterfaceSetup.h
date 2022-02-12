@@ -45,9 +45,10 @@ MenuLevel strategySelectionLevel(strategySelectionItems, "AutonStrategySelection
 MenuItem optionAutonTest([] { autonTestFlag = true; readyToLaunch = true; }, "Auton Test");
 MenuItem optionSkillsAuton([] { targetAutonSide = Skills; manager.GotoLevel("Main"); }, "Skills Auton");
 MenuItem optionDisableAuton([] { targetAutonSide = Null; manager.GotoLevel("Main"); }, "Disable Auton");
+MenuItem optionInfoCycle([] { infoCycle(); }, "Debug Info");
 std::vector<MenuItem> utilitiesItems
 {
-  {optionAutonTest}, {optionSkillsAuton}, {optionDisableAuton}
+  {optionAutonTest}, {optionSkillsAuton}, {optionDisableAuton}, {optionInfoCycle}
 };
 MenuLevel utilitiesLevel(utilitiesItems, "Utilities");
 
