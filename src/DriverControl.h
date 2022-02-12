@@ -128,7 +128,9 @@ void rearLiftControl(){
   }
 }
 
-void opcontrol() {
+void opcontrol() 
+{
+	brainPrint("#0000ff [INFO]# Initializing operator control...");
   pros::Controller master (CONTROLLER_MASTER);
   displayUpdateFlag = true;
 	pros::Task Transmission(tankTransmission);

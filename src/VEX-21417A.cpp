@@ -23,9 +23,8 @@ void initialize()
   brainPrint("Broadcasting menu system interface...");
   advanced_auton_select(master);
 
-  brainPrint("#ffff00 [WARN]# Starting auton path precomputation!");
   initPaths(targetAutonSide, targetAutonStrategy);
-  brainPrint("Auton paths #00ff00 [OK]#");
+  brainPrint("Auton paths #00ff00 [OK]# (Target: " + targetAutonSideLabel + "_" + targetAutonStrategyLabel + ", Total: " + std::to_string(computedPaths) + ")");
 
   if(autonTestFlag) { autonomous(); exit(0); }
 
@@ -43,6 +42,7 @@ void initialize()
 
 void autonomous()
 {
+  brainPrint("#0000ff [INFO]# Auton start!");
   if(targetAutonSide == Null) { return; }
   //if(autonTestFlag) { goto test; }
 
@@ -51,16 +51,17 @@ void autonomous()
     if(targetAutonStrategy == SimpleRush || SpinRush)
     {
       FRONT_CLAMP_OPEN
+      REAR_LIFT_DOWN
       PATH("Rush_Parking_SmallNeutral_Left")
       FRONT_CLAMP_CLOSE
       MAIN_LIFT_HOVER
-      PATHBACK("Return_SmallNeutral_ScoringZoneNear_Left")
+      PATHBACK("Rush_Parking_SmallNeutral_Left")
       FRONT_CLAMP_OPEN
       MAIN_LIFT_TARE
+      TURN(-90)
 
       if(targetAutonStrategy == SpinRush)
       {
-        TURN(-90)
         REAR_LIFT_UP
       }
     }
@@ -79,6 +80,7 @@ void autonomous()
     if(targetAutonStrategy == SimpleRush || SpinRush)
     {
       FRONT_CLAMP_OPEN
+      REAR_LIFT_DOWN
       PATH("Rush_Parking_SmallNeutral_Right")
       FRONT_CLAMP_CLOSE
       MAIN_LIFT_HOVER
@@ -92,6 +94,8 @@ void autonomous()
         PATHBACK("Backgrab_Parking_AllianceGoal_Right")
         REAR_LIFT_UP
         PATH("Backgrab_Parking_AllianceGoal_Right")
+        WAIT
+        TURN(100)
       }
     }
     else if(targetAutonStrategy == MiddleRush)
@@ -149,6 +153,6 @@ void autonomous()
     DROP_FRONT
     TURN(-90)
   }
-
+  brainPrint("#0000ff [INFO]# Auton complete!");
 }
 

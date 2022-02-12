@@ -70,13 +70,9 @@ void debugPrint(std::string str)
 
 void splashDisplay()
 {
-    /*Modify the Label's text*/
     lv_label_set_text(outputLabel, TEAM VERSION CODENAME COMPILED);
     lv_label_set_text(debugLabel, "Debug line ready.");
 
-    /* Align the Label to the center
-     * NULL means align on parent (which is the screen now)
-     * 0, 0 at the end means an x, y offset after alignment*/
     lv_obj_align(outputLabel, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
     lv_obj_align(debugLabel, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
 
@@ -84,7 +80,7 @@ void splashDisplay()
 
     if(POST() == false)
     {
-        brainPrint("#ff0000 [ERR]# POST failure!");
+        brainPrint("#ff0000 [ERR]# Power-On Self Test failure!");
         std::string failedPortNums = "Failed ports: ";
         for(int i = 0; i < failedMotors.size(); i++)
         {
@@ -94,6 +90,6 @@ void splashDisplay()
     }
     else
     {
-        brainPrint("POST #00ff00 [OK]#");
+        brainPrint("Power-On Self Test #00ff00 [OK]#");
     }
 }

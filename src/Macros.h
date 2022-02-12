@@ -7,7 +7,7 @@ pathFinder->generatePath({ \
     {0_ft, 0_ft, 0_deg}, \
     {x ## _ft, y ## _ft, deg ## _deg}}, \
     name \
-);
+); computedPaths++;
 
 #define DELAY(x) \
 pros::delay(x);
@@ -36,8 +36,10 @@ frontLiftRight->setTarget(0);\
 frontLiftLeft->setTarget(0);\
 frontLiftLeft->waitUntilSettled();
 
-#define REAR_LIFT_DOWN rearLift->setTarget(0);
-#define REAR_LIFT_UP rearLift->setTarget(4300); DELAY(1000);
+#define REAR_LIFT_DOWN rearLift->setTarget(-2150);
+#define REAR_LIFT_UP rearLift->setTarget(2150); DELAY(1000);
+#define REAR_LIFT_TARE rearLift->setTarget(0);
+
 #define FRONT_CLAMP_OPEN frontClamp->setTarget(-360);
 #define FRONT_CLAMP_CLOSE frontClamp->setTarget(360);
 

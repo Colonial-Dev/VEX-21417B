@@ -6,6 +6,7 @@ using namespace okapi::literals;
 
 pros::Imu inertialSensor (21);
 double GEAR_RATIO = 84.0/36.0;
+int computedPaths = 0;
 
 auto driveTrain = okapi::ChassisControllerBuilder()
   .withMotors({9, -19}, {-15, 13})
@@ -21,6 +22,7 @@ auto driveTrain = okapi::ChassisControllerBuilder()
 
 auto pathFinder = okapi::AsyncMotionProfileControllerBuilder()
   .withLimits({2.5, 5, 10})
+  //.withLimits({3.19024, })
   .withOutput(driveTrain->getModel(), {{4_in, 9.5_in}, okapi::imev5BlueTPR * GEAR_RATIO}, {okapi::AbstractMotor::gearset::blue, GEAR_RATIO})
   .buildMotionProfileController();
 
