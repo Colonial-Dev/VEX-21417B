@@ -4,12 +4,16 @@ My first order of bussiness after the Wawasee tournament was code cleanup. Up th
 - Brittle harcoding of some functionality made changing things a chore. The original iteration of the controller menu system was probably the worst offender, being at times prone to segmentation faults that would crash the entire program.
 - The auton code was highly verbose - instructions were long, oft-repeated, and little-reused.
 
-I had initially avoided splitting up my code due to how difficult C++ made it. Unlike modern languages, where code can more-or-less automatically interact across file boundaries, C++ requires you to manually use "include" markers to cobble together multiple files into one megafile during the compilation process.However, it had become unavoidable. I read up on the include system and managed to get it working after an excessive amount of googling, splitting my code into 8 files, each with a dedicated purpose. (One for driver control, one for auton setup, one for auton instructions...)
+I had initially avoided splitting up my code due to how difficult C++ made it. Unlike modern languages, where code can more-or-less automatically interact across file boundaries, C++ requires you to manually use "include" markers to cobble together multiple files into one megafile during the compilation process.
+
+However, it had become unavoidable. I read up on the include system and managed to get it working after an excessive amount of googling, splitting my code into 8 files, each with a dedicated purpose. (One for driver control, one for auton setup, one for auton instructions...)
 
 The magic numbers issue was next. Fortunately, C++ offers an easy solution: enums. These are dead simple; they basically let you use names in place of numbers. So instead of using "if autonSide == 2" to see if the right side was selected, I can say "if autonSide == Right," which is INFINITELY more readable.
 
 ### Fun with Classes
-Now I had to deal with the hardcoding issue. In most places this was easy enough to resolve, but the controller menu was a whole different beast. The existing implementation was utterly insufficient, and I scrapped it wholly in favor of using a much more advanced paradigm: object orientation, aka the "++" part of C++.Object orientation (OO) is kind of hard to wrap your head around until you actually work with it, but I'll try to explain it as succintly as possible.
+Now I had to deal with the hardcoding issue. In most places this was easy enough to resolve, but the controller menu was a whole different beast. The existing implementation was utterly insufficient, and I scrapped it wholly in favor of using a much more advanced paradigm: object orientation, aka the "++" part of C++.
+
+Object orientation (OO) is kind of hard to wrap your head around until you actually work with it, but I'll try to explain it as succintly as possible.
 
 Basically, OO means your code is written to describe interactions between, well, objects. This differs from basic "procedural" programming, where code is more like a list of explicit instructions.
 
@@ -44,7 +48,9 @@ frontLiftLeft->waitUntilSettled();
 ```
 Without macros, if I want to raise the front lift from its starting position, I have to write or copy-paste in the same three fairly long lines of code, which makes auton instructions an ugly, hard-to-maintain mess.
 
-With this macro, I can put `MAIN_LIFT_HOVER` wherever I want to get the same effect as writing the commands manually. Not only is this easier to write and read, it also makes changes easier, since I only have to edit the macro definition if the target values need tweaking.Macros can also take arguments. A good example is my `THROTTLE` macro:
+With this macro, I can put `MAIN_LIFT_HOVER` wherever I want to get the same effect as writing the commands manually. Not only is this easier to write and read, it also makes changes easier, since I only have to edit the macro definition if the target values need tweaking.
+
+Macros can also take arguments. A good example is my `THROTTLE` macro:
 ```cpp
 #define THROTTLE(x) \
 //The std::clamp just guards against setting the value to something 
@@ -52,7 +58,9 @@ With this macro, I can put `MAIN_LIFT_HOVER` wherever I want to get the same eff
 driveTrain->setMaxVelocity(std::clamp(x, 0, 600)); 
 \pathFinder->setMaxVelocity(std::clamp(x, 0, 600));
 ```
-This macro sets the throttle (in RPMs) to whatever I put for x. So if I write `THROTTLE(300)` elsewhere, 300 will replace x wherever it appears in the macro definition.Using macros, I've effectively created a custom, simplified scripting language *within* C++ that cuts the length of my auton instructions by about two-thirds.
+This macro sets the throttle (in RPMs) to whatever I put for x. So if I write `THROTTLE(300)` elsewhere, 300 will replace x wherever it appears in the macro definition.
+
+Using macros, I've effectively created a custom, simplified scripting language *within* C++ that cuts the length of my auton instructions by about two-thirds.
 
 ### Destination Calibration
 Besides all that, I've spent a lot of time calibrating the values used in the drive train's PID controller, in order to reduce drift and increase turning accuracy. There's nothing really exciting to say here; it's just a lot of tweak and test, tweak and test, over and over and over.
