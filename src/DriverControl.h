@@ -21,18 +21,20 @@ void infoPrint()
 //port 15 is top right
 //port 19 is bottom left
 //port 13 is bottom right
-void tankTransmission(){
-	pros::Motor top_left (9);
-	pros::Motor top_right (15, true);
-	pros::Motor btm_left (19, true);
-	pros::Motor btm_right (13);
-  top_left.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  top_right.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  btm_left.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  btm_right.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  pros::Controller master (CONTROLLER_MASTER);
+void tankTransmission()
+{
+	pros::Motor top_left (9, true);
+	pros::Motor top_right (15);
+	pros::Motor btm_left (19);
+	pros::Motor btm_right (13, true);
+	top_left.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	top_right.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	btm_left.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	btm_right.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	pros::Controller master (CONTROLLER_MASTER);
 
-  while (true) {
+  while (true) 
+  {
     if(master.get_digital_new_press(DIGITAL_A))
     {
       throttleMultiplier += 0.2f;
@@ -57,14 +59,15 @@ void tankTransmission(){
 //port 1 - front lift right
 //port 5 - front lift left
 //port 8 - claw motor
-void mainLiftControl(){
+void mainLiftControl()
+{
   //R1 up, R2 down
 	pros::Motor right_motor (1);
 	pros::Motor left_motor (5);
 	right_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	left_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	pros::Controller master (CONTROLLER_MASTER);
-  while(true)
+  	while(true)
 	{
 		if(master.get_digital(DIGITAL_R1))
 		{
@@ -81,15 +84,16 @@ void mainLiftControl(){
 			left_motor.move_velocity(0);
 		}
 		pros::delay(2);
-  }
+	}
 }
 
-void clampControl(){
-  //R1 open , R2 close
+void clampControl()
+{
+  	//R1 open , R2 close
 	pros::Motor motor (8);
 	motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	pros::Controller master (CONTROLLER_MASTER);
-  while(true)
+  	while(true)
 	{
 		if(master.get_digital(DIGITAL_L2))
 		{
@@ -103,15 +107,16 @@ void clampControl(){
 			motor.move_velocity(0);
 		}
 		pros::delay(2);
-  }
+  	}
 }
 
-void rearLiftControl(){
-  //X up, B down
+void rearLiftControl()
+{
+  	//X up, B down
 	pros::Motor motor (6);
 	motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	pros::Controller master (CONTROLLER_MASTER);
-  while(true)
+  	while(true)
 	{
 		if(master.get_digital(DIGITAL_X))
 		{
@@ -121,21 +126,22 @@ void rearLiftControl(){
 		{
 			motor.move_velocity(-200);
 		}
-		else{
+		else
+		{
 			motor.move_velocity(0);
 		}
 		pros::delay(2);
-  }
+  	}
 }
 
 void opcontrol() 
 {
 	brainPrint("#0000ff [INFO]# Initializing operator control...");
-  pros::Controller master (CONTROLLER_MASTER);
-  displayUpdateFlag = true;
+	pros::Controller master (CONTROLLER_MASTER);
+	displayUpdateFlag = true;
 	pros::Task Transmission(tankTransmission);
 	pros::Task FrontLift(mainLiftControl);
 	pros::Task Clamp(clampControl);
 	pros::Task RearLift(rearLiftControl);
-  pros::Task Disp(infoPrint);
+  	pros::Task Disp(infoPrint);
 }

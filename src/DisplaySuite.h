@@ -1,8 +1,8 @@
 #pragma once
 #include "pros/apix.h"
 #define TEAM "VEX 21417A #ff0000 Invictus#"
-#define VERSION "\nCompetition Suite v2.0.0"
-#define CODENAME " \"Multi-file Revolution\""
+#define VERSION "\nCompetition Suite v2.1.0"
+#define CODENAME " \"Pathfinder Overdrive\""
 #define COMPILED "\nCompiled on " __DATE__ " at " __TIME__ "\n"
 std::string spacerText = "                                                            ";
 
@@ -11,9 +11,6 @@ std::vector<int> failedMotors;
 
 int holdCycleCount = 0;
 std::string holdCycleMessages [3] = {"Holding...", "Press DOWN or", "plug in comp switch."};
-
-int infoCycleCount = 0;
-std::string infoCycleMessages [2] = {"POST ?", __DATE__ " " __TIME__};
 
 lv_obj_t * outputLabel =  lv_label_create(lv_scr_act(), NULL);
 lv_obj_t * debugLabel = lv_label_create(lv_scr_act(), NULL);
@@ -66,19 +63,6 @@ void holdCycle()
   }
 }
 
-void infoCycle()
-{
-  pros::Controller master(pros::E_CONTROLLER_MASTER);
-  while(true)
-  {
-    if(master.get_digital_new_press(DIGITAL_B)) { return; }
-    infoCycleCount++;
-    if(infoCycleCount > 1) { infoCycleCount = 0; }
-    master.set_text(0, 0, infoCycleMessages[infoCycleCount] + spacerText);
-    pros::delay(2500);
-  }
-}
-
 void debugPrint(std::string str)
 {
     lv_label_set_text(debugLabel, str.c_str());
@@ -96,7 +80,6 @@ void splashDisplay()
 
     if(POST() == false)
     {
-        infoCycleMessages[0] = "POST FAIL!";
         brainPrint("#ff0000 [ERR]# Power-On Self Test failure!");
         std::string failedPortNums = "Failed ports: ";
         for(int i = 0; i < failedMotors.size(); i++)
@@ -107,7 +90,6 @@ void splashDisplay()
     }
     else
     {
-        infoCycleMessages[0] = "POST OK";
         brainPrint("Power-On Self Test #00ff00 [OK]#");
     }
 }

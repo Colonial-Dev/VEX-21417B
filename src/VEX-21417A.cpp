@@ -67,7 +67,18 @@ void autonomous()
     }
     else if(targetAutonStrategy == MiddleRush)
     {
-
+      FRONT_CLAMP_OPEN
+      REAR_LIFT_DOWN
+      PATH("Peek_Out")
+      TURN(45)
+      PATH("Rush_Parking_LargeNeutral_Left")
+      PICKUP_FRONT
+      PATHBACK("Rush_Parking_LargeNeutral_Left")
+      TURN(-45)
+      DROP_FRONT
+      PATHBACK("Peek_Out")
+      TURN(-90)
+      REAR_LIFT_UP
     }
     else if(targetAutonStrategy == ComplexRush)
     {
@@ -121,7 +132,7 @@ void autonomous()
 
   else if(targetAutonSide == Skills)
   {
-    THROTTLE(300)
+    //THROTTLE(300)
     FRONT_CLAMP_OPEN
     REAR_LIFT_UP
 
@@ -134,10 +145,10 @@ void autonomous()
     PATH("Rush_Parking_SmallNeutral")
     PICKUP_FRONT
     PATH("Traverse_SmallNeutral_ScoringZoneFar")
-    TURN(90)
+    //TURN(90)
     DROP_FRONT
 
-    TURN(180)
+    TURN(-90)
     PATH("Traverse_ScoringZoneFar_AllianceGoal")
     PICKUP_FRONT
     PATHBACK("Traverse_ScoringZoneFar_AllianceGoal")
@@ -147,16 +158,17 @@ void autonomous()
     PATH("Traverse_ScoringZoneFar_LargeNeutral")
     PICKUP_FRONT
     PATH("Traverse_LargeNeutral_ScoringZoneNear")
-    TURN(135)
+    //TURN(135)
     DROP_FRONT
 
-    TURN(180)
+    TURN(45)
     PATH("Traverse_ScoringZoneNear_AllianceGoal")
     PICKUP_FRONT
     PATHBACK("Traverse_ScoringZoneNear_AllianceGoal")
     DROP_FRONT
-    TURN(-90)
+    //TURN(-90)
 
+    TURN(-90)
     PATH("Traverse_ScoringZoneNear_SmallNeutral")
     PICKUP_FRONT
     PATH("Traverse_SmallNeutral_ScoringZoneFar")

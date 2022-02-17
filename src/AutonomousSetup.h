@@ -9,7 +9,7 @@ double GEAR_RATIO = 84.0/36.0;
 int computedPaths = 0;
 
 auto driveTrain = okapi::ChassisControllerBuilder()
-  .withMotors({9, -19}, {-15, 13})
+  .withMotors({-9, 19}, {15, -13})
   .withGains
   (
     {0.001, 0, 0.0001}, // Distance controller gains
@@ -57,12 +57,12 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
     PATHGEN(1, 0, 0, "Traverse_Hop")
     PATHGEN(4, 1, 0, "Rush_Parking_SmallNeutral")
     PATHGEN(4, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
-    PATHGEN(3, 0, 0, "Traverse_ScoringZoneFar_AllianceGoal")
-    PATHGEN(5, 0, 0, "Traverse_ScoringZoneFar_LargeNeutral")
-    PATHGEN(5, 0, 0, "Traverse_LargeNeutral_ScoringZoneNear")
+    PATHGEN(2, 0, 0, "Traverse_ScoringZoneFar_AllianceGoal")
+    PATHGEN(4.5, 0, 0, "Traverse_ScoringZoneFar_LargeNeutral")
+    PATHGEN(4.5, 0, 0, "Traverse_LargeNeutral_ScoringZoneNear")
     PATHGEN(3, 0, 0, "Traverse_ScoringZoneNear_AllianceGoal")
-    PATHGEN(3, 0, 0, "Traverse_ScoringZoneNear_SmallNeutral")
-    PATHGEN(5, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
+    PATHGEN(4, 0, 0, "Traverse_ScoringZoneNear_SmallNeutral")
+    PATHGEN(4, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
     PATHGEN(2, 0, 0, "Traverse_ScoringZoneFar_RampAllianceGoal")               
   }
 
@@ -88,6 +88,12 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
   {
     PATHGEN(5.7, 0, 0, "Rush_Parking_LargeNeutral_Right")
     PATHGEN(1.9, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
+  }
+
+  void initLeftMiddlePaths()
+  {
+    PATHGEN(1, 0, 0, "Peek_Out")
+    PATHGEN(5.5, 0, 0, "Rush_Parking_LargeNeutral_Left")
   }
 
   //Precomputes Okapi paths used in standard auton.
@@ -116,6 +122,11 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
             initRightMiddlePaths();
           }
 
+          case ComplexRush:
+          {
+
+          }
+
           default:
           {
             return;
@@ -137,6 +148,16 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
           case SpinRush:
           {
             initLeftSimplePaths();
+          }
+
+          case MiddleRush:
+          {
+            initLeftMiddlePaths(); 
+          }
+
+          case ComplexRush:
+          {
+
           }
 
           default:
