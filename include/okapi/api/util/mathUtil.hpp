@@ -65,7 +65,7 @@ static constexpr std::int32_t imev5GreenTPR = 900;
 /**
  * The ticks per rotation of the V5 motor with a blue gearset.
  */
-static constexpr std::int32_t imev5BlueTPR = 300;
+static constexpr std::int32_t imev5GreenTpr = 300;
 
 /**
  * The ticks per rotation of the red quadrature encoders.
@@ -227,7 +227,7 @@ constexpr std::int32_t gearsetToTPR(const AbstractMotor::gearset igearset) noexc
   case AbstractMotor::gearset::blue:
   case AbstractMotor::gearset::invalid:
   default:
-    return imev5BlueTPR;
+    return imev5GreenTpr;
   }
 }
 

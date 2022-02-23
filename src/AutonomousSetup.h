@@ -5,25 +5,25 @@
 using namespace okapi::literals;
 
 pros::Imu inertialSensor (21);
-double GEAR_RATIO = 84.0/36.0;
+double GEAR_RATIO = 18.0/24.0;
 int computedPaths = 0;
 
 auto driveTrain = okapi::ChassisControllerBuilder()
-  .withMotors({-9, 19}, {15, -13})
+  .withMotors({9, 19}, {-15, -13})
   .withGains
   (
     {0.001, 0, 0.0001}, // Distance controller gains
-    {0.0035, 0.00025, 0.0001}, // Turn controller gains
+    {0.003, 0.0004, 0.0001}, // Turn controller gains
     {0.7, 0.001, 0.0001}  // Angle controller gains
   )
-  // Blue gearset, 4 in wheel diam, 9.5 in wheel track
-  .withDimensions({okapi::AbstractMotor::gearset::blue, GEAR_RATIO}, {{4_in, 9.5_in}, okapi::imev5BlueTPR * GEAR_RATIO})
+  // Green gearset, 4 in wheel diam, 11 in wheel track
+  .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4_in, 11_in}, okapi::imev5GreenTpr * GEAR_RATIO})
   .build();
 
+//Bot weighs ~6.577089kg
 auto pathFinder = okapi::AsyncMotionProfileControllerBuilder()
-  .withLimits({2.5, 5, 10})
-  //.withLimits({3.19024, })
-  .withOutput(driveTrain->getModel(), {{4_in, 9.5_in}, okapi::imev5BlueTPR * GEAR_RATIO}, {okapi::AbstractMotor::gearset::blue, GEAR_RATIO})
+  .withLimits({4, 5.8, 7.5})
+  .withOutput(driveTrain->getModel(), {{4_in, 11_in}, okapi::imev5GreenTpr * GEAR_RATIO}, {okapi::AbstractMotor::gearset::green, GEAR_RATIO})
   .buildMotionProfileController();
 
 //Initialize PID front lift controller
@@ -70,6 +70,7 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
   {
     PATHGEN(4, 0, 0, "Rush_Parking_SmallNeutral_Right")
     PATHGEN(3, 0, 0, "Return_SmallNeutral_ScoringZoneNear_Right")
+    PATHGEN(0.4, 0, 0, "JauntBack")
   }
 
   void initLeftSimplePaths()
@@ -80,13 +81,12 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
 
   void initRightSpinPaths()
   {
-    PATHGEN(0.2, 0, 0, "JauntBack")
     PATHGEN(1.6, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
   }
 
   void initRightMiddlePaths()
   {
-    PATHGEN(5.7, 0, 0, "Rush_Parking_LargeNeutral_Right")
+    PATHGEN(1, 8, 0, "Rush_Parking_LargeNeutral_Right")
     PATHGEN(1.9, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
   }
 
@@ -99,6 +99,7 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
   //Precomputes Okapi paths used in standard auton.
   void initPaths(int side, int strategy)
   {
+      PATHGEN(3, 0, 0, "TestPath")
       if(side == Skills) { initSkillsPaths(); return; }
       
       if(side == Right)
@@ -118,7 +119,7 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
 
           case MiddleRush:
           {
-            initRightSpinPaths();
+            initRightSimplePaths();
             initRightMiddlePaths();
           }
 

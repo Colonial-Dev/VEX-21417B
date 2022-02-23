@@ -96,33 +96,31 @@ void autonomous()
       PICKUP_FRONT
       PATHBACK("Return_SmallNeutral_ScoringZoneNear_Right")
       DROP_FRONT
-      PATH("JauntBack")
+      PATHBACK("JauntBack")
 
       if(targetAutonStrategy == SpinRush)
       {
-        TURN(-100)
+        TURN(-120)
         PATHBACK("Backgrab_Parking_AllianceGoal_Right")
         REAR_LIFT_UP
         PATH("Backgrab_Parking_AllianceGoal_Right")
-        TURN(100)
+        TURN(120)
       }
     }
     else if(targetAutonStrategy == MiddleRush)
     {
       FRONT_CLAMP_OPEN
       REAR_LIFT_DOWN
-      TURN(-27)
-      PATH("Rush_Parking_LargeNeutral_Right")
+      PATHMIRROR("Rush_Parking_LargeNeutral_Right")
       PICKUP_FRONT
-      PATHBACK("Rush_Parking_LargeNeutral_Right")
+      PATHBACKMIRROR("Rush_Parking_LargeNeutral_Right")
       DROP_FRONT
       PATHBACK("JauntBack")
-      TURN(27)
-      TURN(-110)
+      TURN(-120)
       PATHBACK("Backgrab_Parking_AllianceGoal_Right")
       REAR_LIFT_UP
       PATH("Backgrab_Parking_AllianceGoal_Right")
-      TURN(110)
+      TURN(120)
     }
     else if(targetAutonStrategy == ComplexRush)
     {
