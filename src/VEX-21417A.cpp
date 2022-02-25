@@ -80,10 +80,6 @@ void autonomous()
       TURN(-90)
       REAR_LIFT_UP
     }
-    else if(targetAutonStrategy == ComplexRush)
-    {
-
-    }
   }
 
   else if(targetAutonSide == Right)
@@ -122,57 +118,82 @@ void autonomous()
       PATH("Backgrab_Parking_AllianceGoal_Right")
       TURN(120)
     }
-    else if(targetAutonStrategy == ComplexRush)
-    {
-      
-    }
   }
 
   else if(targetAutonSide == Skills)
   {
-    //THROTTLE(300)
-    FRONT_CLAMP_OPEN
+    //Lock alliance goal in back lift
+    /*REAR_LIFT_DOWN
+    PATHBACK("Grab_Parking_AllianceGoal")
     REAR_LIFT_UP
-
-    PATH("Traverse_Hop")
+    pros::delay(1000);
+    //PATH("Jaunt_9")
     TURN(-90)
-    PATH("Traverse_Hop")
-    TURN(180)
-    PATHBACK("Traverse_Hop")
+    PATHBACK("Jaunt_12")
+    FRONT_CLAMP_OPEN
+    TURN(90)
+    TURN(90)
+    /*TURN(45)
+    PATH("Jaunt_12")
+    TURN(90)
+    PATH("Jaunt_12")
+    TURN(-45)*/
 
+    //Grab small neutral and place it in opposite scoring zone
     PATH("Rush_Parking_SmallNeutral")
     PICKUP_FRONT
     PATH("Traverse_SmallNeutral_ScoringZoneFar")
-    //TURN(90)
     DROP_FRONT
-
+    PATHBACK("Jaunt_9")
     TURN(-90)
+
+    //Grab alliance goal and drag it out into scoring zone
     PATH("Traverse_ScoringZoneFar_AllianceGoal")
     PICKUP_FRONT
     PATHBACK("Traverse_ScoringZoneFar_AllianceGoal")
     DROP_FRONT
 
-    TURN(-135)
+    //Grab large neutral and path to opposite balance
+    TURN(-90)
+    TURN(-45)
     PATH("Traverse_ScoringZoneFar_LargeNeutral")
     PICKUP_FRONT
+    MAIN_LIFT_BALANCE
+    //TURN(45)
     PATH("Traverse_LargeNeutral_ScoringZoneNear")
-    //TURN(135)
-    DROP_FRONT
 
+    //Drop large neutral on balance
+    //MAIN_LIFT_MAX
+    //PATH("Jaunt_12")
+    //MAIN_LIFT_BALANCE
+    //FRONT_CLAMP_OPEN
+    //MAIN_LIFT_MAX
     TURN(45)
-    PATH("Traverse_ScoringZoneNear_AllianceGoal")
-    PICKUP_FRONT
-    PATHBACK("Traverse_ScoringZoneNear_AllianceGoal")
     DROP_FRONT
-    //TURN(-90)
-
     TURN(-90)
+
+    //Grab alliance goal, drag it out into scoring zone
+    PATH("Traverse_BalanceNear_AllianceGoal")
+    PICKUP_FRONT
+    PATHBACK("Jaunt_12")
+    DROP_FRONT
+    TURN(90)
+    TURN(-90)
+    TURN(-90)
+
+    //Path to and grab remaining small neutral and drop it in scoring zone
     PATH("Traverse_ScoringZoneNear_SmallNeutral")
     PICKUP_FRONT
-    PATH("Traverse_SmallNeutral_ScoringZoneFar")
+    PATH("Traverse_SmallNeutral_ScoringZoneFar_V2")
     TURN(90)
     DROP_FRONT
     TURN(-90)
+
+    //Move to balance, grab last alliance goal and try (TM) to balance
+    PATH("Traverse_ScoringZoneFar_RampAllianceGoal")
+    TURN(-90)
+    PICKUP_FRONT
+    PATH("Attempt_Balance")
   }
   brainPrint("#0000ff [INFO]# Auton complete!");
 }

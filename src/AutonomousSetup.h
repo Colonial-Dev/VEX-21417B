@@ -54,16 +54,20 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
   //SIDE is the field side the path is designed for. Not used in skills paths.
   void initSkillsPaths()
   {
-    PATHGEN(1, 0, 0, "Traverse_Hop")
-    PATHGEN(4, 1, 0, "Rush_Parking_SmallNeutral")
-    PATHGEN(4, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
-    PATHGEN(2, 0, 0, "Traverse_ScoringZoneFar_AllianceGoal")
-    PATHGEN(4.5, 0, 0, "Traverse_ScoringZoneFar_LargeNeutral")
-    PATHGEN(4.5, 0, 0, "Traverse_LargeNeutral_ScoringZoneNear")
-    PATHGEN(3, 0, 0, "Traverse_ScoringZoneNear_AllianceGoal")
+    PATHGEN(0.4, 0, 0, "Grab_Parking_AllianceGoal")
+    PATHGEN(0.75, 0, 0, "Jaunt_9")
+    PATHGEN(1, 0, 0, "Jaunt_12")
+    PATHGEN(3.5, 0, 0, "Rush_Parking_SmallNeutral")
+    PATHGEN(4.25, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
+    PATHGEN(1, 0, 0, "Traverse_ScoringZoneFar_AllianceGoal")
+    PATHGEN(4.25, 0, 0, "Traverse_ScoringZoneFar_LargeNeutral")
+    //PATHGEN(3.5, 0, 0, "Traverse_LargeNeutral_BalanceNear")
+    PATHGEN(5, 0, 0, "Traverse_LargeNeutral_ScoringZoneNear")
+    PATHGEN(3, 0, 0, "Traverse_BalanceNear_AllianceGoal")
     PATHGEN(4, 0, 0, "Traverse_ScoringZoneNear_SmallNeutral")
-    PATHGEN(4, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
-    PATHGEN(2, 0, 0, "Traverse_ScoringZoneFar_RampAllianceGoal")               
+    PATHGEN(4, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar_V2")
+    PATHGEN(2, 0, 0, "Traverse_ScoringZoneFar_RampAllianceGoal") 
+    PATHGEN(3, 0, 0, "Attempt_Balance")              
   }
 
   void initRightSimplePaths()
@@ -123,11 +127,6 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
             initRightMiddlePaths();
           }
 
-          case ComplexRush:
-          {
-
-          }
-
           default:
           {
             return;
@@ -154,11 +153,6 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
           case MiddleRush:
           {
             initLeftMiddlePaths(); 
-          }
-
-          case ComplexRush:
-          {
-
           }
 
           default:
