@@ -9,7 +9,7 @@ double GEAR_RATIO = 18.0/24.0;
 int computedPaths = 0;
 
 auto driveTrain = okapi::ChassisControllerBuilder()
-  .withMotors({9, 19}, {-15, -13})
+  .withMotors(19, -15, -13, 9)  
   .withGains
   (
     {0.001, 0, 0.0001}, // Distance controller gains
