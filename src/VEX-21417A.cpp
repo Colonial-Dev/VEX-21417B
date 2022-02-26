@@ -118,7 +118,7 @@ void autonomous()
       PATHBACK("Backgrab_Parking_AllianceGoal_Right")
       REAR_LIFT_UP
       PATH("Backgrab_Parking_AllianceGoal_Right")
-      TURN(135)2
+      TURN(135)
     }
   }
 
