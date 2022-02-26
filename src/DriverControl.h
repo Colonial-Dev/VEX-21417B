@@ -10,7 +10,7 @@ void infoPrint()
       displayUpdateFlag = false;
       string throttle = std::to_string(throttleMultiplier * 100);
       throttle.resize(3);
-      master.set_text(0, 0, "THR " + throttle + "          ");
+      master.set_text(0, 0, "THR " + throttle + " | SDLK " + sidewaysLockLabel + "          ");
     }
     pros::delay(50);
   }
@@ -33,26 +33,44 @@ void tankTransmission()
 	btm_right.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 	pros::Controller master (CONTROLLER_MASTER);
 
-  while (true) 
-  {
-    if(master.get_digital_new_press(DIGITAL_A))
-    {
-      throttleMultiplier += 0.2f;
-      displayUpdateFlag = true;
-    }
-    else if(master.get_digital_new_press(DIGITAL_Y))
-    {
-      throttleMultiplier -= 0.2f;
-      displayUpdateFlag = true;
-    }
-    throttleMultiplier = std::clamp(throttleMultiplier, 0.2f, 1.0f);
-	
-	top_left.move((master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_LEFT_X)) * throttleMultiplier);
-	btm_left.move((master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_LEFT_X)) * throttleMultiplier);
-    top_right.move((master.get_analog(ANALOG_RIGHT_Y) - master.get_analog(ANALOG_LEFT_X)) * throttleMultiplier);
-	btm_right.move((master.get_analog(ANALOG_RIGHT_Y) + master.get_analog(ANALOG_LEFT_X)) * throttleMultiplier);
-    pros::delay(2);
-  }
+	while (true) 
+	{
+		if(master.get_digital_new_press(DIGITAL_UP))
+		{
+			sidewaysLock = !sidewaysLock;
+			if(sidewaysLock) { sidewaysLockLabel = "On"; }
+			else { sidewaysLockLabel = "Off"; }
+			displayUpdateFlag = true;
+		}
+
+		if(master.get_digital_new_press(DIGITAL_A))
+		{
+			throttleMultiplier += 0.2f;
+			displayUpdateFlag = true;
+		}
+		else if(master.get_digital_new_press(DIGITAL_Y))
+		{
+			throttleMultiplier -= 0.2f;
+			displayUpdateFlag = true;
+		}
+		throttleMultiplier = std::clamp(throttleMultiplier, 0.2f, 1.0f);
+		
+		if(!sidewaysLock)
+		{
+			top_left.move((master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_LEFT_X)) * throttleMultiplier);
+			btm_left.move((master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_LEFT_X)) * throttleMultiplier);
+			top_right.move((master.get_analog(ANALOG_RIGHT_Y) - master.get_analog(ANALOG_LEFT_X)) * throttleMultiplier);
+			btm_right.move((master.get_analog(ANALOG_RIGHT_Y) + master.get_analog(ANALOG_LEFT_X)) * throttleMultiplier);
+		}
+		else
+		{
+			top_left.move(master.get_analog(ANALOG_LEFT_X) * throttleMultiplier);
+			btm_left.move(-master.get_analog(ANALOG_LEFT_X) * throttleMultiplier);
+			top_right.move(-master.get_analog(ANALOG_LEFT_X) * throttleMultiplier);
+			btm_right.move(master.get_analog(ANALOG_LEFT_X) * throttleMultiplier);
+		}
+		pros::delay(2);
+	}
 }
 
 //port 6 - back lift

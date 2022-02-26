@@ -75,7 +75,7 @@ void autonomous()
       PICKUP_FRONT
       PATHBACK("Rush_Parking_LargeNeutral_Left")
       TURN(-45)
-      DROP_FRONT
+      DROP_FRONT           
       PATHBACK("Peek_Out")
       TURN(-90)
       REAR_LIFT_UP
@@ -96,48 +96,54 @@ void autonomous()
 
       if(targetAutonStrategy == SpinRush)
       {
-        TURN(-120)
+        TURN(-135)
         PATHBACK("Backgrab_Parking_AllianceGoal_Right")
         REAR_LIFT_UP
         PATH("Backgrab_Parking_AllianceGoal_Right")
-        TURN(120)
+        TURN(135)
       }
     }
     else if(targetAutonStrategy == MiddleRush)
     {
       FRONT_CLAMP_OPEN
       REAR_LIFT_DOWN
-      PATHMIRROR("Rush_Parking_LargeNeutral_Right")
+      TURN(-45)
+      PATH("Rush_Parking_LargeNeutral_Right")
       PICKUP_FRONT
-      PATHBACKMIRROR("Rush_Parking_LargeNeutral_Right")
+      PATHBACK("Rush_Parking_LargeNeutral_Right")
+      TURN(45)
       DROP_FRONT
       PATHBACK("JauntBack")
-      TURN(-120)
+      TURN(-135)
       PATHBACK("Backgrab_Parking_AllianceGoal_Right")
       REAR_LIFT_UP
       PATH("Backgrab_Parking_AllianceGoal_Right")
-      TURN(120)
+      TURN(135)2
     }
   }
 
   else if(targetAutonSide == Skills)
   {
-    //Lock alliance goal in back lift
-    /*REAR_LIFT_DOWN
+    //Grab alliance goal and do fancy footwork to safely relocate it to the back lift
+    REAR_LIFT_DOWN
+    FRONT_CLAMP_OPEN
+    PATH("Grab_Parking_AllianceGoal")
+    PICKUP_FRONT
+    MAIN_LIFT_CUSTOM(1900)
     PATHBACK("Grab_Parking_AllianceGoal")
-    REAR_LIFT_UP
-    pros::delay(1000);
-    //PATH("Jaunt_9")
+    TURN(-100)
+    MAIN_LIFT_HOVER
+    PATH("Jaunt_12")
+    DROP_FRONT
+    PATHBACK("Jaunt_9")
+    //Note: turn accuracy and PID wiggle become worse with larger angles,
+    //so it's best to do things in max 90deg increments even if some speed is lost.
+    TURN(-90)
     TURN(-90)
     PATHBACK("Jaunt_12")
-    FRONT_CLAMP_OPEN
-    TURN(90)
-    TURN(90)
-    /*TURN(45)
-    PATH("Jaunt_12")
-    TURN(90)
-    PATH("Jaunt_12")
-    TURN(-45)*/
+    REAR_LIFT_UP
+    TURN(-90)
+    TURN(-90)
 
     //Grab small neutral and place it in opposite scoring zone
     PATH("Rush_Parking_SmallNeutral")
@@ -153,21 +159,13 @@ void autonomous()
     PATHBACK("Traverse_ScoringZoneFar_AllianceGoal")
     DROP_FRONT
 
-    //Grab large neutral and path to opposite balance
+    //Grab large neutral and dump it in scoring zone
     TURN(-90)
     TURN(-45)
     PATH("Traverse_ScoringZoneFar_LargeNeutral")
     PICKUP_FRONT
     MAIN_LIFT_BALANCE
-    //TURN(45)
     PATH("Traverse_LargeNeutral_ScoringZoneNear")
-
-    //Drop large neutral on balance
-    //MAIN_LIFT_MAX
-    //PATH("Jaunt_12")
-    //MAIN_LIFT_BALANCE
-    //FRONT_CLAMP_OPEN
-    //MAIN_LIFT_MAX
     TURN(45)
     DROP_FRONT
     TURN(-90)

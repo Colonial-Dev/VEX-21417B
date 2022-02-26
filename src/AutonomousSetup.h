@@ -45,7 +45,7 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
   auto rearLift = okapi::AsyncPosControllerBuilder()
     .withMotor(6)
     .build();
-
+  
   //Precomputes all Okapi paths used in skills auton.
   //Path name format: TYPE_ORIGIN_TARGET_SIDE, where:
   //TYPE is the rough purpose of the path, such as rushing/back-grabbing a goal or field traversal,
@@ -54,14 +54,14 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
   //SIDE is the field side the path is designed for. Not used in skills paths.
   void initSkillsPaths()
   {
-    PATHGEN(0.4, 0, 0, "Grab_Parking_AllianceGoal")
+    PATHGEN(0.5, 0, 0, "Jaunt_6")
     PATHGEN(0.75, 0, 0, "Jaunt_9")
     PATHGEN(1, 0, 0, "Jaunt_12")
+    PATHGEN(0.9, 0, 0, "Grab_Parking_AllianceGoal")
     PATHGEN(3.5, 0, 0, "Rush_Parking_SmallNeutral")
     PATHGEN(4.25, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
     PATHGEN(1, 0, 0, "Traverse_ScoringZoneFar_AllianceGoal")
     PATHGEN(4.25, 0, 0, "Traverse_ScoringZoneFar_LargeNeutral")
-    //PATHGEN(3.5, 0, 0, "Traverse_LargeNeutral_BalanceNear")
     PATHGEN(5, 0, 0, "Traverse_LargeNeutral_ScoringZoneNear")
     PATHGEN(3, 0, 0, "Traverse_BalanceNear_AllianceGoal")
     PATHGEN(4, 0, 0, "Traverse_ScoringZoneNear_SmallNeutral")
@@ -90,7 +90,7 @@ auto frontLiftLeft = okapi::AsyncPosControllerBuilder()
 
   void initRightMiddlePaths()
   {
-    PATHGEN(1, 8, 0, "Rush_Parking_LargeNeutral_Right")
+    PATHGEN(5, 0, 0, "Rush_Parking_LargeNeutral_Right")
     PATHGEN(1.9, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
   }
 

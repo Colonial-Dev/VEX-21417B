@@ -45,6 +45,11 @@ frontLiftRight->setTarget(1200);\
 frontLiftLeft->setTarget(-1200);\
 frontLiftLeft->waitUntilSettled();
 
+#define MAIN_LIFT_CUSTOM(x) \
+frontLiftRight->setTarget(x);\
+frontLiftLeft->setTarget(-x);\
+frontLiftLeft->waitUntilSettled();
+
 #define MAIN_LIFT_TARE \
 frontLiftRight->setTarget(0);\
 frontLiftLeft->setTarget(0);\
