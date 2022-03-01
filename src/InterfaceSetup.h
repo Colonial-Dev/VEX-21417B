@@ -12,8 +12,6 @@ std::string targetAutonSideLabel = "R";
 int targetAutonStrategy = SpinRush;
 std::string targetAutonStrategyLabel = "SpR";
 float throttleMultiplier = 1.0f;
-bool sidewaysLock = false;
-string sidewaysLockLabel = "Off";
 
 MenuManager manager;
 

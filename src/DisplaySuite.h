@@ -1,12 +1,12 @@
 #pragma once
 #include "pros/apix.h"
 #define TEAM "VEX 21417A #ff0000 Invictus#"
-#define VERSION "\nCompetition Suite v2.1.0"
-#define CODENAME " \"Pathfinder Overdrive\""
+#define VERSION "\nCompetition Suite v2.2.0"
+#define CODENAME " \"Six-Wheel Monstrosity\""
 #define COMPILED "\nCompiled on " __DATE__ " at " __TIME__ "\n"
 std::string spacerText = "                                                            ";
 
-int motorPorts [8] = {9, 19, 15, 13, 1, 5, 8, 6};
+int motorPorts [8] = {12, 15, 16, 19, 6, 9, 8, 1};
 std::vector<int> failedMotors;
 
 int holdCycleCount = 0;
