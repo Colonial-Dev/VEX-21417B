@@ -20,11 +20,11 @@ double GEAR_RATIO = 60.0/84.0;
 int computedPaths = 0;
 
 auto driveTrain = okapi::ChassisControllerBuilder()
-  .withMotors({-19, 6, -9}, {12, -15, 16})
+  .withMotors({19, 6, 9}, {12, 15, 16})
   .withGains
   (
     {0.001, 0, 0.0001}, // Distance controller gains
-    {0.003, 0.0004, 0.0001}, // Turn controller gains
+    {0.002, 0.0003, 0.0001}, // Turn controller gains
     {0.7, 0.001, 0.0001}  // Angle controller gains
   )
   //Green gearset, 4 in wheel diam, 11.5 in wheel track
@@ -50,10 +50,10 @@ auto frontClamp = okapi::AsyncPosControllerBuilder()
 void setupBrakeModes()
 {
   right_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   right_front.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   left_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  left_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  left_middle.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
   left_front.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
   arm_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -132,7 +132,7 @@ void initPaths(int side, int strategy)
           initRightSimplePaths();
         }
 
-        case SpinRush:
+        case DoubleRush:
         {
           initRightSimplePaths();
           initRightSpinPaths();
@@ -162,7 +162,7 @@ void initPaths(int side, int strategy)
           initLeftSimplePaths();
         }
 
-        case SpinRush:
+        case DoubleRush:
         {
           initLeftSimplePaths();
         }

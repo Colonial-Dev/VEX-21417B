@@ -42,58 +42,55 @@ void initialize()
 
 void autonomous()
 {
+  TURN(90)
+  TURN(-90)
+  return;
   brainPrint("#0000ff [INFO]# Auton start!");
   if(targetAutonSide == Null) { return; }
 
   if(targetAutonSide == Left)
   {
-    if(targetAutonStrategy == SimpleRush || targetAutonStrategy == SpinRush)
+    if(targetAutonStrategy == SimpleRush || targetAutonStrategy == DoubleRush)
     {
       FRONT_CLAMP_OPEN
-      //REAR_LIFT_DOWN
       PATHMIRROR("Rush_Parking_SmallNeutral_Left")
       PICKUP_FRONT
       PATHBACKMIRROR("Rush_Parking_SmallNeutral_Left")
       DROP_FRONT
       TURN(-90)
 
-      if(targetAutonStrategy == SpinRush)
+      if(targetAutonStrategy == DoubleRush)
       {
         PATHBACK("Backgrab_Parking_AllianceGoal_Left")
-        //REAR_LIFT_UP
       }
     }
     else if(targetAutonStrategy == MiddleRush)
     {
       FRONT_CLAMP_OPEN
-      //REAR_LIFT_DOWN
       PATHMIRROR("Rush_Parking_LargeNeutral_Left")
       PICKUP_FRONT
       PATHBACKMIRROR("Rush_Parking_LargeNeutral_Left")
       DROP_FRONT           
       TURN(-90)
       PATHBACK("Backgrab_Parking_AllianceGoal_Left")
-      //REAR_LIFT_UP
     }
   }
 
   else if(targetAutonSide == Right)
   {
-    if(targetAutonStrategy == SimpleRush || targetAutonStrategy == SpinRush)
+    if(targetAutonStrategy == SimpleRush || targetAutonStrategy == DoubleRush)
     {
       FRONT_CLAMP_OPEN
-      //REAR_LIFT_DOWN
       PATH("Rush_Parking_SmallNeutral_Right")
       PICKUP_FRONT
       PATHBACK("Return_SmallNeutral_ScoringZoneNear_Right")
       DROP_FRONT
       PATHBACK("JauntBack")
 
-      if(targetAutonStrategy == SpinRush)
+      if(targetAutonStrategy == DoubleRush)
       {
         TURN(-120)
         PATHBACK("Backgrab_Parking_AllianceGoal_Right")
-        //REAR_LIFT_UP
         PATH("Backgrab_Parking_AllianceGoal_Right")
         TURN(120)
       }
@@ -101,7 +98,6 @@ void autonomous()
     else if(targetAutonStrategy == MiddleRush)
     {
       FRONT_CLAMP_OPEN
-      //REAR_LIFT_DOWN
       PATH("Rush_Parking_LargeNeutral_Right")
       PICKUP_FRONT
       PATHBACK("Rush_Parking_LargeNeutral_Right")
@@ -109,7 +105,6 @@ void autonomous()
       PATHBACK("JauntBack")
       TURN(-120)
       PATHBACK("Backgrab_Parking_AllianceGoal_Right")
-      //REAR_LIFT_UP
       PATH("Backgrab_Parking_AllianceGoal_Right")
       TURN(120)
     }

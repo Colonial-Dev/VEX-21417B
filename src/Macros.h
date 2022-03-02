@@ -13,7 +13,7 @@ pathFinder->generatePath({ \
 pros::delay(x);
 
 #define TURN(x) \
-driveTrain->turnAngle((x*7.68) * degree);\
+driveTrain->turnAngle((x*5.17) * degree);\
 driveTrain->waitUntilSettled();
 
 #define THROTTLE(x) \

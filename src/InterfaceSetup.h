@@ -9,7 +9,7 @@ bool autonTestFlag = false;
 bool hotkeyMode = false;
 int targetAutonSide = Right;
 std::string targetAutonSideLabel = "R";
-int targetAutonStrategy = SpinRush;
+int targetAutonStrategy = DoubleRush;
 std::string targetAutonStrategyLabel = "SpR";
 float throttleMultiplier = 1.0f;
 
@@ -33,11 +33,11 @@ std::vector<MenuItem> sideSelectionItems
 MenuLevel sideSelectionLevel(sideSelectionItems, "AutonSideSelection");
 
 MenuItem optionSelectSimpleRush([] {targetAutonStrategy = SimpleRush; targetAutonStrategyLabel = "SR"; manager.GotoLevel("Main"); }, "Simple Rush");
-MenuItem optionSelectSpinRush([] {targetAutonStrategy = SpinRush; targetAutonStrategyLabel = "SpR"; manager.GotoLevel("Main"); }, "Spin Rush");
+MenuItem optionSelectDoubleRush([] {targetAutonStrategy = DoubleRush; targetAutonStrategyLabel = "SpR"; manager.GotoLevel("Main"); }, "Spin Rush");
 MenuItem optionSelectMiddleRush([] {targetAutonStrategy = MiddleRush; targetAutonStrategyLabel = "MR"; manager.GotoLevel("Main"); }, "Middle Rush");
 std::vector<MenuItem> strategySelectionItems
 {
-  {optionSelectSpinRush}, {optionSelectMiddleRush}, {optionSelectSimpleRush}
+  {optionSelectDoubleRush}, {optionSelectMiddleRush}, {optionSelectSimpleRush}
 };
 MenuLevel strategySelectionLevel(strategySelectionItems, "AutonStrategySelection");
 
