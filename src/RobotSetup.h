@@ -16,6 +16,8 @@ pros::Motor left_front (9, true);
 pros::Motor arm_motor (8);
 pros::Motor claw_motor (1);
 
+pros::IMU inertial_sensor (17);
+
 double GEAR_RATIO = 60.0/84.0;
 int computedPaths = 0;
 
@@ -31,9 +33,9 @@ auto driveTrain = okapi::ChassisControllerBuilder()
   .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4_in, 11.5_in}, okapi::imev5GreenTpr * GEAR_RATIO})
   .build();
 
-//Bot weighs ~6.577089kg
+//280 RPM
 auto pathFinder = okapi::AsyncMotionProfileControllerBuilder()
-  .withLimits({1.1, 5.8, 7.5})
+  .withLimits({1.48, 5.8, 7.5}) //Max velocity, acceleration and jerk in m/s
   .withOutput(driveTrain->getModel(), {{4_in, 11.5_in}, okapi::imev5GreenTpr * GEAR_RATIO}, {okapi::AbstractMotor::gearset::green, GEAR_RATIO})
   .buildMotionProfileController();
 
@@ -73,32 +75,34 @@ void initSkillsPaths()
 
 void initRightSimplePaths()
 {
-
+  PATHGEN(4, 0, 0, "Rush_Parking_SmallNeutral_Right")
 }
 
 void initLeftSimplePaths()
 {
-
+  PATHGEN(4, 1, 0, "Rush_Parking_SmallNeutral_Left")
 }
 
 void initRightDoublePaths()
 {
-
+  PATHGEN(4, 4, 45, "Rush_Parking_LargeNeutral_Right")
 }
 
 void initLeftDoublePaths()
 {
-
+  PATHGEN(4, 4, 45, "Rush_Parking_LargeNeutral_Left")
 }
 
 void initRightStackPaths()
 {
-
+  PATHGEN(1, 0, 0, "Peek_Out")
+  PATHGEN(2, 0, 0, "Traverse_Parking_Balance_Right")
 }
 
 void initLeftStackPaths()
 {
-
+  PATHGEN(1, 0, 0, "Peek_Out")
+  PATHGEN(4, 0, 0, "Traverse_Parking_Balance_Left")
 }
 
 //Precomputes Okapi paths used in standard auton.

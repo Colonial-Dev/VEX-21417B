@@ -50,46 +50,69 @@ void autonomous()
 
   if(targetAutonSide == Left)
   {
-    if(targetAutonStrategy == SimpleRush || targetAutonStrategy == DoubleRush)
-    {
-      //Rush forwards on slight curve, 
-      //grab small neutral and bring it to scoring zone
-      //Drop it to the side
+    FRONT_CLAMP_OPEN
+    PATHMIRROR("Rush_Parking_SmallNeutral_Left")
+    PICKUP_FRONT
+    PATHBACKMIRROR("Rush_Parking_SmallNeutral_Left")
 
-      if(targetAutonStrategy == DoubleRush)
-      {
-        //Curvy path to large neutral and grab it
-        //Drag it back to scoring zone
-      }
-    }
-    else if(targetAutonStrategy == StackRush)
+    if(targetAutonStrategy == DoubleRush)
     {
-      //Rush forwards on slight curve, 
-      //grab small neutral and reverse
-      //Turn right, path to mid-front of balance
-      //Elevate goal, turn it over the balance and drop it
+      TURN(-45)
+      DROP_FRONT
+      TURN(45)
+
+      FRONT_CLAMP_OPEN
+      PATHMIRROR("Rush_Parking_LargeNeutral_Left")
+      PICKUP_FRONT
+      PATHBACKMIRROR("Rush_Parking_LargeNeutral_Left")
+
+      TURN(45)
+      DROP_FRONT
+      TURN(-45)
+    }
+
+    if(targetAutonStrategy == StackRush)
+    {
+      PATH("Peek_Out")
+      TURN(90)
+      PATH("Traverse_Parking_Balance_Left")
+      MAIN_LIFT_BALANCE
+      TURN(90)
+      FRONT_CLAMP_OPEN
     }
   }
 
   else if(targetAutonSide == Right)
   {
-    if(targetAutonStrategy == SimpleRush || targetAutonStrategy == DoubleRush)
-    {
-      //Rush forwards, grab small neutral and bring it to scoring zone
-      //Drop it to the side
+    FRONT_CLAMP_OPEN
+    PATH("Rush_Parking_SmallNeutral_Right")
+    PICKUP_FRONT
+    PATHBACK("Rush_Parking_SmallNeutral_Right")
 
-      if(targetAutonStrategy == DoubleRush)
-      {
-        //Curvy path to large neutral and grab it
-        //Drag it back to scoring zone
-      }
-    }
-    else if(targetAutonStrategy == StackRush)
+    if(targetAutonStrategy == DoubleRush)
     {
-      //Rush forwards on slight curve, 
-      //grab small neutral and reverse
-      //Turn left, path to mid-front of balance
-      //Elevate goal, turn it over the balance and drop it    
+      TURN(45)
+      DROP_FRONT
+      TURN(-45)
+
+      FRONT_CLAMP_OPEN
+      PATH("Rush_Parking_LargeNeutral_Right")
+      PICKUP_FRONT
+      PATHBACK("Rush_Parking_LargeNeutral_Right")
+
+      TURN(-45)
+      DROP_FRONT
+      TURN(45)
+    }
+
+    if(targetAutonStrategy == StackRush)
+    {
+      PATH("Peek_Out")
+      TURN(-90)
+      PATH("Traverse_Parking_Balance_Right")
+      MAIN_LIFT_BALANCE
+      TURN(-90)
+      FRONT_CLAMP_OPEN
     }
   }
 
@@ -105,7 +128,7 @@ void autonomous()
     //Retrace steps, grabbing enemy alliance goal that was on the balance
     //Dump enemy alliance goal and grab friendly one (20pts)
     //Return to near side and dump friendly alliance goal (20pts)
-    //Just... fucking Hail Mary ram the large neutral for a shot at scoring it. (20pts)
+    //Just... fucking Hail Mary ram the large neutral for a shot at scoring it. (~20pts)
     
     //Point total: 160-180pts!! (If I can do it...)
   }

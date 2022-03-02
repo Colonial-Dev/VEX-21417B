@@ -18,6 +18,7 @@ void infoPrint()
 
 void tankTransmission()
 {
+	double max_accel = 0.0;
 	while (true) 
 	{
 		if(master.get_digital_new_press(DIGITAL_A))
