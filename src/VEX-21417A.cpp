@@ -52,27 +52,22 @@ void autonomous()
   {
     if(targetAutonStrategy == SimpleRush || targetAutonStrategy == DoubleRush)
     {
-      FRONT_CLAMP_OPEN
-      PATHMIRROR("Rush_Parking_SmallNeutral_Left")
-      PICKUP_FRONT
-      PATHBACKMIRROR("Rush_Parking_SmallNeutral_Left")
-      DROP_FRONT
-      TURN(-90)
+      //Rush forwards on slight curve, 
+      //grab small neutral and bring it to scoring zone
+      //Drop it to the side
 
       if(targetAutonStrategy == DoubleRush)
       {
-        PATHBACK("Backgrab_Parking_AllianceGoal_Left")
+        //Curvy path to large neutral and grab it
+        //Drag it back to scoring zone
       }
     }
-    else if(targetAutonStrategy == MiddleRush)
+    else if(targetAutonStrategy == StackRush)
     {
-      FRONT_CLAMP_OPEN
-      PATHMIRROR("Rush_Parking_LargeNeutral_Left")
-      PICKUP_FRONT
-      PATHBACKMIRROR("Rush_Parking_LargeNeutral_Left")
-      DROP_FRONT           
-      TURN(-90)
-      PATHBACK("Backgrab_Parking_AllianceGoal_Left")
+      //Rush forwards on slight curve, 
+      //grab small neutral and reverse
+      //Turn right, path to mid-front of balance
+      //Elevate goal, turn it over the balance and drop it
     }
   }
 
@@ -80,40 +75,41 @@ void autonomous()
   {
     if(targetAutonStrategy == SimpleRush || targetAutonStrategy == DoubleRush)
     {
-      FRONT_CLAMP_OPEN
-      PATH("Rush_Parking_SmallNeutral_Right")
-      PICKUP_FRONT
-      PATHBACK("Return_SmallNeutral_ScoringZoneNear_Right")
-      DROP_FRONT
-      PATHBACK("JauntBack")
+      //Rush forwards, grab small neutral and bring it to scoring zone
+      //Drop it to the side
 
       if(targetAutonStrategy == DoubleRush)
       {
-        TURN(-120)
-        PATHBACK("Backgrab_Parking_AllianceGoal_Right")
-        PATH("Backgrab_Parking_AllianceGoal_Right")
-        TURN(120)
+        //Curvy path to large neutral and grab it
+        //Drag it back to scoring zone
       }
     }
-    else if(targetAutonStrategy == MiddleRush)
+    else if(targetAutonStrategy == StackRush)
     {
-      FRONT_CLAMP_OPEN
-      PATH("Rush_Parking_LargeNeutral_Right")
-      PICKUP_FRONT
-      PATHBACK("Rush_Parking_LargeNeutral_Right")
-      DROP_FRONT
-      PATHBACK("JauntBack")
-      TURN(-120)
-      PATHBACK("Backgrab_Parking_AllianceGoal_Right")
-      PATH("Backgrab_Parking_AllianceGoal_Right")
-      TURN(120)
+      //Rush forwards on slight curve, 
+      //grab small neutral and reverse
+      //Turn left, path to mid-front of balance
+      //Elevate goal, turn it over the balance and drop it    
     }
   }
 
   else if(targetAutonSide == Skills)
   {
+    //Start on the RIGHT
+    //Rush forwards, acquire small neutral and continue to far side
+    //Balance small neutral on enemy side (40pts)
+    //Retrace steps, grabbing the friendly alliance goal that was on the balance
+    //Dump friendly alliance goal and grab enemy one (20pts)
+    //Return to far side and dump enemy alliance goal (20pts)
+    //Head south to grab second small neutral, and balance it on friendly side (40pts)
+    //Retrace steps, grabbing enemy alliance goal that was on the balance
+    //Dump enemy alliance goal and grab friendly one (20pts)
+    //Return to near side and dump friendly alliance goal (20pts)
+    //Just... fucking Hail Mary ram the large neutral for a shot at scoring it. (20pts)
     
+    //Point total: 160-180pts!! (If I can do it...)
   }
+
   brainPrint("#0000ff [INFO]# Auton complete!");
 }
 

@@ -49,12 +49,12 @@ auto frontClamp = okapi::AsyncPosControllerBuilder()
   
 void setupBrakeModes()
 {
-  right_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-  right_front.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  left_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  left_middle.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-  left_front.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  right_back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  right_front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  left_back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  left_middle.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  left_front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   arm_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   claw_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -68,51 +68,37 @@ void setupBrakeModes()
 //SIDE is the field side the path is designed for. Not used in skills paths.
 void initSkillsPaths()
 {
-  PATHGEN(0.5, 0, 0, "Jaunt_6")
-  PATHGEN(0.75, 0, 0, "Jaunt_9")
-  PATHGEN(1, 0, 0, "Jaunt_12")
-  PATHGEN(2, 0, 0, "Jaunt_24")
 
-  PATHGEN(0.7, 0, 0, "Grab_Parking_AllianceGoal")
-  PATHGEN(3.5, 0, 0, "Rush_Parking_SmallNeutral")
-  PATHGEN(4.25, 0, 0, "Traverse_SmallNeutral_ScoringZoneFar")
-  PATHGEN(1, 0, 0, "Traverse_ScoringZoneFar_AllianceGoal")
-  PATHGEN(6, 0, 0, "Traverse_ScoringZoneFar_South")
-  PATHGEN(3.5, 0, 0, "Traverse_ScoringZoneFar_SmallNeutral")
-  PATHGEN(6, 0, 0, "Traverse_ScoringZoneFar_ScoringZoneNear")
-  PATHGEN(1.25, 0, 0, "Traverse_ScoringZoneNear_AllianceGoal")
-
-  PATHGEN(3.5, 0, 0, "Traverse_ScoringZoneNear_LargeNeutral")
-  PATHGEN(4, 0, 0, "Traverse_LargeNeutral_ScoringZoneFar")           
 }
 
 void initRightSimplePaths()
 {
-  PATHGEN(4, 0, 0, "Rush_Parking_SmallNeutral_Right")
-  PATHGEN(3, 0, 0, "Return_SmallNeutral_ScoringZoneNear_Right")
-  PATHGEN(0.4, 0, 0, "JauntBack")
+
 }
 
 void initLeftSimplePaths()
 {
-  PATHGEN(0.7, 0, 0, "Backgrab_Parking_AllianceGoal_Left")
-  PATHGEN(4, 1, 0, "Rush_Parking_SmallNeutral_Left")
+
 }
 
-void initRightSpinPaths()
+void initRightDoublePaths()
 {
-  PATHGEN(1.6, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
+
 }
 
-void initRightMiddlePaths()
+void initLeftDoublePaths()
 {
-  PATHGEN(4, 3, 45, "Rush_Parking_LargeNeutral_Right")
-  PATHGEN(1.9, 0, 0, "Backgrab_Parking_AllianceGoal_Right")
+
 }
 
-void initLeftMiddlePaths()
+void initRightStackPaths()
 {
-  PATHGEN(4, 4, 45, "Rush_Parking_LargeNeutral_Left")
+
+}
+
+void initLeftStackPaths()
+{
+
 }
 
 //Precomputes Okapi paths used in standard auton.
@@ -135,13 +121,13 @@ void initPaths(int side, int strategy)
         case DoubleRush:
         {
           initRightSimplePaths();
-          initRightSpinPaths();
+          initRightDoublePaths();
         }
 
-        case MiddleRush:
+        case StackRush:
         {
           initRightSimplePaths();
-          initRightMiddlePaths();
+          initRightStackPaths();
         }
 
         default:
@@ -165,12 +151,13 @@ void initPaths(int side, int strategy)
         case DoubleRush:
         {
           initLeftSimplePaths();
+          initLeftDoublePaths();
         }
 
-        case MiddleRush:
+        case StackRush:
         {
           initLeftSimplePaths();
-          initLeftMiddlePaths(); 
+          initLeftStackPaths(); 
         }
 
         default:

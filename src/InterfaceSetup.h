@@ -33,11 +33,11 @@ std::vector<MenuItem> sideSelectionItems
 MenuLevel sideSelectionLevel(sideSelectionItems, "AutonSideSelection");
 
 MenuItem optionSelectSimpleRush([] {targetAutonStrategy = SimpleRush; targetAutonStrategyLabel = "SR"; manager.GotoLevel("Main"); }, "Simple Rush");
-MenuItem optionSelectDoubleRush([] {targetAutonStrategy = DoubleRush; targetAutonStrategyLabel = "SpR"; manager.GotoLevel("Main"); }, "Spin Rush");
-MenuItem optionSelectMiddleRush([] {targetAutonStrategy = MiddleRush; targetAutonStrategyLabel = "MR"; manager.GotoLevel("Main"); }, "Middle Rush");
+MenuItem optionSelectDoubleRush([] {targetAutonStrategy = DoubleRush; targetAutonStrategyLabel = "DR"; manager.GotoLevel("Main"); }, "Double Rush");
+MenuItem optionSelectStackRush([] {targetAutonStrategy = StackRush; targetAutonStrategyLabel = "StR"; manager.GotoLevel("Main"); }, "Stack Rush");
 std::vector<MenuItem> strategySelectionItems
 {
-  {optionSelectDoubleRush}, {optionSelectMiddleRush}, {optionSelectSimpleRush}
+  {optionSelectDoubleRush}, {optionSelectStackRush}, {optionSelectSimpleRush}
 };
 MenuLevel strategySelectionLevel(strategySelectionItems, "AutonStrategySelection");
 

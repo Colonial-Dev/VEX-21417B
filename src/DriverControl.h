@@ -33,13 +33,13 @@ void tankTransmission()
 		throttleMultiplier = std::clamp(throttleMultiplier, 0.2f, 1.0f);
 		
     	right_back.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
-		//right_middle.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
+		right_middle.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
 		right_front.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
-
-    	left_back.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
-		//left_middle.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
+    	
+		left_back.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
+		left_middle.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
 		left_front.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
-		
+
 		pros::delay(2);
 	}
 }
