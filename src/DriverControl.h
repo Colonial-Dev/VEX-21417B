@@ -77,11 +77,11 @@ void clampControl()
 	{
 		if(master.get_digital(DIGITAL_L2))
 		{
-			claw_motor.move_velocity(-200);
+			claw_motor.move_velocity(200);
 		}
 		else if(master.get_digital(DIGITAL_L1))
 		{
-			claw_motor.move_velocity(200);
+			claw_motor.move_velocity(-200);
 		}
 		else{
 			claw_motor.move_velocity(0);

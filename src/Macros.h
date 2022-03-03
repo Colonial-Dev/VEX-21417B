@@ -13,7 +13,8 @@ pathFinder->generatePath({ \
 pros::delay(x);
 
 #define TURN(x) \
-driveTrain->turnAngle((x*5.17) * degree);\
+if(x > 0) { driveTrain->turnAngle((x*5.40) * degree); } \
+else if(x < 0) { driveTrain->turnAngle((x*5.54) * degree); } \
 driveTrain->waitUntilSettled();
 
 #define THROTTLE(x) \
@@ -48,8 +49,8 @@ frontLift->waitUntilSettled();
 frontLift->setTarget(x);\
 frontLift->waitUntilSettled();
 
-#define FRONT_CLAMP_OPEN frontClamp->setTarget(360);
-#define FRONT_CLAMP_CLOSE frontClamp->setTarget(-360);
+#define FRONT_CLAMP_OPEN frontClamp->setTarget(-600);
+#define FRONT_CLAMP_CLOSE frontClamp->setTarget(600);
 
 #define PICKUP_FRONT FRONT_CLAMP_CLOSE MAIN_LIFT_HOVER
 #define DROP_FRONT FRONT_CLAMP_OPEN MAIN_LIFT_TARE

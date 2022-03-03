@@ -26,16 +26,16 @@ auto driveTrain = okapi::ChassisControllerBuilder()
   .withGains
   (
     {0.001, 0, 0.0001}, // Distance controller gains
-    {0.002, 0.0003, 0.0001}, // Turn controller gains
+    {0.0032, 0.0003, 0.0001}, // Turn controller gains
     {0.7, 0.001, 0.0001}  // Angle controller gains
   )
   //Green gearset, 4 in wheel diam, 11.5 in wheel track
   .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4_in, 11.5_in}, okapi::imev5GreenTpr * GEAR_RATIO})
   .build();
 
-//280 RPM
+//280 RPM, 1.48 m/s
 auto pathFinder = okapi::AsyncMotionProfileControllerBuilder()
-  .withLimits({1.48, 5.8, 7.5}) //Max velocity, acceleration and jerk in m/s
+  .withLimits({1.1, 5.5, 7.5}) //Max velocity, acceleration and jerk in m/s
   .withOutput(driveTrain->getModel(), {{4_in, 11.5_in}, okapi::imev5GreenTpr * GEAR_RATIO}, {okapi::AbstractMotor::gearset::green, GEAR_RATIO})
   .buildMotionProfileController();
 
@@ -51,12 +51,12 @@ auto frontClamp = okapi::AsyncPosControllerBuilder()
   
 void setupBrakeModes()
 {
-  right_back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  right_front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_middle.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  right_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  right_front.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  left_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  left_middle.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  left_front.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
   arm_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
   claw_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -109,7 +109,8 @@ void initLeftStackPaths()
 void initPaths(int side, int strategy)
 {
     PATHGEN(3, 0, 0, "TestPath")
-    PATHGEN(1, 1, 45, "TestPath_MG")
+    PATHGEN(4, 3, 30, "TestPath_MG")
+    PATHGEN(4, 8, 0, "TestPath_MGB")
 
     if(side == Skills) { initSkillsPaths(); return; }
     

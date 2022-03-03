@@ -10,7 +10,7 @@ bool hotkeyMode = false;
 int targetAutonSide = Right;
 std::string targetAutonSideLabel = "R";
 int targetAutonStrategy = DoubleRush;
-std::string targetAutonStrategyLabel = "SpR";
+std::string targetAutonStrategyLabel = "DR";
 float throttleMultiplier = 1.0f;
 
 MenuManager manager;

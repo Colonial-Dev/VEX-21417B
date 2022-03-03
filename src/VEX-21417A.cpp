@@ -42,7 +42,18 @@ void initialize()
 
 void autonomous()
 {
+  FRONT_CLAMP_OPEN
+  PATH("TestPath_MG")
+  PICKUP_FRONT
+  PATHBACK("TestPath_MGB")
+  return;
+  driveTrain->setMaxVelocity(80);
   TURN(90)
+  pros::delay(500);
+  TURN(-90)
+  pros::delay(500);
+  TURN(90)
+  pros::delay(500);
   TURN(-90)
   return;
   brainPrint("#0000ff [INFO]# Auton start!");
@@ -118,6 +129,7 @@ void autonomous()
 
   else if(targetAutonSide == Skills)
   {
+    driveTrain->setMaxVelocity(100);
     //Start on the RIGHT
     //Rush forwards, acquire small neutral and continue to far side
     //Balance small neutral on enemy side (40pts)
