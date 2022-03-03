@@ -28,6 +28,8 @@ void initialize()
 
   if(autonTestFlag) { autonomous(); exit(0); }
 
+  if(opJumpFlag) { opcontrol(); return; }
+
 	pros::Task holdMessagePrinting(holdCycle);
   while(true)
   {
@@ -42,20 +44,6 @@ void initialize()
 
 void autonomous()
 {
-  FRONT_CLAMP_OPEN
-  PATH("TestPath_MG")
-  PICKUP_FRONT
-  PATHBACK("TestPath_MGB")
-  return;
-  driveTrain->setMaxVelocity(80);
-  TURN(90)
-  pros::delay(500);
-  TURN(-90)
-  pros::delay(500);
-  TURN(90)
-  pros::delay(500);
-  TURN(-90)
-  return;
   brainPrint("#0000ff [INFO]# Auton start!");
   if(targetAutonSide == Null) { return; }
 
@@ -129,7 +117,6 @@ void autonomous()
 
   else if(targetAutonSide == Skills)
   {
-    driveTrain->setMaxVelocity(100);
     //Start on the RIGHT
     //Rush forwards, acquire small neutral and continue to far side
     //Balance small neutral on enemy side (40pts)
@@ -143,6 +130,90 @@ void autonomous()
     //Just... fucking Hail Mary ram the large neutral for a shot at scoring it. (~20pts)
     
     //Point total: 160-180pts!! (If I can do it...)
+        
+    //driveTrain->setMaxVelocity(80);
+    FRONT_CLAMP_OPEN
+    PATH("Rush_Start_SmallNeutral")
+    PICKUP_FRONT
+    PATH("Traverse_SmallNeutral_EnemyZone")
+
+    TURN(-90)
+    PATH("Traverse_EnemyZone_EnemyBalance")
+    MAIN_LIFT_MAX
+    TURN(90)
+    PATH("Contact_Balance")
+    MAIN_LIFT_BALANCE
+    FRONT_CLAMP_OPEN
+    MAIN_LIFT_MAX
+    PATHBACK("Contact_Balance")
+    TURN(90)
+    MAIN_LIFT_TARE
+
+    PATH("Traverse_EnemyBalance_EnemyZone")
+    TURN(-90)
+    TURN(-45)
+    PATH("Grab_RampAllianceGoal")
+    PICKUP_FRONT
+    PATHBACK("Grab_RampAllianceGoal")
+    TURN(-45)
+
+    TURN(-90)
+    PATH("Traverse_EnemyZone_FriendlyZone")
+    DROP_FRONT
+
+    TURN(-90) 
+    PATH("Grab_LineAllianceGoal")
+    PICKUP_FRONT
+    PATHBACK("Grab_LineAllianceGoal")
+    TURN(-90)
+
+    PATH("Traverse_FriendlyZone_EnemyZone")
+    DROP_FRONT
+    PATHBACK("Jaunt_12")
+    TURN(-90)
+    PATH("Traverse_EnemyZoneSouth_EnemyZoneNorth")
+    TURN(-90)
+
+    //Rinse and Repeat
+
+    PATH("Rush_EnemyZone_SmallNeutral")
+    PICKUP_FRONT
+    PATH("Traverse_SmallNeutral_FriendlyZone")
+
+    TURN(-90)
+    PATH("Traverse_FriendlyZone_FriendlyBalance")
+    MAIN_LIFT_BALANCE
+    TURN(90)
+    PATH("Contact_Balance")
+    FRONT_CLAMP_OPEN
+    PATHBACK("Contact_Balance")
+    TURN(90)
+    MAIN_LIFT_TARE
+
+    PATH("Traverse_FriendlyBalance_FriendlyZone")
+    TURN(-90)
+    TURN(-45)
+    PATH("Grab_RampAllianceGoal")
+    PICKUP_FRONT
+    PATHBACK("Grab_RampAllianceGoal")
+    TURN(-45)
+
+    TURN(-90)
+    PATH("Traverse_EnemyZone_FriendlyZone")
+    DROP_FRONT
+
+    TURN(-90) 
+    PATH("Grab_LineAllianceGoal")
+    PICKUP_FRONT
+    PATHBACK("Grab_LineAllianceGoal")
+    TURN(-90)
+
+    PATH("Traverse_FriendlyZone_EnemyZone")
+    DROP_FRONT
+    PATHBACK("Jaunt_12")
+    TURN(-90)
+    TURN(-45)
+    PATH("Hail_Mary")
   }
 
   brainPrint("#0000ff [INFO]# Auton complete!");

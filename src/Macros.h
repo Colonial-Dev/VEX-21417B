@@ -34,23 +34,23 @@ frontLift->setTarget(0);\
 frontLift->waitUntilSettled();
 
 #define MAIN_LIFT_HOVER \
-frontLift->setTarget(600);\
+frontLift->setTarget(500);\
 frontLift->waitUntilSettled();
 
 #define MAIN_LIFT_BALANCE \
-frontLift->setTarget(1200);\
+frontLift->setTarget(2250);\
 frontLift->waitUntilSettled();
 
 #define MAIN_LIFT_MAX \
-frontLift->setTarget(2000);\
+frontLift->setTarget(2750);\
 frontLift->waitUntilSettled();
 
 #define MAIN_LIFT_CUSTOM(x) \
 frontLift->setTarget(x);\
 frontLift->waitUntilSettled();
 
-#define FRONT_CLAMP_OPEN frontClamp->setTarget(-600);
-#define FRONT_CLAMP_CLOSE frontClamp->setTarget(600);
+#define FRONT_CLAMP_OPEN frontClamp->setTarget(-800);
+#define FRONT_CLAMP_CLOSE frontClamp->setTarget(800);
 
 #define PICKUP_FRONT FRONT_CLAMP_CLOSE MAIN_LIFT_HOVER
 #define DROP_FRONT FRONT_CLAMP_OPEN MAIN_LIFT_TARE

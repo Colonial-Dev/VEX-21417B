@@ -6,8 +6,9 @@
 //Global UI constants
 bool readyToLaunch = false;
 bool autonTestFlag = false;
+bool opJumpFlag = false;
 bool hotkeyMode = false;
-int targetAutonSide = Right;
+int targetAutonSide = Skills;
 std::string targetAutonSideLabel = "R";
 int targetAutonStrategy = DoubleRush;
 std::string targetAutonStrategyLabel = "DR";
@@ -90,7 +91,7 @@ void advanced_auton_select(pros::Controller master)
       master.set_text(0, 0, "Auton test START!" + spacerText);
       return;
     }
-    if(master.get_digital_new_press(DIGITAL_DOWN) && manager.InHotkeyMode()) { abort(); }
+    if(master.get_digital_new_press(DIGITAL_DOWN) && manager.InHotkeyMode()) { opJumpFlag = true; return; }
 
     if(readyToLaunch) { return; }
     if(displayUpdateFlag) { displayUpdateFlag = false; controllerPrint(master, manager.GetCurrentItemName(), "> "); }
