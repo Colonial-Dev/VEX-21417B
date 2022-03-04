@@ -13,9 +13,7 @@ pathFinder->generatePath({ \
 pros::delay(x);
 
 #define TURN(x) \
-if(x > 0) { driveTrain->turnAngle((x*5.40) * degree); } \
-else if(x < 0) { driveTrain->turnAngle((x*5.54) * degree); } \
-driveTrain->waitUntilSettled();
+inertialTurn(x);
 
 #define THROTTLE(x) \
 driveTrain->setMaxVelocity(std::clamp(x, 0, 200)); \

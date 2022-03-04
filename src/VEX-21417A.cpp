@@ -15,6 +15,8 @@ using namespace okapi;
 
 void initialize() 
 {
+  while(inertial_sensor.is_calibrating()) { pros::delay(2); }
+
   setupBrakeModes();
   splashDisplay();
   manager.Update(levels);
@@ -40,6 +42,55 @@ void initialize()
 
   holdMessagePrinting.remove();
   return;
+}
+
+void inertialTurn(double angle)
+{
+	double error = angle - inertial_sensor.get_rotation();
+  double threshold = 0.9 + (0.0025 * fabs(error)) + fabs(error * 0.001);
+	double integral;
+	double derivative;
+	double prevError;
+	double kp = 1.2;
+	double ki = 0.0025;
+	double kd = 7.5;
+
+	while(fabs(error) > threshold)
+  {
+		error = angle - inertial_sensor.get_rotation();
+    debugPrint(std::to_string(error) + " || " + std::to_string(right_back.get_actual_velocity()) + " || " + to_string(threshold));
+    integral  = integral + error;
+
+		if(error == 0 || fabs(error) >= angle)
+    {
+			integral = 0;
+		}
+
+		derivative = error - prevError;
+		prevError = error;
+		double p = error * kp;
+		double i = integral * ki;
+		double d = derivative * kd;
+
+		double vel = p + i + d;
+
+		right_back.move_velocity(-vel);
+    right_middle.move_velocity(-vel);
+    right_front.move_velocity(-vel);
+
+    left_back.move_velocity(vel);
+    left_middle.move_velocity(vel);
+    left_front.move_velocity(vel);
+
+		pros::delay(15);
+	}
+  right_back.move_velocity(0);
+  right_middle.move_velocity(0);
+  right_front.move_velocity(0);
+
+  left_back.move_velocity(0);
+  left_middle.move_velocity(0);
+  left_front.move_velocity(0);
 }
 
 void autonomous()
@@ -136,83 +187,54 @@ void autonomous()
     PATH("Rush_Start_SmallNeutral")
     PICKUP_FRONT
     PATH("Traverse_SmallNeutral_EnemyZone")
-
-    TURN(-90)
-    PATH("Traverse_EnemyZone_EnemyBalance")
-    MAIN_LIFT_MAX
-    TURN(90)
-    PATH("Contact_Balance")
-    MAIN_LIFT_BALANCE
-    FRONT_CLAMP_OPEN
-    MAIN_LIFT_MAX
-    PATHBACK("Contact_Balance")
-    TURN(90)
-    MAIN_LIFT_TARE
-
-    PATH("Traverse_EnemyBalance_EnemyZone")
-    TURN(-90)
-    TURN(-45)
-    PATH("Grab_RampAllianceGoal")
-    PICKUP_FRONT
-    PATHBACK("Grab_RampAllianceGoal")
-    TURN(-45)
-
-    TURN(-90)
-    PATH("Traverse_EnemyZone_FriendlyZone")
+    TURN(45)
+    PATH("Jaunt_24")
     DROP_FRONT
+    PATHBACK("Jaunt_24")
 
-    TURN(-90) 
+    TURN(0)
+    PATHBACK("Traverse_EnemyZone_FriendlyZone")
+
+    TURN(90) 
     PATH("Grab_LineAllianceGoal")
     PICKUP_FRONT
     PATHBACK("Grab_LineAllianceGoal")
-    TURN(-90)
+    TURN(0)
 
     PATH("Traverse_FriendlyZone_EnemyZone")
+    TURN(45)
+    PATH("Jaunt_12")
     DROP_FRONT
     PATHBACK("Jaunt_12")
     TURN(-90)
     PATH("Traverse_EnemyZoneSouth_EnemyZoneNorth")
-    TURN(-90)
+    TURN(-180)
 
     //Rinse and Repeat
 
     PATH("Rush_EnemyZone_SmallNeutral")
     PICKUP_FRONT
     PATH("Traverse_SmallNeutral_FriendlyZone")
-
-    TURN(-90)
-    PATH("Traverse_FriendlyZone_FriendlyBalance")
-    MAIN_LIFT_BALANCE
-    TURN(90)
-    PATH("Contact_Balance")
-    FRONT_CLAMP_OPEN
-    PATHBACK("Contact_Balance")
-    TURN(90)
-    MAIN_LIFT_TARE
-
-    PATH("Traverse_FriendlyBalance_FriendlyZone")
-    TURN(-90)
-    TURN(-45)
-    PATH("Grab_RampAllianceGoal")
-    PICKUP_FRONT
-    PATHBACK("Grab_RampAllianceGoal")
-    TURN(-45)
-
-    TURN(-90)
-    PATH("Traverse_EnemyZone_FriendlyZone")
+    TURN(-135)
+    PATH("Jaunt_24")
     DROP_FRONT
+    PATHBACK("Jaunt_24")
+    TURN(-180)
+
+    PATHBACK("Traverse_EnemyZone_FriendlyZone")
 
     TURN(-90) 
     PATH("Grab_LineAllianceGoal")
     PICKUP_FRONT
     PATHBACK("Grab_LineAllianceGoal")
-    TURN(-90)
+    TURN(0)
 
-    PATH("Traverse_FriendlyZone_EnemyZone")
+    PATHBACK("Traverse_FriendlyZone_EnemyZone")
+    TURN(90)
+    PATH("Jaunt_12")
     DROP_FRONT
     PATHBACK("Jaunt_12")
-    TURN(-90)
-    TURN(-45)
+    TURN(45)
     PATH("Hail_Mary")
   }
 

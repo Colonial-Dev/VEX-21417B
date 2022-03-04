@@ -35,7 +35,7 @@ auto driveTrain = okapi::ChassisControllerBuilder()
 
 //280 RPM, 1.48 m/s
 auto pathFinder = okapi::AsyncMotionProfileControllerBuilder()
-  .withLimits({1.1, 5.5, 7.5}) //Max velocity, acceleration and jerk in m/s
+  .withLimits({1.5, 5.5, 7.5}) //Max velocity, acceleration and jerk in m/s
   .withOutput(driveTrain->getModel(), {{4_in, 11.5_in}, okapi::imev5GreenTpr * GEAR_RATIO}, {okapi::AbstractMotor::gearset::green, GEAR_RATIO})
   .buildMotionProfileController();
 
@@ -71,20 +71,21 @@ void setupBrakeModes()
 void initSkillsPaths()
 {
   PATHGEN(1, 0, 0, "Jaunt_12");
+  PATHGEN(2, 0, 0, "Jaunt_24")
   PATHGEN(4, 0, 0, "Rush_Start_SmallNeutral")
   PATHGEN(3.5, 0, 0, "Traverse_SmallNeutral_EnemyZone")
-  PATHGEN(2.75, 0, 0, "Traverse_EnemyZone_EnemyBalance")
-  PATHGEN(1.5, 0, 0, "Contact_Balance")
-  PATHGEN(3, 0, 0, "Traverse_EnemyBalance_EnemyZone")
-  PATHGEN(2, 0, 0, "Grab_RampAllianceGoal")
-  PATHGEN(7, 0, 0, "Traverse_EnemyZone_FriendlyZone")
-  PATHGEN(1, 0, 0, "Grab_LineAllianceGoal")
-  PATHGEN(8, 0, 0, "Traverse_FriendlyZone_EnemyZone")
-  PATHGEN(6, 0, 0, "Traverse_EnemyZoneSouth_EnemyZoneNorth")
-  PATHGEN(4, 0, 0, "Rush_EnemyZone_SmallNeutral")
-  PATHGEN(4, 0, 0, "Traverse_SmallNeutral_FriendlyZone")
-  PATHGEN(3, 0, 0, "Traverse_FriendlyZone_FriendlyBalance")
-  PATHGEN(3, 0, 0, "Traverse_FriendlyBalance_FriendlyZone")
+  //PATHGEN(2.75, 0, 0, "Traverse_EnemyZone_EnemyBalance")
+  //PATHGEN(1.5, 0, 0, "Contact_Balance")
+  //PATHGEN(3, 0, 0, "Traverse_EnemyBalance_EnemyZone")
+  //PATHGEN(2, 0, 0, "Grab_RampAllianceGoal")
+  PATHGEN(5.25, 0, 0, "Traverse_EnemyZone_FriendlyZone")
+  PATHGEN(1.3, 0, 0, "Grab_LineAllianceGoal")
+  PATHGEN(6, 0, 0, "Traverse_FriendlyZone_EnemyZone")
+  PATHGEN(6.5, 0, 0, "Traverse_EnemyZoneSouth_EnemyZoneNorth")
+  PATHGEN(2, 0, 0, "Rush_EnemyZone_SmallNeutral")
+  PATHGEN(3, 0, 0, "Traverse_SmallNeutral_FriendlyZone")
+  //PATHGEN(3, 0, 0, "Traverse_FriendlyZone_FriendlyBalance")
+  //PATHGEN(3, 0, 0, "Traverse_FriendlyBalance_FriendlyZone")
   PATHGEN(9, 0, 0, "Hail_Mary")
 }
 
