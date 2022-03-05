@@ -47,7 +47,7 @@ void initialize()
 void inertialTurn(double angle)
 {
 	double error = angle - inertial_sensor.get_rotation();
-  double threshold = 0.9 + (0.0025 * fabs(error)) + fabs(error * 0.001);
+  double threshold = 0.93 + (0.0025 * fabs(error)) + fabs(error * 0.001);
 	double integral;
 	double derivative;
 	double prevError;
@@ -181,8 +181,7 @@ void autonomous()
     //Just... fucking Hail Mary ram the large neutral for a shot at scoring it. (~20pts)
     
     //Point total: 160-180pts!! (If I can do it...)
-        
-    //driveTrain->setMaxVelocity(80);
+
     FRONT_CLAMP_OPEN
     PATH("Rush_Start_SmallNeutral")
     PICKUP_FRONT
@@ -190,52 +189,68 @@ void autonomous()
     TURN(45)
     PATH("Jaunt_24")
     DROP_FRONT
-    PATHBACK("Jaunt_24")
+    TURN(-50)
+    PATH("Jaunt_12")
+    PICKUP_FRONT
+    //PATHBACK("Jaunt_9")
+    MAIN_LIFT_BALANCE
+    TURN(-180)
+    MAIN_LIFT_HOVER
 
-    TURN(0)
-    PATHBACK("Traverse_EnemyZone_FriendlyZone")
+    PATH("Traverse_EnemyZone_FriendlyZone")
+    DROP_FRONT
 
     TURN(90) 
     PATH("Grab_LineAllianceGoal")
-    PICKUP_FRONT
+    FRONT_CLAMP_CLOSE
     PATHBACK("Grab_LineAllianceGoal")
+    MAIN_LIFT_HOVER
     TURN(0)
 
     PATH("Traverse_FriendlyZone_EnemyZone")
-    TURN(45)
-    PATH("Jaunt_12")
     DROP_FRONT
-    PATHBACK("Jaunt_12")
-    TURN(-90)
+    PATHBACK("Jaunt_9")
+    TURN(-83)
     PATH("Traverse_EnemyZoneSouth_EnemyZoneNorth")
+    FRONT_CLAMP_CLOSE
+    PATHBACK("Jaunt_12")
+    MAIN_LIFT_HOVER
     TURN(-180)
 
     //Rinse and Repeat
-
-    PATH("Rush_EnemyZone_SmallNeutral")
+  
+    /*PATH("Rush_EnemyZone_SmallNeutral")
     PICKUP_FRONT
     PATH("Traverse_SmallNeutral_FriendlyZone")
     TURN(-135)
     PATH("Jaunt_24")
     DROP_FRONT
-    PATHBACK("Jaunt_24")
-    TURN(-180)
+    TURN(-230)
+    PATH("Jaunt_12")
+    PICKUP_FRONT
+    MAIN_LIFT_BALANCE
+    TURN(0)
+    MAIN_LIFT_HOVER*/
 
-    PATHBACK("Traverse_EnemyZone_FriendlyZone")
+    PATH("Traverse_EnemyZone_FriendlyZone")
+    FRONT_CLAMP_OPEN
+    PATHBACK("Jaunt_18")
+    MAIN_LIFT_TARE
+    TURN(-305)
+    PATH("Hail_Mary")
+
+    /*PATH("Traverse_EnemyZone_FriendlyZone")
 
     TURN(-90) 
     PATH("Grab_LineAllianceGoal")
     PICKUP_FRONT
     PATHBACK("Grab_LineAllianceGoal")
-    TURN(0)
+    TURN(-180)
 
-    PATHBACK("Traverse_FriendlyZone_EnemyZone")
-    TURN(90)
-    PATH("Jaunt_12")
+    PATH("Traverse_FriendlyZone_EnemyZone")
     DROP_FRONT
-    PATHBACK("Jaunt_12")
     TURN(45)
-    PATH("Hail_Mary")
+    PATH("Hail_Mary")*/
   }
 
   brainPrint("#0000ff [INFO]# Auton complete!");

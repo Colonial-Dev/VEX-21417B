@@ -36,7 +36,7 @@ frontLift->setTarget(500);\
 frontLift->waitUntilSettled();
 
 #define MAIN_LIFT_BALANCE \
-frontLift->setTarget(2250);\
+frontLift->setTarget(1750);\
 frontLift->waitUntilSettled();
 
 #define MAIN_LIFT_MAX \
