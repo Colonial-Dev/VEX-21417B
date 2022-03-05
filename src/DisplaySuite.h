@@ -1,8 +1,8 @@
 #pragma once
 #include "pros/apix.h"
 #define TEAM "VEX 21417A #ff0000 Invictus#"
-#define VERSION "\nCompetition Suite v2.2.0"
-#define CODENAME " \"Six-Wheel Monstrosity\""
+#define VERSION "\nCompetition Suite v2.3.0"
+#define CODENAME " \"Last, Best Hope\""
 #define COMPILED "\nCompiled on " __DATE__ " at " __TIME__ "\n"
 std::string spacerText = "                                                            ";
 

@@ -182,6 +182,7 @@ void autonomous()
     
     //Point total: 160-180pts!! (If I can do it...)
 
+    //Drop small neutral in enemy zone
     FRONT_CLAMP_OPEN
     PATH("Rush_Start_SmallNeutral")
     PICKUP_FRONT
@@ -189,17 +190,20 @@ void autonomous()
     TURN(45)
     PATH("Jaunt_24")
     DROP_FRONT
+
+    //Grab friendly goal from balance
     TURN(-50)
     PATH("Jaunt_12")
     PICKUP_FRONT
-    //PATHBACK("Jaunt_9")
     MAIN_LIFT_BALANCE
     TURN(-180)
     MAIN_LIFT_HOVER
 
+    //Drop friendly goal in friendly zone
     PATH("Traverse_EnemyZone_FriendlyZone")
     DROP_FRONT
 
+    //Grab enemy goal
     TURN(90) 
     PATH("Grab_LineAllianceGoal")
     FRONT_CLAMP_CLOSE
@@ -207,9 +211,12 @@ void autonomous()
     MAIN_LIFT_HOVER
     TURN(0)
 
+    //Drop enemy goal in enemy zone
     PATH("Traverse_FriendlyZone_EnemyZone")
     DROP_FRONT
     PATHBACK("Jaunt_9")
+
+    //Head to north side of enemy zone, grab friendly goal
     TURN(-83)
     PATH("Traverse_EnemyZoneSouth_EnemyZoneNorth")
     FRONT_CLAMP_CLOSE
@@ -217,40 +224,15 @@ void autonomous()
     MAIN_LIFT_HOVER
     TURN(-180)
 
-    //Rinse and Repeat
-  
-    /*PATH("Rush_EnemyZone_SmallNeutral")
-    PICKUP_FRONT
-    PATH("Traverse_SmallNeutral_FriendlyZone")
-    TURN(-135)
-    PATH("Jaunt_24")
-    DROP_FRONT
-    TURN(-230)
-    PATH("Jaunt_12")
-    PICKUP_FRONT
-    MAIN_LIFT_BALANCE
-    TURN(0)
-    MAIN_LIFT_HOVER*/
-
+    //Ram remaining small neutral to friendly zone and drop friendly goal
     PATH("Traverse_EnemyZone_FriendlyZone")
     FRONT_CLAMP_OPEN
     PATHBACK("Jaunt_18")
+
+    //Hail Mary on the large neutral
     MAIN_LIFT_TARE
     TURN(-305)
     PATH("Hail_Mary")
-
-    /*PATH("Traverse_EnemyZone_FriendlyZone")
-
-    TURN(-90) 
-    PATH("Grab_LineAllianceGoal")
-    PICKUP_FRONT
-    PATHBACK("Grab_LineAllianceGoal")
-    TURN(-180)
-
-    PATH("Traverse_FriendlyZone_EnemyZone")
-    DROP_FRONT
-    TURN(45)
-    PATH("Hail_Mary")*/
   }
 
   brainPrint("#0000ff [INFO]# Auton complete!");
