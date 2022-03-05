@@ -182,57 +182,54 @@ void autonomous()
     
     //Point total: 160-180pts!! (If I can do it...)
 
-    //Drop small neutral in enemy zone
+    //Grab enemy line goal and angle-ram small neutral to enemy zone
     FRONT_CLAMP_OPEN
-    PATH("Rush_Start_SmallNeutral")
+    PATH("Rush_Start_AllianceGoal")
     PICKUP_FRONT
-    PATH("Traverse_SmallNeutral_EnemyZone")
-    TURN(45)
-    PATH("Jaunt_24")
+    TURN(-90)
+    PATH("Traverse_AllianceGoal_RamStart")
+    TURN(20)
+    PATH("Ram_SmallNeutral_EnemyZone")
     DROP_FRONT
+    PATHBACK("Jaunt_12")
 
     //Grab friendly goal from balance
     TURN(-50)
-    PATH("Jaunt_12")
+    PATH("Jaunt_18")
     PICKUP_FRONT
     MAIN_LIFT_BALANCE
     TURN(-180)
     MAIN_LIFT_HOVER
 
-    //Drop friendly goal in friendly zone
-    PATH("Traverse_EnemyZone_FriendlyZone")
+    //Ram large neutral to friendly zone
+    PATH("Jaunt_18")
+    TURN(-120)
+    PATH("Ram_EnemyZone_LargeNeutral")
     DROP_FRONT
 
-    //Grab enemy goal
-    TURN(90) 
-    PATH("Grab_LineAllianceGoal")
-    FRONT_CLAMP_CLOSE
-    PATHBACK("Grab_LineAllianceGoal")
-    MAIN_LIFT_HOVER
+    //Grab enemy goal from balance
+    TURN(-230)
+    PATH("Jaunt_18")
+    PICKUP_FRONT
+    MAIN_LIFT_BALANCE
     TURN(0)
-
-    //Drop enemy goal in enemy zone
-    PATH("Traverse_FriendlyZone_EnemyZone")
-    DROP_FRONT
-    PATHBACK("Jaunt_9")
-
-    //Head to north side of enemy zone, grab friendly goal
-    TURN(-83)
-    PATH("Traverse_EnemyZoneSouth_EnemyZoneNorth")
-    FRONT_CLAMP_CLOSE
-    PATHBACK("Jaunt_12")
     MAIN_LIFT_HOVER
-    TURN(-180)
 
-    //Ram remaining small neutral to friendly zone and drop friendly goal
-    PATH("Traverse_EnemyZone_FriendlyZone")
-    FRONT_CLAMP_OPEN
+    //Ram small neutral to enemy zone
+    PATH("Ram_FriendlyZone_SmallNeutral")
+    DROP_FRONT
+
+    //Grab friendly line goal
+    TURN(-90)
+    PATH("Jaunt_18")
+    FRONT_CLAMP_CLOSE
     PATHBACK("Jaunt_18")
+    MAIN_LIFT_HOVER
 
-    //Hail Mary on the large neutral
-    MAIN_LIFT_TARE
-    TURN(-305)
-    PATH("Hail_Mary")
+    //Drop friendly goal in friendly zone
+    TURN(-180)
+    PATH("Traverse_EnemyZone_FriendlyZone")
+    DROP_FRONT
   }
 
   brainPrint("#0000ff [INFO]# Auton complete!");

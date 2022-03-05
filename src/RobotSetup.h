@@ -75,15 +75,13 @@ void initSkillsPaths()
   PATHGEN(1.25, 0, 0, "Jaunt_15")
   PATHGEN(1.5, 0, 0, "Jaunt_18");
   PATHGEN(2, 0, 0, "Jaunt_24")
-  PATHGEN(4, 0, 0, "Rush_Start_SmallNeutral")
-  PATHGEN(3.5, 0, 0, "Traverse_SmallNeutral_EnemyZone")
+
+  PATHGEN(3, 0, 0, "Rush_Start_AllianceGoal")
+  PATHGEN(2, 0, 0, "Traverse_AllianceGoal_RamStart")
+  PATHGEN(7.5, 0, 0, "Ram_SmallNeutral_EnemyZone")
+  PATHGEN(7.5, 0, 0, "Ram_EnemyZone_LargeNeutral")
+  PATHGEN(8, 0, 0, "Ram_FriendlyZone_SmallNeutral")
   PATHGEN(8.5, 0, 0, "Traverse_EnemyZone_FriendlyZone")
-  PATHGEN(1.8, 0, 0, "Grab_LineAllianceGoal")
-  PATHGEN(7, 0, 0, "Traverse_FriendlyZone_EnemyZone")
-  PATHGEN(7.5, 0, 0, "Traverse_EnemyZoneSouth_EnemyZoneNorth")
-  PATHGEN(1.5, 0, 0, "Rush_EnemyZone_SmallNeutral")
-  PATHGEN(2.5, 0, 0, "Traverse_SmallNeutral_FriendlyZone")
-  PATHGEN(9, 0, 0, "Hail_Mary")
 }
 
 void initRightSimplePaths()
