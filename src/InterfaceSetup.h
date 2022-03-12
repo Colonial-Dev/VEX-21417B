@@ -5,10 +5,10 @@
 
 //Global UI constants
 bool readyToLaunch = false;
-bool autonTestFlag = false;
-bool opJumpFlag = false;
+bool autonJumpFlag = false;
+bool driverJumpFlag = false;
 bool hotkeyMode = false;
-int targetAutonSide = Skills;
+int targetAutonSide = Right;
 std::string targetAutonSideLabel = "R";
 int targetAutonStrategy = DoubleRush;
 std::string targetAutonStrategyLabel = "DR";
@@ -42,7 +42,7 @@ std::vector<MenuItem> strategySelectionItems
 };
 MenuLevel strategySelectionLevel(strategySelectionItems, "AutonStrategySelection");
 
-MenuItem optionAutonTest([] { autonTestFlag = true; readyToLaunch = true; }, "Auton Test");
+MenuItem optionAutonTest([] { autonJumpFlag = true; readyToLaunch = true; }, "Auton Test");
 MenuItem optionSkillsAuton([] { targetAutonSide = Skills; manager.GotoLevel("Main"); }, "Skills Auton");
 MenuItem optionDisableAuton([] { targetAutonSide = Null; manager.GotoLevel("Main"); }, "Disable Auton");
 std::vector<MenuItem> utilitiesItems
@@ -80,7 +80,7 @@ void advanced_auton_select(pros::Controller master)
     }
     if(master.get_digital_new_press(DIGITAL_UP) && manager.InHotkeyMode())
     {
-      autonTestFlag = true;
+      autonJumpFlag = true;
       pros::delay(50);
       master.rumble("-");
       pros::delay(1000);
@@ -91,7 +91,7 @@ void advanced_auton_select(pros::Controller master)
       master.set_text(0, 0, "Auton test START!" + spacerText);
       return;
     }
-    if(master.get_digital_new_press(DIGITAL_DOWN) && manager.InHotkeyMode()) { opJumpFlag = true; return; }
+    if(master.get_digital_new_press(DIGITAL_DOWN) && manager.InHotkeyMode()) { driverJumpFlag = true; return; }
 
     if(readyToLaunch) { return; }
     if(displayUpdateFlag) { displayUpdateFlag = false; controllerPrint(master, manager.GetCurrentItemName(), "> "); }

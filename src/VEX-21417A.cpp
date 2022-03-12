@@ -29,9 +29,9 @@ void initialize()
   initPaths(targetAutonSide, targetAutonStrategy);
   brainPrint("Auton paths #00ff00 [OK]# (Target: " + targetAutonSideLabel + "_" + targetAutonStrategyLabel + ", Total: " + std::to_string(computedPaths) + ")");
 
-  if(autonTestFlag) { autonomous(); exit(0); }
+  if(autonJumpFlag) { autonomous(); exit(0); }
 
-  if(opJumpFlag) { opcontrol(); return; }
+  if(driverJumpFlag) { opcontrol(); return; }
 
 	pros::Task holdMessagePrinting(holdCycle);
   while(true)

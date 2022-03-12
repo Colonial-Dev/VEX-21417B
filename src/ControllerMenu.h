@@ -8,7 +8,6 @@ class MenuItem
   public:
     std::function<void()> operation;
     std::string name;
-    std::string extras = "";
 
     MenuItem(const std::function<void()>& action, std::string ident)
     {
@@ -16,9 +15,7 @@ class MenuItem
       name = ident;
     }
 
-    std::string GetName() { return name + extras; }
-
-    void SetExtras(std::string str) { extras = str; }
+    std::string GetName() { return name; }
 
     void DoOperation() { operation(); }
 };
@@ -87,18 +84,6 @@ class MenuManager
     {
       MenuLevel lv = levels.at(i);
       if(lv.GetName() == name) { level_index = i; item_index = 0; displayUpdateFlag = true; return; }
-    }
-  }
-
-  MenuItem GetItem(std::string name)
-  {
-    MenuLevel level = levels.at(level_index);
-    std::vector<MenuItem> items = level.items;
-
-    for(int i = 0; i < items.size(); i++)
-    {
-      MenuItem it = items.at(i);
-      if(it.GetName() == name) { return it; }
     }
   }
 
