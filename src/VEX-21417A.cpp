@@ -9,8 +9,9 @@ using namespace okapi;
 #include "Enums.h"
 #include "InterfaceSetup.h"
 #include "RobotSetup.h"
-#include "Macros.h"
 #include "DisplaySuite.h"
+#include "AutonSubroutines.h"
+#include "Macros.h"
 #include "DriverControl.h"
 
 void initialize() 
@@ -42,55 +43,6 @@ void initialize()
 
   holdMessagePrinting.remove();
   return;
-}
-
-void inertialTurn(double angle)
-{
-	double error = angle - inertial_sensor.get_rotation();
-  double threshold = 0.93 + (0.0025 * fabs(error)) + fabs(error * 0.001);
-	double integral;
-	double derivative;
-	double prevError;
-	double kp = 1.2;
-	double ki = 0.0025;
-	double kd = 7.5;
-
-	while(fabs(error) > threshold)
-  {
-		error = angle - inertial_sensor.get_rotation();
-    debugPrint(std::to_string(error) + " || " + std::to_string(right_back.get_actual_velocity()) + " || " + to_string(threshold));
-    integral  = integral + error;
-
-		if(error == 0 || fabs(error) >= angle)
-    {
-			integral = 0;
-		}
-
-		derivative = error - prevError;
-		prevError = error;
-		double p = error * kp;
-		double i = integral * ki;
-		double d = derivative * kd;
-
-		double vel = p + i + d;
-
-		right_back.move_velocity(-vel);
-    right_middle.move_velocity(-vel);
-    right_front.move_velocity(-vel);
-
-    left_back.move_velocity(vel);
-    left_middle.move_velocity(vel);
-    left_front.move_velocity(vel);
-
-		pros::delay(15);
-	}
-  right_back.move_velocity(0);
-  right_middle.move_velocity(0);
-  right_front.move_velocity(0);
-
-  left_back.move_velocity(0);
-  left_middle.move_velocity(0);
-  left_front.move_velocity(0);
 }
 
 void autonomous()
@@ -168,20 +120,6 @@ void autonomous()
 
   else if(targetAutonSide == Skills)
   {
-    //Start on the RIGHT
-    //Rush forwards, acquire small neutral and continue to far side
-    //Balance small neutral on enemy side (40pts)
-    //Retrace steps, grabbing the friendly alliance goal that was on the balance
-    //Dump friendly alliance goal and grab enemy one (20pts)
-    //Return to far side and dump enemy alliance goal (20pts)
-    //Head south to grab second small neutral, and balance it on friendly side (40pts)
-    //Retrace steps, grabbing enemy alliance goal that was on the balance
-    //Dump enemy alliance goal and grab friendly one (20pts)
-    //Return to near side and dump friendly alliance goal (20pts)
-    //Just... fucking Hail Mary ram the large neutral for a shot at scoring it. (~20pts)
-    
-    //Point total: 160-180pts!! (If I can do it...)
-
     //Grab enemy line goal and angle-ram small neutral to enemy zone
     FRONT_CLAMP_OPEN
     PATH("Rush_Start_AllianceGoal")
