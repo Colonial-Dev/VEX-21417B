@@ -194,8 +194,8 @@ void autonomous()
     PATHBACK("Jaunt_12")
 
     //Grab friendly goal from balance
-    TURN(-50)
-    PATH("Jaunt_18")
+    TURN(-30)
+    PATH("Jaunt_24")
     PICKUP_FRONT
     MAIN_LIFT_BALANCE
     TURN(-180)
@@ -203,7 +203,7 @@ void autonomous()
 
     //Ram large neutral to friendly zone
     PATH("Jaunt_18")
-    TURN(-120)
+    TURN(-140)
     PATH("Ram_EnemyZone_LargeNeutral")
     DROP_FRONT
 
@@ -221,7 +221,7 @@ void autonomous()
 
     //Grab friendly line goal
     TURN(-90)
-    PATH("Jaunt_18")
+    PATH("Jaunt_24")
     FRONT_CLAMP_CLOSE
     PATHBACK("Jaunt_18")
     MAIN_LIFT_HOVER
