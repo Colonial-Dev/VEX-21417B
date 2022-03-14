@@ -1,38 +1,9 @@
 #pragma once
 
-void infoPrint()
-{
-  while(true)
-  {
-    if(displayUpdateFlag)
-    {
-      displayUpdateFlag = false;
-      string throttle = std::to_string(throttleMultiplier * 100);
-      throttle.resize(3);
-      master.set_text(0, 0, "THR " + throttle + "          ");
-    }
-    pros::delay(50);
-  }
-  return;
-}
-
 void tankTransmission()
 {
-	double max_accel = 0.0;
 	while (true) 
-	{
-		if(master.get_digital_new_press(DIGITAL_A))
-		{
-			throttleMultiplier += 0.2f;
-			displayUpdateFlag = true;
-		}
-		else if(master.get_digital_new_press(DIGITAL_Y))
-		{
-			throttleMultiplier -= 0.2f;
-			displayUpdateFlag = true;
-		}
-		throttleMultiplier = std::clamp(throttleMultiplier, 0.2f, 1.0f);
-		
+	{	
     	right_back.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
 		right_middle.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
 		right_front.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
@@ -93,9 +64,7 @@ void clampControl()
 void opcontrol() 
 {
 	brainPrint("#0000ff [INFO]# Initializing operator control...");
-	displayUpdateFlag = true;
 	pros::Task Transmission(tankTransmission);
 	pros::Task FrontLift(mainLiftControl);
 	pros::Task Clamp(clampControl);
-  	pros::Task Disp(infoPrint);
 }

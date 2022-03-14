@@ -1,8 +1,8 @@
 #pragma once
 #include "pros/apix.h"
-#define TEAM "VEX 21417A #ff0000 Invictus#"
-#define VERSION "\nCompetition Suite v2.3.0"
-#define CODENAME " \"Last, Best Hope\""
+#define TEAM "VEX 21417B #00ff00 Intercept#"
+#define VERSION "\nCompetition Suite v3.0.0"
+#define CODENAME " \"Worldsbound\""
 #define COMPILED "\nCompiled on " __DATE__ " at " __TIME__ "\n"
 std::string spacerText = "                                                            ";
 
@@ -49,18 +49,6 @@ void controllerPrint(pros::Controller master, std::string content, std::string p
   if(!pros::competition::is_connected()){pros::delay(50);}
   else{pros::delay(10);}
   master.set_text(0, 0, prefix + content + spacerText);
-}
-
-void holdCycle()
-{
-  pros::Controller master(pros::E_CONTROLLER_MASTER);
-  while(true)
-  {
-    holdCycleCount++;
-    if(holdCycleCount > 2) { holdCycleCount = 0; }
-    master.set_text(0, 0, holdCycleMessages[holdCycleCount] + spacerText);
-    pros::delay(2500);
-  }
 }
 
 void debugPrint(std::string str)
