@@ -45,20 +45,19 @@ void rearClampControl()
 {
 	while(true)
 	{
-		if(master.get_digital_new_press(DIGITAL_DOWN)) { clamp_piston.set_value(true); }
-		else if(master.get_digital_new_press(DIGITAL_RIGHT)) { clamp_piston.set_value(false); }
+		if(master.get_digital_new_press(DIGITAL_DOWN)) { back_piston.set_value(true); }
+		else if(master.get_digital_new_press(DIGITAL_RIGHT)) { back_piston.set_value(false); }
 		pros::delay(2);
 	}
 }
 
 //X to close, A to open
-
 void topClampControl()
 {
 	while(true)
 	{
-		if(master.get_digital_new_press(DIGITAL_X)) { clamp_piston.set_value(false); }
-		else if(master.get_digital_new_press(DIGITAL_A)) { clamp_piston.set_value(true); }
+		if(master.get_digital_new_press(DIGITAL_X)) { top_piston.set_value(true); }
+		else if(master.get_digital_new_press(DIGITAL_A)) { top_piston.set_value(false); }
 		pros::delay(2);
 	}
 }
@@ -70,20 +69,21 @@ void conveyorControl()
 
 	while(true)
 	{
-		if(conveyorStatus == Idle) { conveyor_motor.move_velocity(0); }
-		else if(conveyorStatus == Forward) { conveyor_motor.move_velocity(600); }
-		else if(conveyorStatus == Reverse) { conveyor_motor.move_velocity(-600); }
-
 		if(master.get_digital_new_press(DIGITAL_R1))
 		{
-			if(conveyorStatus == Idle || conveyorStatus == Reverse) { conveyorStatus == Forward; }
-			else { conveyorStatus == Idle; }
+			if(conveyorStatus == Idle || conveyorStatus == Reverse) { conveyorStatus = Forward; }
+			else { conveyorStatus = Idle; }
 		}
 		else if(master.get_digital_new_press(DIGITAL_R2))
 		{
-			if(conveyorStatus == Idle || conveyorStatus == Forward) { conveyorStatus == Reverse; }
-			else { conveyorStatus == Idle; }
+			if(conveyorStatus == Idle || conveyorStatus == Forward) { conveyorStatus = Reverse; }
+			else { conveyorStatus = Idle; }
 		}
+
+		if(conveyorStatus == Idle) { conveyor_motor.move_velocity(0); }
+		else if(conveyorStatus == Forward) { conveyor_motor.move_velocity(600); }
+		else if(conveyorStatus == Reverse) { conveyor_motor.move_velocity(-600); }
+		
 		pros::delay(2);
 	}
 }

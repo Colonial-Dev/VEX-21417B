@@ -16,7 +16,7 @@ using namespace okapi;
 
 void initialize() 
 {
-  while(inertial_sensor.is_calibrating()) { pros::delay(2); }
+  //while(inertial_sensor.is_calibrating()) { pros::delay(2); }
 
   setupBrakeModes();
   splashDisplay();
