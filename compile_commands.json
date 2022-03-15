@@ -27,10 +27,10 @@
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
-            "bin/VEX-21417A.cpp.o",
-            "src/VEX-21417A.cpp"
+            "bin/VEX-21417B.cpp.o",
+            "src/VEX-21417B.cpp"
         ],
         "directory": "/home/eagle/Documents/21417A",
-        "file": "src/VEX-21417A.cpp"
+        "file": "src/VEX-21417B.cpp"
     }
 ]

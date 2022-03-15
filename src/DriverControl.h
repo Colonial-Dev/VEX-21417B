@@ -1,70 +1,100 @@
 #pragma once
 
+//Axis 3 is translation, axis 1 is rotation
 void tankTransmission()
 {
 	while (true) 
 	{	
-    	right_back.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
-		right_middle.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
-		right_front.move(master.get_analog(ANALOG_RIGHT_Y) * throttleMultiplier);
-    	
-		left_back.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
-		left_middle.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
-		left_front.move(master.get_analog(ANALOG_LEFT_Y) * throttleMultiplier);
+		right_front.move(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_RIGHT_X))	;
+		right_middle.move(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_RIGHT_X));
+    	right_back.move(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_RIGHT_X));
+
+    	left_front.move(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X));
+		left_middle.move(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X));
+		left_back.move(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X));
 
 		pros::delay(2);
 	}
 }
 
-//port 6 - back lift
-//port 1 - front lift right
-//port 5 - front lift left
-//port 8 - claw motor
+//L1 up, L2 down
 void mainLiftControl()
 {
-  	//R1 up, R2 down
   	while(true)
 	{
-		if(master.get_digital(DIGITAL_R1))
-		{
-			arm_motor.move_velocity(200);
-		}
-		else if(master.get_digital(DIGITAL_R2))
-		{
-			arm_motor.move_velocity(-200);
-		}
-		else
-		{
-			arm_motor.move_velocity(0);
-		}
+		if(master.get_digital(DIGITAL_L1)) { arm_motor.move_velocity(200); }
+		else if(master.get_digital(DIGITAL_L2)) { arm_motor.move_velocity(-200); }
+		else { arm_motor.move_velocity(0); }
 		pros::delay(2);
 	}
 }
 
-void clampControl()
+//B to close, Y to open
+void frontClampControl()
 {
-  	//R1 open , R2 close
   	while(true)
 	{
-		if(master.get_digital(DIGITAL_L2))
-		{
-			claw_motor.move_velocity(200);
-		}
-		else if(master.get_digital(DIGITAL_L1))
-		{
-			claw_motor.move_velocity(-200);
-		}
-		else{
-			claw_motor.move_velocity(0);
-		}
+		if(master.get_digital_new_press(DIGITAL_B)) { clamp_piston.set_value(true); }
+		else if(master.get_digital_new_press(DIGITAL_Y)) { clamp_piston.set_value(false); }
 		pros::delay(2);
   	}
 }
 
+//Down to close, right to open
+void rearClampControl()
+{
+	while(true)
+	{
+		if(master.get_digital_new_press(DIGITAL_DOWN)) { clamp_piston.set_value(true); }
+		else if(master.get_digital_new_press(DIGITAL_RIGHT)) { clamp_piston.set_value(false); }
+		pros::delay(2);
+	}
+}
+
+//X to close, A to open
+
+void topClampControl()
+{
+	while(true)
+	{
+		if(master.get_digital_new_press(DIGITAL_X)) { clamp_piston.set_value(false); }
+		else if(master.get_digital_new_press(DIGITAL_A)) { clamp_piston.set_value(true); }
+		pros::delay(2);
+	}
+}
+
+//R1 forward, R2 reverse
+void conveyorControl()
+{
+	int conveyorStatus = Idle;
+
+	while(true)
+	{
+		if(conveyorStatus == Idle) { conveyor_motor.move_velocity(0); }
+		else if(conveyorStatus == Forward) { conveyor_motor.move_velocity(600); }
+		else if(conveyorStatus == Reverse) { conveyor_motor.move_velocity(-600); }
+
+		if(master.get_digital_new_press(DIGITAL_R1))
+		{
+			if(conveyorStatus == Idle || conveyorStatus == Reverse) { conveyorStatus == Forward; }
+			else { conveyorStatus == Idle; }
+		}
+		else if(master.get_digital_new_press(DIGITAL_R2))
+		{
+			if(conveyorStatus == Idle || conveyorStatus == Forward) { conveyorStatus == Reverse; }
+			else { conveyorStatus == Idle; }
+		}
+		pros::delay(2);
+	}
+}
+
+
 void opcontrol() 
 {
-	brainPrint("#0000ff [INFO]# Initializing operator control...");
-	pros::Task Transmission(tankTransmission);
-	pros::Task FrontLift(mainLiftControl);
-	pros::Task Clamp(clampControl);
+	pros::Task transmission(tankTransmission);
+	pros::Task frontLift(mainLiftControl);
+	pros::Task frontClamp(frontClampControl);
+	pros::Task rearClamp(rearClampControl);
+	pros::Task topClamp(topClampControl);
+	pros::Task conveyor(conveyorControl);
 }

@@ -4,19 +4,29 @@
 
 using namespace okapi::literals;
 
-pros::Controller master (CONTROLLER_MASTER);
+pros::Controller master (CONTROLLER_MASTER); //Acquire the controller for global use
 
-pros::Motor right_back (12);
-pros::Motor right_middle (15, true);
-pros::Motor right_front (16);
-pros::Motor left_back (19, true);
-pros::Motor left_middle (6);
-pros::Motor left_front (9, true);
+//Initialize drivetrain motors
+pros::Motor right_back (12, true);
+pros::Motor right_middle (15);
+pros::Motor right_front (16, true);
+pros::Motor left_back (19);
+pros::Motor left_middle (6, true);
+pros::Motor left_front (9);
 
-pros::Motor arm_motor (8);
-pros::Motor claw_motor (1);
+//Initialize manipulator motors/pneumatics
+pros::Motor arm_motor (5);
+pros::Motor conveyor_motor (8);
+pros::ADIDigitalOut back_piston ('G');
+pros::ADIDigitalOut clamp_piston ('E');
 
-pros::IMU inertial_sensor (17);
+//Initialize sensors
+pros::IMU inertial_sensor (14);
+pros::ADIEncoder left_encoder ('A', 'B');
+pros::ADIEncoder right_encoder ('C', 'D');
+pros::ADIAnalogIn potentiometer ('H'); 
+
+
 
 double GEAR_RATIO = 60.0/84.0;
 
@@ -34,13 +44,13 @@ auto driveTrain = okapi::ChassisControllerBuilder()
   
 void setupBrakeModes()
 {
-  right_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  right_front.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  left_back.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  left_middle.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-  left_front.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  right_back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  right_front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  left_back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  left_middle.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  left_front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
   arm_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  claw_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  conveyor_motor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 }

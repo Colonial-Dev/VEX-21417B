@@ -28,7 +28,6 @@ void initialize()
 
 void autonomous()
 {
-  brainPrint("#0000ff [INFO]# Auton start!");
   if(targetAutonSide == Null) { return; }
 
   if(targetAutonSide == Left)
@@ -46,6 +45,5 @@ void autonomous()
     
   }
 
-  brainPrint("#0000ff [INFO]# Auton complete!");
 }
 

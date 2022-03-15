@@ -1,5 +1,12 @@
 #pragma once
 
+enum ConveyorStatus
+{
+  Idle,
+  Forward,
+  Reverse
+};
+
 enum AutonSide
 {
   Null,

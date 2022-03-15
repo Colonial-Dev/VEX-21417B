@@ -12,7 +12,6 @@ void inertialTurn(double angle)
     while(fabs(error) > threshold)
     {  
         error = angle - inertial_sensor.get_rotation();
-        debugPrint(std::to_string(error) + " || " + std::to_string(right_back.get_actual_velocity()) + " || " + to_string(threshold));
         integral  = integral + error;
 
 		if(error == 0 || fabs(error) >= angle)

@@ -10,4 +10,3 @@ int targetAutonSide = Right;
 std::string targetAutonSideLabel = "R";
 int targetAutonStrategy = DoubleRush;
 std::string targetAutonStrategyLabel = "DR";
-float throttleMultiplier = 1.0f;

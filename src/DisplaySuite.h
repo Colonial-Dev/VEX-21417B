@@ -9,51 +9,12 @@ std::string spacerText = "                                                      
 int motorPorts [8] = {12, 15, 16, 19, 6, 9, 8, 1};
 std::vector<int> failedMotors;
 
-int holdCycleCount = 0;
-std::string holdCycleMessages [3] = {"Holding...", "Press DOWN or", "plug in comp switch."};
-
 lv_obj_t * outputLabel =  lv_label_create(lv_scr_act(), NULL);
 lv_obj_t * debugLabel = lv_label_create(lv_scr_act(), NULL);
 
 bool POST()
 {
-    for(int i = 0; i < 8; i++)
-    {
-        pros::Motor motor (motorPorts[i]);
-        motor.get_power();
-        if(errno == ENODEV)
-        {
-            failedMotors.push_back(motorPorts[i]);
-            errno = 0;
-        }
-    }
-
-    if(!failedMotors.empty())
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-void brainPrint(std::string str)
-{
-    std::string newlined = str + "\n";
-    lv_label_ins_text(outputLabel, LV_LABEL_POS_LAST, newlined.c_str());
-}
-
-void controllerPrint(pros::Controller master, std::string content, std::string prefix = "")
-{
-  if(!pros::competition::is_connected()){pros::delay(50);}
-  else{pros::delay(10);}
-  master.set_text(0, 0, prefix + content + spacerText);
-}
-
-void debugPrint(std::string str)
-{
-    lv_label_set_text(debugLabel, str.c_str());
+    return true;
 }
 
 void splashDisplay()
@@ -68,16 +29,10 @@ void splashDisplay()
 
     if(POST() == false)
     {
-        brainPrint("#ff0000 [ERR]# Power-On Self Test failure!");
-        std::string failedPortNums = "Failed ports: ";
-        for(int i = 0; i < failedMotors.size(); i++)
-        {
-            failedPortNums = failedPortNums + std::to_string(failedMotors.at(i)) + " ";
-        }
-        brainPrint(failedPortNums);
+
     }
     else
     {
-        brainPrint("Power-On Self Test #00ff00 [OK]#");
+        
     }
 }
