@@ -7,9 +7,8 @@ using namespace std;
 using namespace okapi;
 
 #include "Enums.h"
-#include "InterfaceSetup.h"
 #include "RobotSetup.h"
-#include "DisplaySuite.h"
+#include "Display/DisplaySuite.h"
 #include "AutonSubroutines.h"
 #include "Macros.h"
 #include "DriverControl.h"
@@ -28,7 +27,7 @@ void initialize()
 
 void autonomous()
 {
-  if(targetAutonSide == Null) { return; }
+  if(targetAutonSide == None) { return; }
 
   if(targetAutonSide == Left)
   {

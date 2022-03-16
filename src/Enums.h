@@ -9,10 +9,10 @@ enum ConveyorStatus
 
 enum AutonSide
 {
-  Null,
-  Left,
   Right,
-  Skills
+  Left,
+  Skills,
+  None
 };
 
 enum AutonStrat
@@ -20,4 +20,12 @@ enum AutonStrat
   SimpleRush, //Go straight forwards, grab the mobile goal, and return.
   DoubleRush, //Go straight forwards, grab the mobile goal, turn and grab the colored goal, and finally return.
   StackRush, //Grab the colored goal as a counterweight, then pick up the middle mobile goal and return.
+};
+
+enum GUIPage
+{
+  Home,
+  Hardware,
+  Odom,
+  Debug
 };
