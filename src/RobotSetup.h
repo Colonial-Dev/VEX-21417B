@@ -25,23 +25,29 @@ pros::ADIDigitalOut top_piston ('F');
 pros::IMU inertial_sensor (14);
 pros::ADIEncoder left_encoder ('A', 'B');
 pros::ADIEncoder right_encoder ('C', 'D');
+pros::ADIEncoder middle_encoder ('E', 'F');
 pros::ADIAnalogIn potentiometer ('H'); 
-
-
 
 double GEAR_RATIO = 60.0/84.0;
 
-auto driveTrain = okapi::ChassisControllerBuilder()
+auto drive_train = okapi::ChassisControllerBuilder()
   .withMotors({19, 6, 9}, {12, 15, 16})
-  .withGains
+  /*.withGains
   (
-    {0.001, 0, 0.0001}, // Distance controller gains
-    {0.0032, 0.0003, 0.0001}, // Turn controller gains
-    {0.7, 0.001, 0.0001}  // Angle controller gains
+      {0.001, 0, 0.0001}, //Distance gains
+      {0.0032, 0.0003, 0.0001}, //Turn gains
+      {0.7, 0.001, 0.0001}  //Angle gains
+  )*/
+  .withSensors
+  (
+      ADIEncoder{'A', 'B'}, //Left encoder
+      ADIEncoder{'C', 'D', true}  //Right encoder
+      //ADIEncoder{'E', 'F'}  //Middle encoder
   )
-  //Green gearset, 4 in wheel diam, 11.5 in wheel track
-  .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4_in, 11.5_in}, okapi::imev5GreenTpr * GEAR_RATIO})
-  .build();
+  .withDimensions(okapi::AbstractMotor::gearset::green, {{2.75_in, 5_in}, quadEncoderTPR})
+  //Tracking wheel radius, side wheel track, distance from CoR to middle wheel, middle wheel radius, state mode
+  .withOdometry()//{{2.75_in, 5_in, 3.5_in, 2.75_in}, quadEncoderTPR}, StateMode::FRAME_TRANSFORMATION)     
+  .buildOdometry(); //Build an odometry-enabled chassis
   
 void setupBrakeModes()
 {

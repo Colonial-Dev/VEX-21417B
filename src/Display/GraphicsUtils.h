@@ -4,6 +4,9 @@ void configureTheming()
     theme->btnm.bg->body.radius = 0;
     theme->btnm.btn.pr->body.radius = 0;
     theme->btnm.btn.rel->body.main_color = LV_COLOR_BLACK;
+    theme->btnm.btn.rel->body.radius = 0;
+    theme->btnm.btn.rel->body.border.color = LV_COLOR_GRAY;
+    theme->btnm.btn.rel->body.border.width = 1;
     theme->page.bg->body.radius = 0;
     theme->page.bg->body.main_color = LV_COLOR_BLACK;
     theme->page.bg->body.grad_color = LV_COLOR_BLACK;
@@ -11,7 +14,25 @@ void configureTheming()
     theme->page.bg->body.padding.ver = 0;
     theme->cont->body.border.width=1;
     theme->cont->body.padding.inner=0;
+    theme->btn.pr->body.radius=0;
+    theme->btn.rel->body.radius=0;
+    theme->btn.rel->body.border.color = LV_COLOR_GRAY;
     lv_theme_set_current(theme); 
+}
+
+lv_obj_t * createButton(lv_obj_t *parent, std::string label, int size_x, int size_y, lv_align_t alignment, int x_offset, int y_offset, lv_action_t action = NULL)
+{
+    lv_obj_t * newButton = lv_btn_create(parent, NULL);
+    lv_obj_set_size(newButton, size_x, size_y);
+    lv_obj_align(newButton, NULL, alignment, x_offset, y_offset);
+    if(action != NULL) { lv_btn_set_action(newButton, LV_BTN_ACTION_CLICK, action); }
+
+    lv_obj_t * buttonLabel = lv_label_create(newButton, NULL);
+    lv_label_set_recolor(buttonLabel, true);
+    lv_label_set_text(buttonLabel, label.c_str());
+    lv_obj_align(buttonLabel, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
+
+    return newButton;
 }
 
 lv_obj_t * createMatrix(const char **map, int size_x, int size_y, lv_obj_t *parent, lv_align_t alignment, int x_offset, int y_offset, lv_btnm_action_t action = NULL)
@@ -20,8 +41,8 @@ lv_obj_t * createMatrix(const char **map, int size_x, int size_y, lv_obj_t *pare
     lv_btnm_set_map(newMatrix, map);
     lv_obj_set_size(newMatrix, size_x, size_y);
     lv_obj_align(newMatrix, NULL, alignment, x_offset, y_offset);
+    lv_btnm_set_recolor(newMatrix, true);
     if(action != NULL) { lv_btnm_set_action(newMatrix, action); }
-
     return newMatrix;
 }
 
@@ -64,6 +85,11 @@ lv_obj_t * createLabel(lv_obj_t *parent, std::string initialText, lv_label_align
     lv_obj_align(newLabel, NULL, alignment, x_offset, y_offset);
     lv_label_set_recolor(newLabel, true);  
     return newLabel;
+}
+
+void statusPrint(std::string new_content)
+{
+    lv_label_set_text(status_text, new_content.c_str());
 }
 
 void tacitPrint(std::string message)

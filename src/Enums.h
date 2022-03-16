@@ -1,5 +1,12 @@
 #pragma once
 
+enum RobotStatus
+{
+  Driver,
+  Auton,
+  Disabled
+};
+
 enum ConveyorStatus
 {
   Idle,
@@ -9,8 +16,8 @@ enum ConveyorStatus
 
 enum AutonSide
 {
-  Right,
   Left,
+  Right,
   Skills,
   None
 };
@@ -25,7 +32,14 @@ enum AutonStrat
 enum GUIPage
 {
   Home,
-  Hardware,
+  Logs,
   Odom,
   Debug
+};
+
+enum AutonSelectionStage
+{
+  Side,
+  Strategy,
+  Complete
 };
