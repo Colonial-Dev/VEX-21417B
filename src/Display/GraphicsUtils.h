@@ -1,3 +1,5 @@
+#pragma once
+
 void configureTheming()
 {
     theme->btnm.bg->body.border.color = LV_COLOR_GRAY;

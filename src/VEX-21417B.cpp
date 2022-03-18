@@ -7,11 +7,12 @@ using namespace std;
 using namespace okapi;
 
 #include "Enums.h"
-#include "RobotSetup.h"
-#include "Display/DisplaySuite.h"
-#include "AutonSubroutines.h"
 #include "Macros.h"
-#include "DriverControl.h"
+#include "RobotSetup.h"
+#include "Autonomous/OperatorRecording.h"
+#include "Autonomous/Subroutines.h"
+#include "Display/DisplaySuite.h"
+#include "DriverControl.h" 
 
 void initialize() 
 {

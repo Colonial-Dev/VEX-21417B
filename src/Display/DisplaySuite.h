@@ -1,7 +1,7 @@
 //Note: Rendering area is 480x239 pixels
 #pragma once
 #include "pros/apix.h"
-#include "InterfaceGlobals.h"
+#include "InterfaceSetup.h"
 #include "GraphicsUtils.h"
 #include "EventHandlers.h"
 

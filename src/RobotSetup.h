@@ -1,6 +1,4 @@
 #pragma once
-#include "Enums.h"
-#include "Macros.h"
 
 using namespace okapi::literals;
 
@@ -41,12 +39,12 @@ auto drive_train = okapi::ChassisControllerBuilder()
   .withSensors
   (
       ADIEncoder{'A', 'B'}, //Left encoder
-      ADIEncoder{'C', 'D', true}  //Right encoder
-      //ADIEncoder{'E', 'F'}  //Middle encoder
+      ADIEncoder{'C', 'D', true},  //Right encoder
+      ADIEncoder{'E', 'F'}  //Middle encoder
   )
-  .withDimensions(okapi::AbstractMotor::gearset::green, {{2.75_in, 5_in}, quadEncoderTPR})
   //Tracking wheel radius, side wheel track, distance from CoR to middle wheel, middle wheel radius, state mode
-  .withOdometry()//{{2.75_in, 5_in, 3.5_in, 2.75_in}, quadEncoderTPR}, StateMode::FRAME_TRANSFORMATION)     
+  .withDimensions(okapi::AbstractMotor::gearset::green, {{2.75_in, 5_in, 3.5_in, 2.75_in}, quadEncoderTPR})
+  .withOdometry() //Use same dimensions as chassis
   .buildOdometry(); //Build an odometry-enabled chassis
   
 void setupBrakeModes()

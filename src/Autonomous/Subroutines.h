@@ -1,3 +1,5 @@
+#pragma once
+
 void inertialTurn(double angle)
 {
 	double error = angle - inertial_sensor.get_rotation();

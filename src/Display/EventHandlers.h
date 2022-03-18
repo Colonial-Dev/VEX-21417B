@@ -1,3 +1,5 @@
+#pragma once
+
 void statusUpdateTask(void*)
 {
     std::string statusReadout = "";
