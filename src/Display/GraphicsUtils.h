@@ -22,6 +22,12 @@ void configureTheming()
     lv_theme_set_current(theme); 
 }
 
+void configureStyling()
+{
+    confirm_style.text.font = &lv_font_dejavu_20;
+    status_style.text.font = &lv_font_monospace_8;
+}
+
 lv_obj_t * createButton(lv_obj_t *parent, std::string label, int size_x, int size_y, lv_align_t alignment, int x_offset, int y_offset, lv_action_t action = NULL)
 {
     lv_obj_t * newButton = lv_btn_create(parent, NULL);
@@ -92,16 +98,4 @@ lv_obj_t * createLabel(lv_obj_t *parent, std::string initialText, lv_label_align
 void statusPrint(std::string new_content)
 {
     lv_label_set_text(status_text, new_content.c_str());
-}
-
-void tacitPrint(std::string message)
-{
-    message = "\n" + message;
-    lv_ta_add_text(tacit_log, message.c_str());
-}
-
-void verbosePrint(std::string message)
-{
-    message = "\n" + message;
-    lv_ta_add_text(verbose_log, message.c_str());
 }

@@ -1,5 +1,22 @@
 #pragma once
 
+void autonomous_async()
+{
+  driverControlLocked = true;
+  
+  pros::delay(50);
+  master.rumble("-");
+  pros::delay(1000);
+  master.rumble("-");
+  pros::delay(1000);
+  master.rumble("---");
+  pros::delay(1000);
+
+  autonomous();
+
+  driverControlLocked = false;
+}
+
 void inertialTurn(double angle)
 {
 	double error = angle - inertial_sensor.get_rotation();

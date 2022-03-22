@@ -16,37 +16,35 @@ std::string targetAutonSideLabel = "";
 std::string targetAutonStrategyLabel = "";
 
 //Global LVGL objects/data
-static const char * bar_map[] = {"Home", "Logs", "Odom", "Debug", ""}; 
+static const char * switcher_map[] = {"Status", "Controls", ""}; 
+static const char * controls_map[] = {"#00ff00 Driver#", "\n",
+                                      "#0000ff Autonomous#", "\n",
+                                      "#808080 Disable#", "\n",
+                                      "#ff0000 Terminate#", ""}; 
 static const char * side_map[] = {"#0000FF Left#", "#FF0000 Right#", "\n", 
                                   "#FFFF00 Skills#", "#808080 None#", ""}; 
 static const char * strat_map[] = {"Alpha", "Beta", "\n", 
                                    "Gamma", "Delta", ""}; 
-static const char * mode_map[] = {"Tacit", "Verbose", ""}; 
 
 lv_theme_t * theme =  lv_theme_alien_init(180, NULL);
-LVOBJ menu_bar;
+static lv_style_t status_style;
+static lv_style_t confirm_style;
 
-LVOBJ current_page;
 LVOBJ home_page;
-LVOBJ logs_page;
-LVOBJ odom_page;
-LVOBJ debug_page;
 
-LVOBJ status_display;
+LVOBJ left_panel;
+LVOBJ status_page;
+LVOBJ controls_page;
 LVOBJ status_text;
+LVOBJ status_mode_switcher;
+LVOBJ mode_controls;
 
-LVOBJ auton_selector;
+LVOBJ right_panel;
+LVOBJ side_page;
+LVOBJ strat_page;
+LVOBJ ready_page;
+LVOBJ waiting_label;
 LVOBJ side_buttons;
 LVOBJ strat_buttons;
 LVOBJ selector_cancel;
 LVOBJ selector_finalized;
-
-LVOBJ console;
-LVOBJ tacit_log;
-LVOBJ verbose_log;
-LVOBJ console_mode_buttons;
-
-LVOBJ motor_data;
-LVOBJ inertial_data;
-LVOBJ threewire_data;
-LVOBJ placeholder_data;

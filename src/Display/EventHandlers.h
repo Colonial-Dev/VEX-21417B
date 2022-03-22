@@ -1,34 +1,36 @@
 #pragma once
 
+std::string precise_string(double value, const int n = 2)
+{
+    std::ostringstream out;
+    out.precision(n);
+    out << std::fixed << value;
+    return out.str();
+}
+
 void statusUpdateTask(void*)
 {
-    std::string statusReadout = "";
-    statusReadout += "POST OK!\n";
-    statusReadout += "Mode: Operator\n";
-    statusReadout += "Battery: " + to_string(int (pros::battery::get_capacity())) + "%\n";
-    statusReadout += to_string(right_encoder.get_value()) + " | " + to_string(middle_encoder.get_value()) + " | " + to_string(left_encoder.get_value()) + "\n";
+    std::string statusReadout;
+    std::string connectionMode;
+    std::string operatingMode;
+
+    if(pros::competition::is_connected()) { connectionMode = "[#00ff00 SWITCH#]"; } 
+    else if(!pros::competition::is_connected() && master.is_connected()) { connectionMode = "[#0000ff RADIO#]"; }
+    else { connectionMode = "[#808080 NONE#]"; }
+
+    if(!pros::competition::is_disabled() && pros::competition::is_autonomous()) { operatingMode = "[#ff0000 AUTONOMOUS#]"; }
+    else if(!pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#00ff00 DRIVER#]"; }
+    else if(pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#808080 DISABLED#]"; }
+
+
+    statusReadout += "\n LINK " + connectionMode + " | MODE " + operatingMode + "\n";
+    statusReadout += " BATTERY [" + to_string(int (pros::battery::get_capacity())) + "% | " + to_string(pros::battery::get_voltage() / 1000 ) + "V]\n";
+    statusReadout += " POSITION [" + precise_string(drive_train->getState().x.convert(inch)) + " | " + precise_string(drive_train->getState().y.convert(inch)) + "]\n";
+    statusReadout += " HEADING [" + precise_string(drive_train->getState().theta.convert(degree)) + " | " + to_string(inertial_sensor.get_heading()) + "]\n";
+    statusReadout += " ENCODERS [" + to_string(right_encoder.get_value()) + " | " + to_string(middle_encoder.get_value()) + " | " + to_string(left_encoder.get_value()) + "]\n";
     statusPrint(statusReadout);
 }
 
-lv_res_t handlePagination(lv_obj_t * obj, const char *txt)
-{
-    int activated = lv_btnm_get_pressed(obj);
-    
-    HIDE(current_page)
-    if(activated == Home) { SHOW(home_page) HIDE(verbose_log) SHOW(tacit_log) }
-    else if(activated == Logs) { SHOW(logs_page) current_page = logs_page; }
-    else if(activated == Odom) { SHOW(odom_page) current_page = odom_page; }
-    else if(activated == Debug) { SHOW(debug_page) current_page = debug_page; }
-    return LV_RES_OK;
-}
-
-lv_res_t handleConsoleModeSwitcher(lv_obj_t * obj, const char *txt)
-{
-    int activated = lv_btnm_get_pressed(obj);
-    if(activated == 1) { HIDE(tacit_log) SHOW(verbose_log) }
-    else if(activated == 0) { HIDE(verbose_log) SHOW(tacit_log) }
-    return LV_RES_OK;
-}
 
 void switchSelectorStage(int targetStage)
 {
@@ -36,20 +38,42 @@ void switchSelectorStage(int targetStage)
     {
         case Side:
         {
-            HIDE(selector_cancel)
-            HIDE(strat_buttons)
-            SHOW(side_buttons)
+            HIDE(strat_page)
+            HIDE(ready_page)
+            SHOW(side_page)
             break;
         }
         case Strategy:
         {
-            HIDE(side_buttons)
-            SHOW(selector_cancel)
-            SHOW(strat_buttons)
+            HIDE(side_page)
+            HIDE(ready_page)
+            SHOW(strat_page)
             break;
         }
         case Complete:
         {
+            HIDE(side_page)
+            HIDE(strat_page)
+            SHOW(ready_page)
+            break;
+        }
+    }
+}
+
+void switchLeftPanePage(int targetPage)
+{
+    switch(targetPage)
+    {
+        case Status:
+        {
+            HIDE(controls_page)
+            SHOW(status_page)
+            break;
+        }
+        case Controls:
+        {
+            HIDE(status_page)
+            SHOW(controls_page)
             break;
         }
     }
@@ -101,5 +125,51 @@ lv_res_t handleStratSelect(lv_obj_t * obj, const char *txt)
 lv_res_t handleSelectionCancel(lv_obj_t * obj)
 {
     switchSelectorStage(Side);
+    return LV_RES_OK;
+}
+
+lv_res_t handleStatusModeSwitcher(lv_obj_t * obj, const char *txt)
+{
+    int activated = lv_btnm_get_pressed(obj);
+    switch(activated)
+    {
+        case Status:
+        {
+            switchLeftPanePage(Status);
+            break;
+        }
+        case Controls:
+        {
+            switchLeftPanePage(Controls);
+            break;
+        }
+    }
+    return LV_RES_OK;
+}
+
+lv_res_t handleControls(lv_obj_t * obj, const char *txt)
+{
+    int activated = lv_btnm_get_pressed(obj);
+    switch(activated)
+    {
+        case Driver:
+        {
+            break;
+        }
+        case Autonomous:
+        {
+            pros::Task auton_async(autonomous_async);
+            break;
+        }
+        case Disable:
+        {
+            break;
+        }
+        case Terminate:
+        {
+            abort();
+            break;
+        }
+    }
     return LV_RES_OK;
 }

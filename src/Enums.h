@@ -1,12 +1,5 @@
 #pragma once
 
-enum RobotStatus
-{
-  Driver,
-  Auton,
-  Disabled
-};
-
 enum ConveyorStatus
 {
   Idle,
@@ -29,17 +22,23 @@ enum AutonStrat
   StackRush, //Grab the colored goal as a counterweight, then pick up the middle mobile goal and return.
 };
 
-enum GUIPage
-{
-  Home,
-  Logs,
-  Odom,
-  Debug
-};
-
 enum AutonSelectionStage
 {
   Side,
   Strategy,
   Complete
+};
+
+enum LeftPanelSwitcher
+{
+  Status,
+  Controls
+};
+
+enum ModeControls
+{
+  Driver,
+  Autonomous,
+  Disable,
+  Terminate
 };

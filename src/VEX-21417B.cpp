@@ -9,7 +9,6 @@ using namespace okapi;
 #include "Enums.h"
 #include "Macros.h"
 #include "RobotSetup.h"
-#include "Autonomous/OperatorRecording.h"
 #include "Autonomous/Subroutines.h"
 #include "Display/DisplaySuite.h"
 #include "DriverControl.h" 
@@ -17,27 +16,24 @@ using namespace okapi;
 void initialize() 
 {
   //while(inertial_sensor.is_calibrating()) { pros::delay(2); }
-
   setupBrakeModes();
   splashDisplay();
-
-  tacitPrint("Beginning power-on self test.");
-  tacitPrint("Motors [OK]");
-  tacitPrint("Pneumatics [OK]");
-  tacitPrint("ADI Sensors [OK]");
-  tacitPrint("Inertial Sensor . . . [OK]");
-  tacitPrint("OkapiLib / Chassis [OK]");
-  tacitPrint("OkapiLib / Odometry [OK]");
-  tacitPrint("POST OK - Ready!");
-
-  if(autonJumpFlag) { autonomous(); exit(0); }
-
-  if(driverJumpFlag) { opcontrol(); return; }
 }
 
 void autonomous()
 {
-  drive_train->driveToPoint({2_ft, -2_ft});
+  drive_train->turnToAngle(90_deg);
+  drive_train->waitUntilSettled();
+  drive_train->turnToAngle(0_deg);
+  drive_train->waitUntilSettled();
+
+  /*drive_train->driveToPoint({2_ft, 0_ft});
+  drive_train->waitUntilSettled();
+  drive_train->driveToPoint({2_ft, 2_ft});
+  drive_train->waitUntilSettled();
+  drive_train->driveToPoint({0_ft, 2_ft});
+  drive_train->waitUntilSettled();
+  drive_train->driveToPoint({0_ft, 0_ft});
   drive_train->waitUntilSettled();
   /*if(targetAutonSide == None) { return; }
 

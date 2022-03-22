@@ -1,7 +1,7 @@
 #pragma once
 
 //Axis 3 is translation, axis 1 is rotation
-void tankTransmission()
+void splitTransmission()
 {
 	while (true) 
 	{	
@@ -91,10 +91,33 @@ void conveyorControl()
 
 void opcontrol() 
 {
-	pros::Task transmission(tankTransmission);
+	pros::Task transmission(splitTransmission);
 	pros::Task frontLift(mainLiftControl);
 	pros::Task frontClamp(frontClampControl);
 	pros::Task rearClamp(rearClampControl);
 	pros::Task topClamp(topClampControl);
 	pros::Task conveyor(conveyorControl);
+
+	while(true)
+	{
+		if(driverControlLocked)
+		{
+			transmission.suspend();
+			frontLift.suspend();
+			frontClamp.suspend();
+			rearClamp.suspend();
+			topClamp.suspend();
+			conveyor.suspend();
+		}
+		else if(!driverControlLocked)
+		{
+			transmission.resume();
+			frontLift.resume();
+			frontClamp.resume();
+			rearClamp.resume();
+			topClamp.resume();
+			conveyor.resume();
+		}
+		pros::delay(2);
+	}
 }
