@@ -6,18 +6,17 @@
 using namespace std;
 using namespace okapi;
 
-#include "Enums.h"
-#include "Macros.h"
+#include "RobotManager.h"
 #include "RobotSetup.h"
+#include "Autonomous/RoutineMacros.h"
 #include "Autonomous/Subroutines.h"
 #include "Display/DisplaySuite.h"
 #include "DriverControl.h" 
 
 void initialize() 
 {
-  //while(inertial_sensor.is_calibrating()) { pros::delay(2); }
   setupBrakeModes();
-  splashDisplay();
+  initializeDisplay();
 }
 
 void autonomous()

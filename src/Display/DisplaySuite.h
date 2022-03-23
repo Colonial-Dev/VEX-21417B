@@ -1,17 +1,18 @@
 //Note: Rendering area is 480x239 pixels
 #pragma once
 #include "pros/apix.h"
-#include "InterfaceSetup.h"
+#include "GraphicsGlobals.h"
 #include "GraphicsUtils.h"
 #include "EventHandlers.h"
 
-#define TEAM "VEX 21417B #00ff00 Intercept#"
-#define VERSION "\nCompetition Suite v3.0.0"
-#define CODENAME " \"Worldsbound\""
-#define COMPILED "\nCompiled on " __DATE__ " at " __TIME__ "\n"
-
-void setupHomePage()
+void initializeDisplay()
 {
+    configureTheming();
+    home_page = createPage(SCREEN, 480, 239, LV_ALIGN_IN_TOP_MID, 0, 0);
+    lv_style_copy(&status_style, home_page->style_p);
+    lv_style_copy(&confirm_style, home_page->style_p);
+    configureStyling();
+    
     left_panel = createContainer(home_page, 240, 239, LV_ALIGN_IN_TOP_LEFT, 120, 0, LV_LAYOUT_OFF);
     status_mode_switcher = createMatrix(switcher_map, 240, 25, left_panel, LV_ALIGN_IN_BOTTOM_MID, 0, -1, *handleStatusModeSwitcher);
     
@@ -35,16 +36,6 @@ void setupHomePage()
     selector_cancel = createButton(strat_page, "#FF0000 Cancel#", 240, 25, LV_ALIGN_IN_BOTTOM_MID, 0, 24, *handleSelectionCancel);
 
     ready_page = createPage(right_panel, 240, 239, LV_ALIGN_IN_TOP_LEFT, 0, 0, true);
-}
-
-void splashDisplay()
-{
-    configureTheming();
-    home_page = createPage(SCREEN, 480, 239, LV_ALIGN_IN_TOP_MID, 0, 0);
-    lv_style_copy(&status_style, home_page->style_p);
-    lv_style_copy(&confirm_style, home_page->style_p);
-    configureStyling();
-    setupHomePage();
 
     static uint32_t user_data = 10;
     lv_task_t * status_update_task = lv_task_create(statusUpdateTask, 50, LV_TASK_PRIO_MID, &user_data);

@@ -2,7 +2,34 @@
 
 using namespace okapi::literals;
 
-pros::Controller master (CONTROLLER_MASTER); //Acquire the controller for global use
+//Robot state enums
+enum ConveyorStatus
+{
+  Idle,
+  Forward,
+  Reverse
+};
+
+enum AutonSide
+{
+  Left,
+  Right,
+  Skills,
+  None
+};
+
+enum AutonStrat
+{
+  SimpleRush, //Go straight forwards, grab the mobile goal, and return.
+  DoubleRush, //Go straight forwards, grab the mobile goal, turn and grab the colored goal, and finally return.
+  StackRush, //Grab the colored goal as a counterweight, then pick up the middle mobile goal and return.
+};
+
+//Create overwatch insttance
+RobotManager overwatch;
+
+//Acquire the controller for global use
+pros::Controller master (CONTROLLER_MASTER);
 
 //Initialize drivetrain motors
 pros::Motor right_back (12, true);
@@ -26,6 +53,7 @@ pros::ADIEncoder right_encoder ('C', 'D');
 pros::ADIEncoder middle_encoder ('E', 'F');
 pros::ADIAnalogIn potentiometer ('H'); 
 
+//Drivetrain gear ratio constant
 double GEAR_RATIO = 60.0/84.0;
 
 auto drive_train = okapi::ChassisControllerBuilder()
@@ -46,8 +74,6 @@ auto drive_train = okapi::ChassisControllerBuilder()
   //Specify odometry dimensions and encoder type
   .withOdometry({{2.75_in, 5_in, 3.5_in, 2.75_in}, quadEncoderTPR})
   .buildOdometry(); //Build an odometry-enabled chassis
-
-bool driverControlLocked = false;
   
 void setupBrakeModes()
 {

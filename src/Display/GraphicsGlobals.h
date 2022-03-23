@@ -4,12 +4,29 @@
 #define HIDE(x) lv_obj_set_hidden(x, true);
 #define SHOW(x) lv_obj_set_hidden(x, false);
 
+//Button enums
+enum AutonSelectionStage
+{
+  Side,
+  Strategy,
+  Complete
+};
+
+enum LeftPanelSwitcher
+{
+  Status,
+  Controls
+};
+
+enum ModeControls
+{
+  Driver,
+  Autonomous,
+  Disable,
+  Terminate
+};
+
 //Global state constants
-bool postStatus = false;
-bool readyToLaunch = false;
-bool autonJumpFlag = false;
-bool driverJumpFlag = false;
-bool hotkeyMode = false;
 int targetAutonSide = Right;
 int targetAutonStrategy = DoubleRush;
 std::string targetAutonSideLabel = "";
@@ -38,6 +55,7 @@ LVOBJ controls_page;
 LVOBJ status_text;
 LVOBJ status_mode_switcher;
 LVOBJ mode_controls;
+LVOBJ autonomous_mask;
 
 LVOBJ right_panel;
 LVOBJ side_page;

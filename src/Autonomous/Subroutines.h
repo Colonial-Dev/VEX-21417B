@@ -2,8 +2,8 @@
 
 void autonomous_async()
 {
-  driverControlLocked = true;
-  
+  overwatch.suspendDriverControl();
+
   pros::delay(50);
   master.rumble("-");
   pros::delay(1000);
@@ -14,7 +14,7 @@ void autonomous_async()
 
   autonomous();
 
-  driverControlLocked = false;
+  overwatch.resumeDriverControl();
 }
 
 void inertialTurn(double angle)
