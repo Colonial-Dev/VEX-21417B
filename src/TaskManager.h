@@ -1,6 +1,6 @@
 #pragma once
 
-class RobotManager
+class TaskManager
 {
     private:
 

@@ -26,7 +26,7 @@ enum AutonStrat
 };
 
 //Create overwatch insttance
-RobotManager overwatch;
+TaskManager overwatch;
 
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
@@ -61,7 +61,7 @@ auto drive_train = okapi::ChassisControllerBuilder()
   .withGains
   (
       {0.001, 0, 0.0001}, //Distance gains
-      {0.0042, 0.0003, 0.0001}, //Turn gains
+      {0.0032, 0.0003, 0.0001}, //Turn gains
       {0.7, 0.001, 0.0001}  //Angle gains
   )
   .withSensors
@@ -72,7 +72,7 @@ auto drive_train = okapi::ChassisControllerBuilder()
   )
   .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4_in, 11_in}, okapi::imev5GreenTPR * GEAR_RATIO})
   //Specify odometry dimensions and encoder type
-  .withOdometry({{2.75_in, 5_in, 3.5_in, 2.75_in}, quadEncoderTPR})
+  .withOdometry({{3.819_in, 5.16495_in, 3.5_in, 2.75_in}, quadEncoderTPR})
   .buildOdometry(); //Build an odometry-enabled chassis
   
 void setupBrakeModes()

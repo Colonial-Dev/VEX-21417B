@@ -1,0 +1,53 @@
+#pragma once
+
+class Vector
+{
+    public:
+        double x_component;
+        double y_component;
+        
+        Vector(double x_comp, double y_comp)
+        {
+            x_component = x_comp;
+            y_component = y_comp;
+        }
+
+        Vector(RawPoint point)
+        {
+            x_component = point.x_pos;
+            y_component = point.y_pos;
+        }
+
+        double magnitude()
+        {
+            double x_pow = std::pow((x_component), 2);
+            double y_pow = std::pow((y_component), 2);
+            return std::sqrt(x_pow + y_pow);
+        }
+
+        double direction()
+        {
+            double theta = std::atan2(y_component, x_component)
+            return (theta + 360) % 360; 
+        }
+
+        Vector normalize()
+        {
+            Vector normalizedVector;
+            double mag = magnitude();
+            if(mag != 0)
+            { 
+                normalizedVector.x_component = x_component / mag;
+                normalizedVector.y_component = y_component / mag;
+            }
+            return normalizedVector;
+        }
+
+        Vector scalarMult(double scalar)
+        {
+            Vector scaledVector;
+            scaledVector.x_component = x_component * scalar;
+            scaledVector.y_component = y_component * scalar;
+            return scaledVector;
+        }
+}
