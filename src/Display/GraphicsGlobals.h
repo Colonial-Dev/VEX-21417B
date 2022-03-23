@@ -22,8 +22,8 @@ enum ModeControls
 {
   Driver,
   Autonomous,
-  Disable,
-  Terminate
+  Reset,
+  Kill
 };
 
 //Global state constants
@@ -36,8 +36,8 @@ std::string targetAutonStrategyLabel = "";
 static const char * switcher_map[] = {"Status", "Controls", ""}; 
 static const char * controls_map[] = {"#00ff00 Driver#", "\n",
                                       "#0000ff Autonomous#", "\n",
-                                      "#808080 Disable#", "\n",
-                                      "#ff0000 Terminate#", ""}; 
+                                      "#FFA500 Reset#", "\n",
+                                      "#ff0000 Abort#", ""}; 
 static const char * side_map[] = {"#0000FF Left#", "#FF0000 Right#", "\n", 
                                   "#FFFF00 Skills#", "#808080 None#", ""}; 
 static const char * strat_map[] = {"Alpha", "Beta", "\n", 

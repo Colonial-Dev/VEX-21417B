@@ -61,7 +61,12 @@ One of the libraries bundled with PROS is LVGL, a graphics toolkit that handles 
 
 Unfortunately, a lot of the power (and therefore complexity) behind LVGL still bleeds through, so I took a spare Brain home over the weekend so I could handle all the grunt work of writing a UI without wasting proper practice time. I *would* put some code here, but it's mostly just a bunch of verbose commands specifying exactly where to put everything on the screen - nothing exciting or special.
 
-// I meant to take a picture of the Brain UI to put here but forgot, if you'd like I can send it to you tommorow? //
+![BrainUI_A](https://imgur.com/15Xsv2p.png) ![BrainUI_B](https://imgur.com/KFJGc7m.png)
+
+Above are some pictures of the (mostly) final product.
+- When you first start the program, the display defaults to showing the status readout and auton selector. The former shows live information about the current state of the robot and attached devices, including the output from odometry and the inertial sensor.
+- You can switch the left pane to the control menu. This is primarily useful for test-running autons, although it can also be used to reset the program (i.e. recalibrate the odometry, inertial sensors etc so it's like the program was just started) or forcefully terminate it.
+- The auton selector first prompts you for a side and then a strategy (if applicable), before finally showing a "ready" screen with your choice. A cancel button is available if you make a mistake, and the ready screen also has a "Help" button that will show any applicable info about the selection.
 
 ### Odometry Goes Brr
 As aformentioned, OkapiLib is a library bundled with PROS that handles all the nasty mathematical bits of stuff like odometry for you. Since I lack the knowledge required to properly comprehend said nasty mathematical bits, this is obviously very helpful, and as such it's my first stop on the way to 290+ points.

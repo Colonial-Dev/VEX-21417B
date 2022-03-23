@@ -13,6 +13,7 @@ void statusUpdateTask(void*)
     std::string statusReadout;
     std::string connectionMode;
     std::string operatingMode;
+    std::string inertialHeading;
 
     if(pros::competition::is_connected()) { connectionMode = "[#00ff00 SWITCH#]"; } 
     else if(!pros::competition::is_connected() && master.is_connected()) { connectionMode = "[#0000ff RADIO#]"; }
@@ -22,11 +23,14 @@ void statusUpdateTask(void*)
     else if(!pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#00ff00 DRIVER#]"; }
     else if(pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#808080 DISABLED#]"; }
 
+    if(inertial_sensor.get_heading() == INFINITY) { inertialHeading = "Calibrating..."; }
+    else{ inertialHeading = to_string(inertial_sensor.get_heading()); }
+
 
     statusReadout += "\n LINK " + connectionMode + " | MODE " + operatingMode + "\n";
-    statusReadout += " BATTERY [" + to_string(int (pros::battery::get_capacity())) + "% | " + to_string(pros::battery::get_voltage() / 1000 ) + "V]\n";
+    statusReadout += " BATTERY [" + to_string(int (pros::battery::get_capacity())) + "% | " + precise_string(pros::battery::get_voltage() / 1000.0, 3) + "V]\n";
     statusReadout += " POSITION [" + precise_string(drive_train->getState().x.convert(inch)) + " | " + precise_string(drive_train->getState().y.convert(inch)) + "]\n";
-    statusReadout += " HEADING [" + precise_string(drive_train->getState().theta.convert(degree)) + " | " + to_string(inertial_sensor.get_heading()) + "]\n";
+    statusReadout += " HEADING [" + precise_string(drive_train->getState().theta.convert(degree)) + " | " + inertialHeading + "]\n";
     statusReadout += " ENCODERS [" + to_string(right_encoder.get_value()) + " | " + to_string(middle_encoder.get_value()) + " | " + to_string(left_encoder.get_value()) + "]\n";
     statusPrint(statusReadout);
 }
@@ -149,11 +153,12 @@ lv_res_t handleStatusModeSwitcher(lv_obj_t * obj, const char *txt)
 
 lv_res_t handleControls(lv_obj_t * obj, const char *txt)
 {
-    int activated = lv_btnm_get_pressed(obj);
-    switch(activated)
+    int toggled = lv_btnm_get_pressed(obj);
+    switch(toggled)
     {
         case Driver:
         {
+            overwatch.resumeDriverControl();
             break;
         }
         case Autonomous:
@@ -161,11 +166,11 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
             pros::Task auton_async(autonomous_async);
             break;
         }
-        case Disable:
+        case Reset:
         {
             break;
         }
-        case Terminate:
+        case Kill:
         {
             abort();
             break;

@@ -97,10 +97,17 @@ void conveyorControl()
 
 void opcontrol() 
 {
-	overwatch.registerDriverTask(pros::Task transmission(splitTransmission));
-	overwatch.registerDriverTask(pros::Task frontLift(mainLiftControl));
-	overwatch.registerDriverTask(pros::Task frontClamp(frontClampControl));
-	overwatch.registerDriverTask(pros::Task rearClamp(rearClampControl));
-	overwatch.registerDriverTask(pros::Task topClamp(topClampControl));
-	overwatch.registerDriverTask(pros::Task conveyor(conveyorControl));
+	pros::Task transmission(splitTransmission);
+	pros::Task frontLift(mainLiftControl);
+	pros::Task frontClamp(frontClampControl);
+	pros::Task rearClamp(rearClampControl);
+	pros::Task topClamp(topClampControl);
+	pros::Task conveyor(conveyorControl);
+
+	overwatch.registerDriverTask(transmission);
+	overwatch.registerDriverTask(frontLift);
+	overwatch.registerDriverTask(frontClamp);
+	overwatch.registerDriverTask(rearClamp);
+	overwatch.registerDriverTask(topClamp);
+	overwatch.registerDriverTask(conveyor);
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 class RobotManager
 {
     private:
@@ -6,8 +8,9 @@ class RobotManager
 
     public:
 
-        void registerDriverTask(pros::Task newTask)
+        void registerDriverTask(pros::task_t task)
         {
+            pros::Task newTask(task);
             newTask.notify();
             driverTasks.push_back(newTask);
         }
