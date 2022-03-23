@@ -38,13 +38,13 @@ auto drive_train = okapi::ChassisControllerBuilder()
   )
   .withSensors
   (
-      ADIEncoder{'A', 'B', true}, //Left encoder
+      ADIEncoder{'A', 'B', true}, //Left encoder (inverted)
       ADIEncoder{'C', 'D'},  //Right encoder
-      ADIEncoder{'E', 'F', true}  //Middle encoder
+      ADIEncoder{'E', 'F', true}  //Middle encoder (inverted)
   )
-  //Tracking wheel radius, side wheel track, distance from CoR to middle wheel, middle wheel radius, state mode
   .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4_in, 11_in}, okapi::imev5GreenTPR * GEAR_RATIO})
-  .withOdometry({{2.75_in, 5_in, 3.5_in, 2.75_in}, quadEncoderTPR}) //Use same dimensions as chassis
+  //Specify odometry dimensions and encoder type
+  .withOdometry({{2.75_in, 5_in, 3.5_in, 2.75_in}, quadEncoderTPR})
   .buildOdometry(); //Build an odometry-enabled chassis
 
 bool driverControlLocked = false;
