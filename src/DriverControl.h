@@ -1,4 +1,5 @@
 #pragma once
+#define WAIT_FOR_AUTH pros::Task::notify_take(true, TIMEOUT_MAX); pros::Task::current().notify_ext(1, NOTIFY_ACTION_OWRITE, NULL);
 
 //Axis 3 is translation, axis 1 is rotation
 void splitTransmission()
@@ -13,7 +14,7 @@ void splitTransmission()
 		left_middle.move(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X));
 		left_back.move(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X));
 		
-		pros::Task::notify_take(true, TIMEOUT_MAX);
+		WAIT_FOR_AUTH
 		pros::delay(2);
 	}
 }
@@ -26,7 +27,7 @@ void mainLiftControl()
 		if(master.get_digital(DIGITAL_L1)) { arm_motor.move_velocity(200); }
 		else if(master.get_digital(DIGITAL_L2)) { arm_motor.move_velocity(-200); }
 		else { arm_motor.move_velocity(0); }
-		pros::Task::notify_take(true, TIMEOUT_MAX);
+		WAIT_FOR_AUTH
 		pros::delay(2);
 	}
 }
@@ -38,7 +39,7 @@ void frontClampControl()
 	{
 		if(master.get_digital_new_press(DIGITAL_B)) { clamp_piston.set_value(true); }
 		else if(master.get_digital_new_press(DIGITAL_Y)) { clamp_piston.set_value(false); }
-		pros::Task::notify_take(true, TIMEOUT_MAX);
+		WAIT_FOR_AUTH
 		pros::delay(2);
   	}
 }
@@ -50,7 +51,7 @@ void rearClampControl()
 	{
 		if(master.get_digital_new_press(DIGITAL_DOWN)) { back_piston.set_value(true); }
 		else if(master.get_digital_new_press(DIGITAL_RIGHT)) { back_piston.set_value(false); }
-		pros::Task::notify_take(true, TIMEOUT_MAX);
+		WAIT_FOR_AUTH
 		pros::delay(2);
 	}
 }
@@ -62,7 +63,7 @@ void topClampControl()
 	{
 		if(master.get_digital_new_press(DIGITAL_X)) { top_piston.set_value(true); }
 		else if(master.get_digital_new_press(DIGITAL_A)) { top_piston.set_value(false); }
-		pros::Task::notify_take(true, TIMEOUT_MAX);
+		WAIT_FOR_AUTH
 		pros::delay(2);
 	}
 }
@@ -89,7 +90,7 @@ void conveyorControl()
 		else if(conveyorStatus == Forward) { conveyor_motor.move_velocity(600); }
 		else if(conveyorStatus == Reverse) { conveyor_motor.move_velocity(-600); }
 		
-		pros::Task::notify_take(true, TIMEOUT_MAX);
+		WAIT_FOR_AUTH
 		pros::delay(2);
 	}
 }

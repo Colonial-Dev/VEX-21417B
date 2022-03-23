@@ -19,7 +19,7 @@ class RobotManager
         {
             for(int i = 0; i < driverTasks.size(); i++)
             {
-                driverTasks.at(i).notify_clear();
+                driverTasks.at(i).notify_ext(0, NOTIFY_ACTION_OWRITE, NULL);
             }
         }
 
@@ -30,4 +30,5 @@ class RobotManager
                 driverTasks.at(i).notify();
             }
         }
-};
+
+    };

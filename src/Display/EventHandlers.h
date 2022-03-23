@@ -168,11 +168,13 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
         }
         case Reset:
         {
+            overwatch.suspendDriverControl();
             break;
         }
         case Kill:
         {
-            abort();
+            //abort();
+            overwatch.resumeDriverControl();
             break;
         }
     }
