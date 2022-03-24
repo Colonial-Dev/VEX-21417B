@@ -1,10 +1,27 @@
 #pragma once
 
-class TaskManager
+class RobotManager
 {
     private:
 
         std::vector<pros::Task> driverTasks;
+
+        void autonomous_async()
+        {
+            suspendDriverControl();
+
+            pros::delay(50);
+            master.rumble("-");
+            pros::delay(1000);
+            master.rumble("-");
+            pros::delay(1000);
+            master.rumble("---");
+            pros::delay(1000);
+
+            autonomous();
+
+            resumeDriverControl();
+        }
 
     public:
 
@@ -29,6 +46,11 @@ class TaskManager
             {
                 driverTasks.at(i).notify();
             }
+        }
+
+        void runAutonomousAsync()
+        {
+            pros::Task auton_async(autonomous_async);
         }
 
     };

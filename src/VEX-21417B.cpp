@@ -6,10 +6,12 @@
 using namespace std;
 using namespace okapi;
 
-#include "TaskManager.h"
+#include "RobotManager.h"
 #include "RobotSetup.h"
 #include "Autonomous/RoutineMacros.h"
 #include "Autonomous/Subroutines.h"
+#include "Autonomous/InertialOdometry.h"
+#include "Autonomous/PathTraversal.h"
 #include "Display/DisplaySuite.h"
 #include "DriverControl.h" 
 

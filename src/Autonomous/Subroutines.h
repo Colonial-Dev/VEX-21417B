@@ -1,22 +1,5 @@
 #pragma once
 
-void autonomous_async()
-{
-  overwatch.suspendDriverControl();
-
-  pros::delay(50);
-  master.rumble("-");
-  pros::delay(1000);
-  master.rumble("-");
-  pros::delay(1000);
-  master.rumble("---");
-  pros::delay(1000);
-
-  autonomous();
-
-  overwatch.resumeDriverControl();
-}
-
 void inertialTurn(double angle)
 {
 	double error = angle - inertial_sensor.get_rotation();

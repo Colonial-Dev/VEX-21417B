@@ -26,7 +26,7 @@ enum AutonStrat
 };
 
 //Create overwatch insttance
-TaskManager overwatch;
+RobotManager overwatch;
 
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);

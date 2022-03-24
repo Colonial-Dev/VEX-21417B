@@ -163,7 +163,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
         }
         case Autonomous:
         {
-            pros::Task auton_async(autonomous_async);
+            overwatch.runAutonomousAsync();
             break;
         }
         case Reset:
