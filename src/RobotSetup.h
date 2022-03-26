@@ -25,11 +25,12 @@ enum AutonStrat
   StackRush, //Grab the colored goal as a counterweight, then pick up the middle mobile goal and return.
 };
 
-//Create overwatch insttance
-RobotManager overwatch;
 
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
+
+//Create overwatch instance
+RobotManager overwatch;
 
 //Initialize drivetrain motors
 pros::Motor right_back (12, true);

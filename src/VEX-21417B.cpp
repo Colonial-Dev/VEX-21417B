@@ -10,8 +10,7 @@ using namespace okapi;
 #include "RobotSetup.h"
 #include "Autonomous/RoutineMacros.h"
 #include "Autonomous/Subroutines.h"
-#include "Autonomous/InertialOdometry.h"
-#include "Autonomous/PathTraversal.h"
+#include "Autonomous/PathManagement.h"
 #include "Display/DisplaySuite.h"
 #include "DriverControl.h" 
 

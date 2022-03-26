@@ -8,6 +8,7 @@ class RobotManager
 
         void autonomous_async()
         {
+            pros::Controller master (CONTROLLER_MASTER);
             suspendDriverControl();
 
             pros::delay(50);
@@ -50,7 +51,7 @@ class RobotManager
 
         void runAutonomousAsync()
         {
-            pros::Task auton_async(autonomous_async);
+            //pros::Task auton_async(autonomous_async);
         }
 
     };

@@ -1,4 +1,22 @@
+#include <cfloat>
 #pragma once
+
+struct TraversalParameters
+{
+    double lookahead_distance;
+};
+
+struct TraversalCache
+{
+    TraversalParameters params;
+    RobotProperties robot_properties;
+    RobotPosition current_position;
+    Path path;
+    PathPoint closest_point;
+    PathPoint lookahead_point;
+    int closest_index;
+    int lookahead_index;
+};
 
 double rateLimit()
 {

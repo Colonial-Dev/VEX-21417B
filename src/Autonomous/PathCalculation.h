@@ -1,7 +1,7 @@
 #pragma once
 #include "CoordinateMath.h"
 #include "VectorMath.h"
-#define SQ(x) std::pow(x, 2);
+#define SQ(x) std::pow(x, 2)
 
 RawPath injectPoints(RawPath path_outline, double spacing = 6.0)
 {
@@ -18,17 +18,17 @@ RawPath injectPoints(RawPath path_outline, double spacing = 6.0)
         
         for(int i = 0; i < injectionCount; i++)
         {
-            Vector injectionVector = vector.scalarMult(i);
+            Vector injectionVector = segment.scalarMult(i);
             RawPoint injectionPoint = start_point;
 
             injectionPoint.x_pos += injectionVector.x_component;
             injectionPoint.y_pos += injectionVector.y_component;
 
-            paddedPath.points.push_back(injectionPoint);
+            paddedPath.add(injectionPoint);
         }
     }
 
-    paddedPath.push_back(path_outline.at(path_outline.size() - 1));
+    paddedPath.add(path_outline.at(path_outline.size() - 1));
     return paddedPath;
 }
 
@@ -48,11 +48,11 @@ RawPath smoothPath(RawPath rough_path, double data_weight, double smooth_weight,
             RawPoint rough_point = rough_path.at(i);
             RawPoint orig_point = {smoothed_point.x_pos, smoothed_point.y_pos};
 
-            smoothed_point += data_weight * (rough_point.x_pos - smoothed_point.x_pos) + smooth_weight * (prev_point.x_pos + next_point.x_pos - (2.0 * smoothed_point.x_pos));
-            smoothed_point += data_weight * (rough_point.y_pos - smoothed_point.y_pos) + smooth_weight * (prev_point.y_pos + next_point.y_pos - (2.0 * smoothed_point.y_pos));
+            smoothed_point.x_pos += data_weight * (rough_point.x_pos - smoothed_point.x_pos) + smooth_weight * (prev_point.x_pos + next_point.x_pos - (2.0 * smoothed_point.x_pos));
+            smoothed_point.y_pos += data_weight * (rough_point.y_pos - smoothed_point.y_pos) + smooth_weight * (prev_point.y_pos + next_point.y_pos - (2.0 * smoothed_point.y_pos));
 
             change += std::abs(orig_point.x_pos - smoothed_point.x_pos);
-            change += std::abs(orig_point.y_pos - smoothed_point.y_pos;)
+            change += std::abs(orig_point.y_pos - smoothed_point.y_pos);
 
             smoothedPath.at(i) = smoothed_point;
         }
@@ -68,7 +68,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
     //Calculate point distances
     double prev_dist = 0.0;
     RawPoint prev_point = smooth_path.at(0);
-    for(int i = 0; i < smooth_path.points.size(); i++)
+    for(int i = 0; i < smooth_path.size(); i++)
     {
         RawPoint raw_point = smooth_path.at(i);
         PathPoint new_point = {raw_point.x_pos, raw_point.y_pos};
@@ -109,7 +109,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
         double r = std::sqrt(SQ(curr_x - a) + SQ(curr_y - b));
 
         double curvature = 1/r; 
-        if(curvature == nan) { curvature = 0; }
+        if(std::isnan(curvature)) { curvature = 0; }
         newPath.at(i).curvature = curvature;
     }
     

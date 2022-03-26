@@ -45,9 +45,9 @@ class RawPath
     
     public:
 
-        void size() { return points.size(); }
+        int size() { return points.size(); }
 
-        RawPoint at(int index) { return points.at(index); } 
+        RawPoint& at(int index) { return points.at(index); } 
 
         void add(RawPoint point) { points.push_back(point); }
 };
@@ -65,9 +65,9 @@ class Path
 
         std::string getName() { return name; }
 
-        void size() { return points.size(); }
+        int size() { return points.size(); }
 
-        PathPoint at(int index) { return points.at(index); } 
+        PathPoint& at(int index) { return points.at(index); } 
 
         void add(PathPoint point) { points.push_back(point); }
 };
