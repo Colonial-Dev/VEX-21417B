@@ -27,7 +27,7 @@ class Vector
 
         double direction()
         {
-            double theta = std::atan2(y_component, x_component)
+            double theta = std::atan2(y_component, x_component) * 180 / PI
             return (theta + 360) % 360; 
         }
 
@@ -49,5 +49,12 @@ class Vector
             scaledVector.x_component = x_component * scalar;
             scaledVector.y_component = y_component * scalar;
             return scaledVector;
+        }
+
+        double dot(Vector multiplicand)
+        {
+            double angle = atan2(multiplicand.y_component, multiplicand.x_component) - atan2(y_component, x_component);
+            angle = std::abs(angle * 180 / PI);
+            return (magnitude() * multiplicand.magnitude()) * angle;
         }
 }

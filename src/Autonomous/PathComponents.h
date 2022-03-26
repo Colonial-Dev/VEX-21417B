@@ -4,6 +4,22 @@ struct RobotProperties
 {
     double max_velocity;
     double max_acceleration;
+    double track_width;
+};
+
+struct RobotPosition
+{
+    double x_pos;
+    double y_pos;
+    double heading;
+};
+
+struct GenerationParameters
+{
+    double data_weight;
+    double smooth_weight;
+    double tolerance;
+    double initial_velocity_constant;
 };
 
 struct RawPoint
@@ -21,14 +37,38 @@ struct PathPoint
     double curvature;
 };
 
-struct RawPath
+class RawPath
 {
-    std::vector<RawPoint> points;
+    private:
+
+        std::vector<RawPoint> points;
+    
+    public:
+
+        void size() { return points.size(); }
+
+        RawPoint at(int index) { return points.at(index); } 
+
+        void add(RawPoint point) { points.push_back(point); }
 };
 
-struct Path
+class Path
 {
-    std::string name;
-    std::vector<PathPoint> points;
+    private:
+
+        std::string name;
+        std::vector<PathPoint> points;
+
+    public:
+
+        void setName(std::string new_name) { name = new_name; }
+
+        std::string getName() { return name; }
+
+        void size() { return points.size(); }
+
+        PathPoint at(int index) { return points.at(index); } 
+
+        void add(PathPoint point) { points.push_back(point); }
 };
 
