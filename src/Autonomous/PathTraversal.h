@@ -8,7 +8,7 @@ template <typename T> int sgnum(T val)
 
 struct TraversalParameters
 {
-    double lookahead_distance;
+    QLength lookahead_distance;
 };
 
 struct TraversalCache
@@ -25,13 +25,13 @@ struct TraversalCache
 
 void updateClosestPoint(TraversalCache& cache)
 {
-    double curr_closest_distance = DBL_MAX;
+    QLength curr_closest_distance (DBL_MAX * inch);
     int curr_closest_index = cache.closest_index;
 
     for(int i = curr_closest_index; i < cache.path.size(); i++)
     {
-        double distance = interpointDistance(cache.current_position, cache.path.at(i));
-        if(distance < curr_closest_distance)
+        QLength distance = interpointDistance(cache.current_position, cache.path.at(i));
+        if(distance.convert(inch) < curr_closest_distance.convert(inch))
         {
             curr_closest_distance = distance;
             curr_closest_index = i;
@@ -84,7 +84,7 @@ void updateLookaheadPoint(TraversalCache& cache)
         Vector start (cache.path.at(i));
         Vector end (cache.path.at(i+1));
         Vector pos (cache.current_position);
-        double t_value = findIntersect(start, end, pos, cache.params.lookahead_distance);
+        double t_value = findIntersect(start, end, pos, cache.params.lookahead_distance.convert(inch));
         double fractional_index = t_value + i;
 
         if(t_value < 0 || t_value < cache.lookahead_index) { continue; }
@@ -93,10 +93,10 @@ void updateLookaheadPoint(TraversalCache& cache)
             Vector d = end.subtract(start);
             PathPoint start_point = cache.path.at(i);
 
-            double final_x = start_point.x_pos + (t_value * d.x_component);
-            double final_y = start_point.y_pos + (t_value * d.y_component);
+            double final_x = start_point.x_pos.convert(inch) + (t_value * d.x_component.convert(inch));
+            double final_y = start_point.y_pos.convert(inch) + (t_value * d.y_component.convert(inch));
 
-            RawPoint lookahead {final_x, final_y};
+            RawPoint lookahead {QLength (final_x * inch), QLength (final_y * inch)};
             cache.lookahead_point = lookahead;
             cache.lookahead_index = fractional_index;
             return;
@@ -109,25 +109,29 @@ double calculateCurvature(TraversalCache& cache)
     double lookahead_dist_x;
     double lookahead_dist_y;
 
-    double a = -std::tan(cache.current_position.heading);
+    double a = -std::tan(cache.current_position.heading.convert(radian));
     double b = 1;
-    double c = std::tan(cache.current_position.heading) * cache.current_position.x_pos - cache.current_position.y_pos;
+    double c = std::tan(cache.current_position.heading.convert(radian)) * cache.current_position.x_pos.convert(inch) - cache.current_position.y_pos.convert(inch);
 
-    double cross_product = std::sin(cache.current_position.heading) * (cache.lookahead_point.x_pos - cache.current_position.x_pos) - 
-           std::cos(cache.current_position.heading) * (cache.lookahead_point.y_pos - cache.current_position.y_pos);
+    double cross_product = std::sin(cache.current_position.heading.convert(radian)) * (cache.lookahead_point.x_pos.convert(inch) - cache.current_position.x_pos.convert(inch)) - 
+           std::cos(cache.current_position.heading.convert(radian)) * (cache.lookahead_point.y_pos.convert(inch) - cache.current_position.y_pos.convert(inch));
     double side = sgnum(cross_product);
 
-    lookahead_dist_x = std::abs(a * cache.lookahead_point.x_pos + b * cache.lookahead_point.y_pos + c) / std::sqrt(SQ(a) + SQ(b));
+    lookahead_dist_x = std::abs(a * cache.lookahead_point.x_pos.convert(inch) + b * cache.lookahead_point.y_pos.convert(inch) + c) / std::sqrt(SQ(a) + SQ(b));
 
-    double curvature = (2 * lookahead_dist_x) / SQ(cache.params.lookahead_distance); 
+    double curvature = (2 * lookahead_dist_x) / SQ(cache.params.lookahead_distance.convert(inch)); 
     return curvature * side;
 }
 
 WheelSpeeds calculateWheelSpeeds(TraversalCache &cache, double curvature)
 {
-    double point_velocity = cache.closest_point.target_velocity;
-    double target_velocity = limiter.getLimited(point_velocity, cache.robot_properties.max_acceleration);
-    double left_velocity = target_velocity * (2 + curvature * cache.robot_properties.track_width) / 2;
-    double right_velocity = target_velocity * (2 - curvature * cache.robot_properties.track_width) / 2;
-    return WheelSpeeds {left_velocity, right_velocity};
+    QSpeed point_velocity = cache.closest_point.target_velocity;
+    QSpeed target_velocity = limiter.getLimited(point_velocity, cache.robot_properties.max_acceleration);
+    QSpeed left_velocity = target_velocity * (2.0 + cache.robot_properties.track_width.convert(inch) * curvature) / 2.0;
+    QSpeed right_velocity = target_velocity * (2.0 - cache.robot_properties.track_width.convert(inch) * curvature) / 2.0;
+
+    QAngularSpeed left_wheels = (left_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
+    QAngularSpeed right_wheels = (right_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
+
+    return WheelSpeeds {left_wheels, right_wheels};
 }

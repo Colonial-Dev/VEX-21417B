@@ -3,16 +3,16 @@
 class Vector
 {
     public:
-        double x_component;
-        double y_component;
+        QLength x_component;
+        QLength y_component;
 
         Vector()
         {
-            x_component = 0;
-            y_component = 0;
+            x_component = 0_in;
+            y_component = 0_in;
         }
         
-        Vector(double x_comp, double y_comp)
+        Vector(QLength x_comp, QLength y_comp)
         {
             x_component = x_comp;
             y_component = y_comp;
@@ -42,27 +42,31 @@ class Vector
             y_component = position.y_pos;
         }
 
-        double magnitude()
+        QLength magnitude()
         {
-            double x_pow = std::pow((x_component), 2);
-            double y_pow = std::pow((y_component), 2);
-            return std::sqrt(x_pow + y_pow);
+            double x_pow = std::pow((x_component.convert(inch)), 2);
+            double y_pow = std::pow((y_component.convert(inch)), 2);
+            double rooted = std::sqrt(x_pow + y_pow);
+            QLength qlen = (rooted * inch);
+            return qlen;
         }
 
-        double direction()
+        QAngle direction()
         {
-            double theta = std::atan2(y_component, x_component) * 180 / PI;
-            return std::fmod((theta + 360), 360); 
+            double theta = std::atan2(y_component.convert(inch), x_component.convert(inch)) * 180 / PI;
+            double corrected = std::fmod((theta + 360), 360); 
+            QAngle qang (corrected * degree);
+            return qang;
         }
 
         Vector normalize()
         {
             Vector normalizedVector;
-            double mag = magnitude();
-            if(mag != 0)
+            QLength mag = magnitude();
+            if(mag.convert(inch) != 0)
             { 
-                normalizedVector.x_component = x_component / mag;
-                normalizedVector.y_component = y_component / mag;
+                normalizedVector.x_component =  QLength ((x_component.convert(inch) / mag.convert(inch)) * inch);
+                normalizedVector.y_component =  QLength ((y_component.convert(inch) / mag.convert(inch)) * inch);
             }
             return normalizedVector;
         }
@@ -70,29 +74,30 @@ class Vector
         Vector subtract(Vector subtrahend)
         {
             Vector resultantVector;
-            resultantVector.x_component = x_component - subtrahend.x_component;
-            resultantVector.y_component = y_component - subtrahend.y_component;
+            resultantVector.x_component = QLength ((x_component.convert(inch) - subtrahend.x_component.convert(inch)) * inch);
+            resultantVector.y_component = QLength ((y_component.convert(inch) - subtrahend.y_component.convert(inch)) * inch);
             return resultantVector;
         }
 
         Vector scalarMult(double scalar)
         {
             Vector scaledVector;
-            scaledVector.x_component = x_component * scalar;
-            scaledVector.y_component = y_component * scalar;
+            scaledVector.x_component = QLength ((x_component.convert(inch) * scalar) * inch);
+            scaledVector.y_component = QLength ((y_component.convert(inch) * scalar) * inch);
             return scaledVector;
         }
 
-        double angleBetween(Vector partner)
+        QAngle angleBetween(Vector partner)
         {
-            double angle = atan2(partner.y_component, partner.x_component) - atan2(y_component, x_component);
+            double angle = atan2(partner.y_component.convert(inch), partner.x_component.convert(inch)) - atan2(y_component.convert(inch), x_component.convert(inch));
             angle = std::abs(angle * 180 / PI);
-            return angle;
+            QAngle qang (angle * degree);
+            return qang;
         }
 
         double dot(Vector multiplicand)
         {
-            double angle = angleBetween(multiplicand);
-            return (magnitude() * multiplicand.magnitude()) * angle;
+            QAngle angle = angleBetween(multiplicand);
+            return (magnitude().convert(inch) * multiplicand.magnitude().convert(inch)) * angle.convert(degree);
         }
 };

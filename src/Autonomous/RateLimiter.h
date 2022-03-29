@@ -3,15 +3,18 @@ class RateLimiter
     private:
 
         uint64_t last_called = pros::millis();
-        double last_output;
+        QSpeed last_output;
     
     public:
 
-        double getLimited(double input, double limit)
+        QSpeed getLimited(QSpeed input, QAcceleration limit)
         {
             double time_change = pros::millis() - last_called;
-            double max_change = last_output + time_change * limit;
+            double max_change = last_output.convert(mps) + time_change * limit.convert(mps2);
             last_called = pros::millis();
-            return std::clamp(input - last_output, -max_change, max_change);
+            double clamped = std::clamp(input.convert(mps) - last_output.convert(mps), -max_change, max_change);
+            QSpeed qspd = (clamped * mps);
+            last_output = qspd;
+            return qspd;
         }
 };

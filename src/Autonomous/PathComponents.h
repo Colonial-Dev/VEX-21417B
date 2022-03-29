@@ -2,10 +2,10 @@
 
 struct RobotProperties
 {
-    double max_velocity;
-    double max_acceleration;
-    double track_width;
-    double wheel_diam;
+    QSpeed max_velocity;
+    QAcceleration max_acceleration;
+    QLength track_width;
+    QLength wheel_diam;
     double kv;
     double ka;
     double kp;
@@ -13,9 +13,9 @@ struct RobotProperties
 
 struct RobotPosition
 {
-    double x_pos;
-    double y_pos;
-    double heading;
+    QLength x_pos;
+    QLength y_pos;
+    QAngle heading;
 };
 
 struct GenerationParameters
@@ -28,16 +28,16 @@ struct GenerationParameters
 
 struct RawPoint
 {
-    double x_pos;
-    double y_pos;
+    QLength x_pos;
+    QLength y_pos;
 };
 
 struct PathPoint
 {
-    double x_pos;
-    double y_pos;
-    double distance;
-    double target_velocity;
+    QLength x_pos;
+    QLength y_pos;
+    QLength distance;
+    QSpeed target_velocity;
     double curvature;
 };
 
@@ -78,7 +78,7 @@ class Path
 
 struct WheelSpeeds
 {
-    double target_left;
-    double target_right;
+    QAngularSpeed target_left;
+    QAngularSpeed target_right;
 };
 
