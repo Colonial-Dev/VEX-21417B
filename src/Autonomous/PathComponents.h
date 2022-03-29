@@ -5,6 +5,10 @@ struct RobotProperties
     double max_velocity;
     double max_acceleration;
     double track_width;
+    double wheel_diam;
+    double kv;
+    double ka;
+    double kp;
 };
 
 struct RobotPosition
@@ -70,5 +74,11 @@ class Path
         PathPoint& at(int index) { return points.at(index); } 
 
         void add(PathPoint point) { points.push_back(point); }
+};
+
+struct WheelSpeeds
+{
+    double target_left;
+    double target_right;
 };
 

@@ -87,8 +87,8 @@ void conveyorControl()
 		}
 
 		if(conveyorStatus == Idle) { conveyor_motor.move_velocity(0); }
-		else if(conveyorStatus == Forward) { conveyor_motor.move_velocity(600); }
-		else if(conveyorStatus == Reverse) { conveyor_motor.move_velocity(-600); }
+		else if(conveyorStatus == Forward) { conveyor_motor.move_velocity(-600); }
+		else if(conveyorStatus == Reverse) { conveyor_motor.move_velocity(600); }
 		
 		WAIT_FOR_AUTH
 		pros::delay(2);

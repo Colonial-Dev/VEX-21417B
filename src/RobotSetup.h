@@ -29,8 +29,9 @@ enum AutonStrat
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
 
-//Create overwatch instance
+//Create overwatch and limiter instances
 RobotManager overwatch;
+RateLimiter limiter;
 
 //Initialize drivetrain motors
 pros::Motor right_back (12, true);
@@ -43,9 +44,9 @@ pros::Motor left_front (9);
 //Initialize manipulator motors/pneumatics
 pros::Motor arm_motor (5);
 pros::Motor conveyor_motor (8);
-pros::ADIDigitalOut back_piston ( {{7 , 'F'}});
+pros::ADIDigitalOut back_piston ( {{11 , 'F'}});
 pros::ADIDigitalOut clamp_piston ('G');
-pros::ADIDigitalOut top_piston ( {{7 , 'E'}});
+pros::ADIDigitalOut top_piston ( {{11 , 'E'}});
 
 //Initialize sensors
 pros::IMU inertial_sensor (14);

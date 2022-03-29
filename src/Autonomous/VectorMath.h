@@ -24,10 +24,22 @@ class Vector
             y_component = point.y_pos;
         }
 
+        Vector(PathPoint point)
+        {
+            x_component = point.x_pos;
+            y_component = point.y_pos;   
+        }
+
         Vector(RawPoint point_a, RawPoint point_b)
         {
             x_component = point_b.x_pos - point_a.x_pos;
             y_component = point_b.y_pos - point_a.y_pos; 
+        }
+
+        Vector(RobotPosition position)
+        {
+            x_component = position.x_pos;
+            y_component = position.y_pos;
         }
 
         double magnitude()
@@ -55,6 +67,14 @@ class Vector
             return normalizedVector;
         }
 
+        Vector subtract(Vector subtrahend)
+        {
+            Vector resultantVector;
+            resultantVector.x_component = x_component - subtrahend.x_component;
+            resultantVector.y_component = y_component - subtrahend.y_component;
+            return resultantVector;
+        }
+
         Vector scalarMult(double scalar)
         {
             Vector scaledVector;
@@ -63,10 +83,16 @@ class Vector
             return scaledVector;
         }
 
+        double angleBetween(Vector partner)
+        {
+            double angle = atan2(partner.y_component, partner.x_component) - atan2(y_component, x_component);
+            angle = std::abs(angle * 180 / PI);
+            return angle;
+        }
+
         double dot(Vector multiplicand)
         {
-            double angle = atan2(multiplicand.y_component, multiplicand.x_component) - atan2(y_component, x_component);
-            angle = std::abs(angle * 180 / PI);
+            double angle = angleBetween(multiplicand);
             return (magnitude() * multiplicand.magnitude()) * angle;
         }
 };
