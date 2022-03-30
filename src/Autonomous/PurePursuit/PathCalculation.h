@@ -138,7 +138,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
     }
 
     //Smooth deceleration velocities
-    for(int i = newPath.size() - 2; i >= 0; i++)
+    for(int i = newPath.size() - 2; i >= 0; i--)
     {
         PathPoint current_point = newPath.at(i);
         PathPoint next_point = newPath.at(i+1);

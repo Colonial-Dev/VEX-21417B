@@ -19,13 +19,14 @@ struct TraversalCache
     Path path;
     PathPoint closest_point;
     RawPoint lookahead_point;
-    int closest_index;
-    double lookahead_index;
+    int closest_index = 0;
+    double lookahead_index = 0;
 };
 
 void updatePosition(TraversalCache& cache)
 {
     auto state = drive_train->getState();
+    QAngle inertial = QAngle (inertial_sensor.get_rotation() * degree);
     cache.current_position = {state.x, state.y, state.theta};
 }
 
@@ -46,6 +47,10 @@ void updateClosestPoint(TraversalCache& cache)
 
     cache.closest_index = curr_closest_index;
     cache.closest_point = cache.path.at(curr_closest_index);
+    printf("\n CP:");
+    printf(to_string(cache.closest_index).c_str());
+    printf("/");
+    printf(to_string(cache.path.size()).c_str());
 }
 
 
@@ -93,7 +98,7 @@ void updateLookaheadPoint(TraversalCache& cache)
         double t_value = findIntersect(start, end, pos, cache.params.lookahead_distance.convert(meter));
         double fractional_index = t_value + i;
 
-        if(t_value < 0 || t_value < cache.lookahead_index) { continue; }
+        if(t_value < 0) { continue; }
         else
         {   
             Vector d = end.subtract(start);
@@ -103,8 +108,14 @@ void updateLookaheadPoint(TraversalCache& cache)
             double final_y = start_point.y_pos.convert(meter) + (t_value * d.y_component.convert(meter));
 
             RawPoint lookahead {QLength (final_x * meter), QLength (final_y * meter)};
+            printf("\n LPX:");
+            printf(to_string(lookahead.x_pos.convert(meter)).c_str());
+            printf("\n LPY:");
+            printf(to_string(lookahead.y_pos.convert(meter)).c_str());
             cache.lookahead_point = lookahead;
             cache.lookahead_index = fractional_index;
+            printf("\n LP:");
+            printf(to_string(cache.lookahead_index).c_str());
             return;
         }
     }
@@ -132,12 +143,21 @@ double calculateCurvature(TraversalCache& cache)
 WheelSpeeds calculateWheelSpeeds(TraversalCache &cache, double curvature)
 {
     QSpeed point_velocity = cache.closest_point.target_velocity;
+    printf("\n pV: ");
+    printf(to_string(point_velocity.convert(mps)).c_str());
     QSpeed target_velocity = limiter.getLimited(point_velocity, cache.robot_properties.max_acceleration);
+    printf("\n TV: ");
+    printf(to_string(target_velocity.convert(mps)).c_str());
     QSpeed left_velocity = target_velocity * (2.0 + cache.robot_properties.track_width.convert(meter) * curvature) / 2.0;
     QSpeed right_velocity = target_velocity * (2.0 - cache.robot_properties.track_width.convert(meter) * curvature) / 2.0;
 
     QAngularSpeed left_wheels = (left_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
     QAngularSpeed right_wheels = (right_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
+
+    printf("\n WVels:");
+    printf(to_string(left_wheels.convert(rpm)).c_str());
+    printf(" ");
+    printf(to_string(right_wheels.convert(rpm)).c_str());
 
     return WheelSpeeds {left_wheels, right_wheels};
 }

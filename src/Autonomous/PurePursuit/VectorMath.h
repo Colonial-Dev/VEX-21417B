@@ -44,16 +44,16 @@ class Vector
 
         QLength magnitude()
         {
-            double x_pow = std::pow((x_component.convert(inch)), 2);
-            double y_pow = std::pow((y_component.convert(inch)), 2);
+            double x_pow = std::pow((x_component.convert(meter)), 2);
+            double y_pow = std::pow((y_component.convert(meter)), 2);
             double rooted = std::sqrt(x_pow + y_pow);
-            QLength qlen = (rooted * inch);
+            QLength qlen = (rooted * meter);
             return qlen;
         }
 
         QAngle direction()
         {
-            double theta = std::atan2(y_component.convert(inch), x_component.convert(inch)) * 180 / PI;
+            double theta = std::atan2(y_component.convert(meter), x_component.convert(meter)) * 180 / PI;
             double corrected = std::fmod((theta + 360), 360); 
             QAngle qang (corrected * degree);
             return qang;
@@ -63,10 +63,10 @@ class Vector
         {
             Vector normalizedVector;
             QLength mag = magnitude();
-            if(mag.convert(inch) != 0)
+            if(mag.convert(meter) != 0)
             { 
-                normalizedVector.x_component =  QLength ((x_component.convert(inch) / mag.convert(inch)) * inch);
-                normalizedVector.y_component =  QLength ((y_component.convert(inch) / mag.convert(inch)) * inch);
+                normalizedVector.x_component =  QLength ((x_component.convert(meter) / mag.convert(meter)) * meter);
+                normalizedVector.y_component =  QLength ((y_component.convert(meter) / mag.convert(meter)) * meter);
             }
             return normalizedVector;
         }
@@ -74,22 +74,22 @@ class Vector
         Vector subtract(Vector subtrahend)
         {
             Vector resultantVector;
-            resultantVector.x_component = QLength ((x_component.convert(inch) - subtrahend.x_component.convert(inch)) * inch);
-            resultantVector.y_component = QLength ((y_component.convert(inch) - subtrahend.y_component.convert(inch)) * inch);
+            resultantVector.x_component = QLength ((x_component.convert(meter) - subtrahend.x_component.convert(meter)) * meter);
+            resultantVector.y_component = QLength ((y_component.convert(meter) - subtrahend.y_component.convert(meter)) * meter);
             return resultantVector;
         }
 
         Vector scalarMult(double scalar)
         {
             Vector scaledVector;
-            scaledVector.x_component = QLength ((x_component.convert(inch) * scalar) * inch);
-            scaledVector.y_component = QLength ((y_component.convert(inch) * scalar) * inch);
+            scaledVector.x_component = QLength ((x_component.convert(meter) * scalar) * meter);
+            scaledVector.y_component = QLength ((y_component.convert(meter) * scalar) * meter);
             return scaledVector;
         }
 
         QAngle angleBetween(Vector partner)
         {
-            double angle = atan2(partner.y_component.convert(inch), partner.x_component.convert(inch)) - atan2(y_component.convert(inch), x_component.convert(inch));
+            double angle = atan2(partner.y_component.convert(meter), partner.x_component.convert(meter)) - atan2(y_component.convert(meter), x_component.convert(meter));
             angle = std::abs(angle * 180 / PI);
             QAngle qang (angle * degree);
             return qang;
@@ -97,7 +97,6 @@ class Vector
 
         double dot(Vector multiplicand)
         {
-            QAngle angle = angleBetween(multiplicand);
-            return (magnitude().convert(inch) * multiplicand.magnitude().convert(inch)) * angle.convert(degree);
+            return (x_component.convert(meter) * multiplicand.x_component.convert(meter)) + (y_component.convert(meter) * multiplicand.y_component.convert(meter));
         }
 };

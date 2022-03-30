@@ -36,8 +36,8 @@ class PathTraverser
                     break;
                 }
 
-                model->tank(speeds.target_left.convert(rpm) / 200, speeds.target_right.convert(rpm) / 200);
-                pros::Task::delay_until(&timestamp, 10);
+                model->tank(speeds.target_left.convert(rpm) / 280, speeds.target_right.convert(rpm) / 280);
+                pros::Task::delay_until(&timestamp, 20);
             }
             model->driveVector(0, 0);
         }
