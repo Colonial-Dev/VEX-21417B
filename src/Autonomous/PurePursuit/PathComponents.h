@@ -49,6 +49,16 @@ class RawPath
     
     public:
 
+        RawPath()
+        {
+            
+        }
+
+        RawPath(std::vector<RawPoint> pts)
+        {
+            points = pts;
+        }
+
         int size() { return points.size(); }
 
         RawPoint& at(int index) { return points.at(index); } 

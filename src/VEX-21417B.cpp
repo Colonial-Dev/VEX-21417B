@@ -7,12 +7,12 @@ using namespace std;
 using namespace okapi;
 
 #include "RobotManager.h"
-#include "Autonomous/RateLimiter.h"
+#include "Autonomous/PurePursuit/RateLimiter.h"
 #include "RobotSetup.h"
 #include "Autonomous/RoutineMacros.h"
 #include "Autonomous/Subroutines.h"
-#include "Autonomous/OdomController.h"
-#include "Autonomous/PathManagement.h"
+#include "Autonomous/OdomControllers.h"
+#include "Autonomous/PurePursuit/PathManagement.h"
 #include "Display/DisplaySuite.h"
 #include "DriverControl.h" 
 
@@ -24,6 +24,13 @@ void initialize()
 
 void autonomous()
 {
-
+  RobotProperties props {2_mps, 1_mps2, 11_in, 4_in, 0, 0, 0};
+  GenerationParameters params {0.2, 0.8, 0.001};
+  TraversalParameters t_params {12_in};
+  PathManager manager(props);
+  manager.generatePath("Test", params, 
+                      {{0_ft, 0_ft}, {2_ft, 0_ft}, {4_ft, 2_ft}});
+  auto traverser = manager.loadPath("Test", t_params);
+  traverser.traversePath();
 }
 

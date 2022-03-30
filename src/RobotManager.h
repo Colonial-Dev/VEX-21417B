@@ -6,24 +6,6 @@ class RobotManager
 
         std::vector<pros::Task> driverTasks;
 
-        void autonomous_async()
-        {
-            pros::Controller master (CONTROLLER_MASTER);
-            suspendDriverControl();
-
-            pros::delay(50);
-            master.rumble("-");
-            pros::delay(1000);
-            master.rumble("-");
-            pros::delay(1000);
-            master.rumble("---");
-            pros::delay(1000);
-
-            autonomous();
-
-            resumeDriverControl();
-        }
-
     public:
 
         void registerDriverTask(pros::task_t task)
@@ -47,11 +29,6 @@ class RobotManager
             {
                 driverTasks.at(i).notify();
             }
-        }
-
-        void runAutonomousAsync()
-        {
-            //pros::Task auton_async(autonomous_async);
         }
 
     };

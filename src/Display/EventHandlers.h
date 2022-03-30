@@ -163,7 +163,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
         }
         case Autonomous:
         {
-            overwatch.runAutonomousAsync();
+            pros::Task auton_async(autonomous_async);
             break;
         }
         case Reset:
@@ -173,8 +173,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
         }
         case Kill:
         {
-            //abort();
-            overwatch.resumeDriverControl();
+            abort();
             break;
         }
     }

@@ -13,22 +13,22 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
         RawPoint end_point = path_outline.at(i+1);
 
         Vector segment(start_point, end_point);
-        int injectionCount = std::ceil(segment.magnitude().convert(inch) / spacing.convert(inch));
-        segment = segment.normalize().scalarMult(spacing.convert(inch));
+        int injectionCount = std::ceil(segment.magnitude().convert(meter) / spacing.convert(meter));
+        segment = segment.normalize().scalarMult(spacing.convert(meter));
         
         for(int i = 0; i < injectionCount; i++)
         {
             Vector injectionVector = segment.scalarMult(i);
             RawPoint injectionPoint = start_point;
 
-            double injection_x = injectionPoint.x_pos.convert(inch);
-            double injection_y = injectionPoint.y_pos.convert(inch);
+            double injection_x = injectionPoint.x_pos.convert(meter);
+            double injection_y = injectionPoint.y_pos.convert(meter);
 
-            injection_x += injectionVector.x_component.convert(inch);
-            injection_y += injectionVector.y_component.convert(inch);
+            injection_x += injectionVector.x_component.convert(meter);
+            injection_y += injectionVector.y_component.convert(meter);
 
-            injectionVector.x_component = QLength (injection_x * inch);
-            injectionVector.y_component = QLength (injection_y * inch);
+            injectionVector.x_component = QLength (injection_x * meter);
+            injectionVector.y_component = QLength (injection_y * meter);
 
             paddedPath.add(injectionPoint);
         }
@@ -38,8 +38,11 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
     return paddedPath;
 }
 
-RawPath smoothPath(RawPath rough_path, double data_weight, double smooth_weight, double tolerance)
+RawPath smoothPath(RawPath rough_path, GenerationParameters parameters)
 {
+    double data_weight = parameters.data_weight;
+    double smooth_weight = parameters.smooth_weight;
+    double tolerance = parameters.tolerance;
     double change = tolerance;
     RawPath smoothedPath = rough_path;
 
@@ -54,17 +57,17 @@ RawPath smoothPath(RawPath rough_path, double data_weight, double smooth_weight,
             RawPoint rough_point = rough_path.at(i);
             RawPoint orig_point = {smoothed_point.x_pos, smoothed_point.y_pos};
             
-            double smoothed_x = smoothed_point.x_pos.convert(inch);
-            double smoothed_y = smoothed_point.y_pos.convert(inch);
+            double smoothed_x = smoothed_point.x_pos.convert(meter);
+            double smoothed_y = smoothed_point.y_pos.convert(meter);
 
-            smoothed_x += data_weight * (rough_point.x_pos.convert(inch) - smoothed_point.x_pos.convert(inch)) + smooth_weight * (prev_point.x_pos.convert(inch) + next_point.x_pos.convert(inch) - (2.0 * smoothed_point.x_pos.convert(inch)));
-            smoothed_y += data_weight * (rough_point.y_pos.convert(inch) - smoothed_point.y_pos.convert(inch)) + smooth_weight * (prev_point.y_pos.convert(inch) + next_point.y_pos.convert(inch) - (2.0 * smoothed_point.y_pos.convert(inch)));
+            smoothed_x += data_weight * (rough_point.x_pos.convert(meter) - smoothed_point.x_pos.convert(meter)) + smooth_weight * (prev_point.x_pos.convert(meter) + next_point.x_pos.convert(meter) - (2.0 * smoothed_point.x_pos.convert(meter)));
+            smoothed_y += data_weight * (rough_point.y_pos.convert(meter) - smoothed_point.y_pos.convert(meter)) + smooth_weight * (prev_point.y_pos.convert(meter) + next_point.y_pos.convert(meter) - (2.0 * smoothed_point.y_pos.convert(meter)));
 
-            change += std::abs(orig_point.x_pos.convert(inch) - smoothed_point.x_pos.convert(inch));
-            change += std::abs(orig_point.y_pos.convert(inch) - smoothed_point.y_pos.convert(inch));
+            change += std::abs(orig_point.x_pos.convert(meter) - smoothed_point.x_pos.convert(meter));
+            change += std::abs(orig_point.y_pos.convert(meter) - smoothed_point.y_pos.convert(meter));
 
-            smoothed_point.x_pos = QLength (smoothed_x * inch);
-            smoothed_point.y_pos = QLength (smoothed_y * inch);
+            smoothed_point.x_pos = QLength (smoothed_x * meter);
+            smoothed_point.y_pos = QLength (smoothed_y * meter);
 
             smoothedPath.at(i) = smoothed_point;
         }
@@ -87,7 +90,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
         new_point.x_pos = raw_point.x_pos;
         new_point.y_pos = raw_point.y_pos;
 
-        new_point.distance = QLength ((prev_dist.convert(inch) + interpointDistance(prev_point, raw_point).convert(inch)) * inch);
+        new_point.distance = QLength ((prev_dist.convert(meter) + interpointDistance(prev_point, raw_point).convert(meter)) * meter);
 
         prev_dist = new_point.distance;
         prev_point = raw_point;
@@ -103,14 +106,14 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
         PathPoint prev_point = newPath.at(i - 1);
         PathPoint next_point = newPath.at(i + 1);
 
-        if(current_point.x_pos.convert(inch) == prev_point.x_pos.convert(inch)) { current_point.x_pos = QLength ((current_point.x_pos.convert(inch) + 0.001) * inch); }
+        if(current_point.x_pos.convert(meter) == prev_point.x_pos.convert(meter)) { current_point.x_pos = QLength ((current_point.x_pos.convert(meter) + 0.001) * meter); }
 
-        double curr_x = current_point.x_pos.convert(inch);
-        double curr_y = current_point.y_pos.convert(inch);
-        double prev_x = prev_point.x_pos.convert(inch);
-        double prev_y = prev_point.y_pos.convert(inch);
-        double next_x = next_point.x_pos.convert(inch);
-        double next_y = next_point.y_pos.convert(inch);
+        double curr_x = current_point.x_pos.convert(meter);
+        double curr_y = current_point.y_pos.convert(meter);
+        double prev_x = prev_point.x_pos.convert(meter);
+        double prev_y = prev_point.y_pos.convert(meter);
+        double next_x = next_point.x_pos.convert(meter);
+        double next_y = next_point.y_pos.convert(meter);
 
         double k_one = 0.5 * (SQ(curr_x) + SQ(curr_y) - SQ(prev_x) - SQ(prev_y)) / (curr_x - prev_x);
 
@@ -140,7 +143,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
         PathPoint current_point = newPath.at(i);
         PathPoint next_point = newPath.at(i+1);
         QLength distance = interpointDistance(current_point, next_point);
-        newPath.at(i).target_velocity = QSpeed (std::min(current_point.target_velocity.convert(mps), std::sqrt(SQ(next_point.target_velocity.convert(mps)) + 2 * robot.max_acceleration.convert(mps2) * distance.convert(inch))) * mps);
+        newPath.at(i).target_velocity = QSpeed (std::min(current_point.target_velocity.convert(mps), std::sqrt(SQ(next_point.target_velocity.convert(mps)) + 2 * robot.max_acceleration.convert(mps2) * distance.convert(meter))) * mps);
     }
     
     return newPath;
