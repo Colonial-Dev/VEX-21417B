@@ -9,7 +9,7 @@ def strip_brackets(raw_str):
 def prep_list(raw_str):
 	raw_list = raw_str.split(",")
 	for i in range(len(raw_list)):
-		raw_list[i] = int(raw_list[i])
+		raw_list[i] = float(raw_list[i])
 	return raw_list
 
 raw_x = input("X coordinate values: ")

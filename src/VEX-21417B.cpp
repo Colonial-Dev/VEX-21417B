@@ -27,12 +27,11 @@ void initialize()
 
 void autonomous()
 {
-  GenerationParameters g_params {0.2, 0.8, 0.001, 2.5};
-  TraversalParameters t_params {18_in};
-  wayfarer.generatePath("Test", g_params, 
-                      {{0_ft, 0_ft}, {8_ft, 0_ft}, {8_ft, 8_ft}});
-  wayfarer.dumpPath("Test");
-  pros::delay(5000);
-  wayfarer.traversePath("Test", t_params);
+  GenerationParameters g_params {0.2, 0.8, 0.001, 1};
+  TraversalParameters t_params {6_in};
+  wayfarer.generateStandardPath("Test", g_params, 
+                      {{0_ft, 0_ft}, {6_ft, 0_ft}});//, {8_ft, 4_ft}, {8_ft, 8_ft}});
+  wayfarer.dumpStoredPath("Test");
+  wayfarer.traverseStoredPath("Test", t_params);
 }
 

@@ -13,7 +13,7 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
         RawPoint end_point = path_outline.at(i+1);
 
         Vector segment(start_point, end_point);
-        int injectionCount = std::ceil(segment.magnitude().convert(meter) / spacing.convert(meter));
+        double injectionCount = std::ceil(segment.magnitude().convert(meter) / spacing.convert(meter));
         segment = segment.normalize().scalarMult(spacing.convert(meter));
         
         for(int i = 0; i < injectionCount; i++)
@@ -27,8 +27,8 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
             injection_x += injectionVector.x_component.convert(meter);
             injection_y += injectionVector.y_component.convert(meter);
 
-            injectionVector.x_component = QLength (injection_x * meter);
-            injectionVector.y_component = QLength (injection_y * meter);
+            injectionPoint.x_pos = QLength (injection_x * meter);
+            injectionPoint.y_pos = QLength (injection_y * meter);
 
             paddedPath.add(injectionPoint);
         }
@@ -147,5 +147,22 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
     }
     
     return newPath;
+}
+
+Path generatePath(RobotProperties robot_props, GenerationParameters parameters, std::vector<RawPoint> path_outline)
+{
+    uint64_t start = pros::micros();
+
+    RawPath new_path(path_outline);
+    new_path = injectPoints(new_path);
+    new_path = smoothPath(new_path, parameters);
+    Path finished_path = processPath(new_path, robot_props, parameters);
+
+    uint64_t finish = pros::micros();
+    printf("\nPathgen done, took ");
+    printf(to_string(finish - start).c_str());
+    printf(" microseconds.");
+
+    return finished_path;
 }
 

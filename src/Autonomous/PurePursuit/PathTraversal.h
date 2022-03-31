@@ -27,6 +27,7 @@ struct WheelSpeeds
 void updatePosition(TraversalCache& cache)
 {
     cache.current_position = cache.robot_properties.odom_controller->getState();
+    //cache.current_position.theta = QAngle (inertial_sensor.get_rotation() * degree);
 }
 
 void updateClosestPoint(TraversalCache& cache)
