@@ -14,7 +14,10 @@ using namespace okapi;
 #include "Autonomous/OdomControllers.h"
 #include "Autonomous/PurePursuit/PathManagement.h"
 #include "Display/DisplaySuite.h"
-#include "DriverControl.h" 
+#include "DriverControl.h"
+
+RobotProperties global_robot_properties {1_mps, 0.5_mps2, 11_in, 4.25_in, drive_train, 0, 0, 0};
+PathManager wayfarer(global_robot_properties);
 
 void initialize() 
 {
@@ -28,6 +31,8 @@ void autonomous()
   TraversalParameters t_params {18_in};
   wayfarer.generatePath("Test", g_params, 
                       {{0_ft, 0_ft}, {8_ft, 0_ft}, {8_ft, 8_ft}});
+  wayfarer.dumpPath("Test");
+  pros::delay(5000);
   wayfarer.traversePath("Test", t_params);
 }
 
