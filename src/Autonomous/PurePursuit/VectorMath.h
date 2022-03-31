@@ -1,5 +1,10 @@
 #pragma once
 
+template <typename T> int sgnum(T val) 
+{
+    return (T(0) < val) - (val < T(0));
+}
+
 class Vector
 {
     public:

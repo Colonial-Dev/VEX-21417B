@@ -1,11 +1,6 @@
 #include <cfloat>
 #pragma once
 
-template <typename T> int sgnum(T val) 
-{
-    return (T(0) < val) - (val < T(0));
-}
-
 struct TraversalParameters
 {
     QLength lookahead_distance;
@@ -21,6 +16,12 @@ struct TraversalCache
     RawPoint lookahead_point;
     int closest_index = 0;
     double lookahead_index = 0;
+};
+
+struct WheelSpeeds
+{
+    QAngularSpeed target_left;
+    QAngularSpeed target_right;
 };
 
 void updatePosition(TraversalCache& cache)
