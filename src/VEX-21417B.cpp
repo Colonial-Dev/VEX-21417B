@@ -24,13 +24,10 @@ void initialize()
 
 void autonomous()
 {
-  RobotProperties props {1_mps, 0.5_mps2, 11_in, 4.25_in, 0, 0, 0};
-  GenerationParameters params {0.2, 0.8, 0.001};
+  GenerationParameters g_params {0.2, 0.8, 0.001, 2.5};
   TraversalParameters t_params {18_in};
-  PathManager manager(props);
-  manager.generatePath("Test", params, 
+  wayfarer.generatePath("Test", g_params, 
                       {{0_ft, 0_ft}, {8_ft, 0_ft}, {8_ft, 8_ft}});
-  auto traverser = manager.loadPath("Test", t_params);
-  traverser.traversePath();
+  wayfarer.traversePath("Test", t_params);
 }
 

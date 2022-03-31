@@ -16,10 +16,10 @@ QLength interpointDistance(PathPoint point_a, PathPoint point_b)
     return qlen;
 }
 
-QLength interpointDistance(RobotPosition point_a, PathPoint point_b)
+QLength interpointDistance(OdomState point_a, PathPoint point_b)
 {
-    double x_components = std::pow(point_b.x_pos.convert(meter) - point_a.x_pos.convert(meter), 2);
-    double y_components = std::pow(point_b.y_pos.convert(meter) - point_a.y_pos.convert(meter), 2);
+    double x_components = std::pow(point_b.x_pos.convert(meter) - point_a.x.convert(meter), 2);
+    double y_components = std::pow(point_b.y_pos.convert(meter) - point_a.y.convert(meter), 2);
     QLength qlen = ((std::sqrt(x_components + y_components)) * meter);
     return qlen;
 }

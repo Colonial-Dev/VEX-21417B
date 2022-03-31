@@ -15,7 +15,7 @@ struct TraversalCache
 {
     TraversalParameters params;
     RobotProperties robot_properties;
-    RobotPosition current_position;
+    OdomState current_position;
     Path path;
     PathPoint closest_point;
     RawPoint lookahead_point;
@@ -25,9 +25,7 @@ struct TraversalCache
 
 void updatePosition(TraversalCache& cache)
 {
-    auto state = drive_train->getState();
-    QAngle inertial = QAngle (inertial_sensor.get_rotation() * degree);
-    cache.current_position = {state.x, state.y, state.theta};
+    cache.current_position = cache.robot_properties.odom_controller->getState();
 }
 
 void updateClosestPoint(TraversalCache& cache)
@@ -126,12 +124,12 @@ double calculateCurvature(TraversalCache& cache)
     double lookahead_dist_x;
     double lookahead_dist_y;
 
-    double a = -std::tan(cache.current_position.heading.convert(radian));
+    double a = -std::tan(cache.current_position.theta.convert(radian));
     double b = 1;
-    double c = std::tan(cache.current_position.heading.convert(radian)) * cache.current_position.x_pos.convert(meter) - cache.current_position.y_pos.convert(meter);
+    double c = std::tan(cache.current_position.theta.convert(radian)) * cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter);
 
-    double cross_product = std::sin(cache.current_position.heading.convert(radian)) * (cache.lookahead_point.x_pos.convert(meter) - cache.current_position.x_pos.convert(meter)) - 
-           std::cos(cache.current_position.heading.convert(radian)) * (cache.lookahead_point.y_pos.convert(meter) - cache.current_position.y_pos.convert(meter));
+    double cross_product = std::sin(cache.current_position.theta.convert(radian)) * (cache.lookahead_point.x_pos.convert(meter) - cache.current_position.x.convert(meter)) - 
+           std::cos(cache.current_position.theta.convert(radian)) * (cache.lookahead_point.y_pos.convert(meter) - cache.current_position.y.convert(meter));
     double side = sgnum(cross_product);
 
     lookahead_dist_x = std::abs(a * cache.lookahead_point.x_pos.convert(meter) + b * cache.lookahead_point.y_pos.convert(meter) + c) / std::sqrt(SQ(a) + SQ(b));

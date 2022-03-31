@@ -76,6 +76,9 @@ auto drive_train = okapi::ChassisControllerBuilder()
   //Specify odometry dimensions and encoder type
   .withOdometry({{3.819_in, 5.16495_in, 3.5_in, 2.75_in}, quadEncoderTPR})
   .buildOdometry(); //Build an odometry-enabled chassis
+
+RobotProperties global_robot_properties {1_mps, 0.5_mps2, 11_in, 4.25_in, drive_train, 0, 0, 0};
+PathManager wayfarer(global_robot_properties);
   
 void setupBrakeModes()
 {

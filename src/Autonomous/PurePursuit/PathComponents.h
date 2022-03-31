@@ -6,16 +6,10 @@ struct RobotProperties
     QAcceleration max_acceleration;
     QLength track_width;
     QLength wheel_diam;
+    std::shared_ptr<OdomChassisController> odom_controller;
     double kv;
     double ka;
     double kp;
-};
-
-struct RobotPosition
-{
-    QLength x_pos;
-    QLength y_pos;
-    QAngle heading;
 };
 
 struct GenerationParameters

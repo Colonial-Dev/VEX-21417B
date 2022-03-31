@@ -36,10 +36,10 @@ class Vector
             y_component = point_b.y_pos - point_a.y_pos; 
         }
 
-        Vector(RobotPosition position)
+        Vector(OdomState position)
         {
-            x_component = position.x_pos;
-            y_component = position.y_pos;
+            x_component = position.x;
+            y_component = position.y;
         }
 
         QLength magnitude()

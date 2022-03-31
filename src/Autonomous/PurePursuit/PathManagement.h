@@ -22,7 +22,6 @@ class PathTraverser
         void traversePath()
         {
             std::uint32_t timestamp = pros::millis();
-            auto model = drive_train->getModel();
             while(true)
             {
                 updatePosition(cache);
@@ -36,10 +35,10 @@ class PathTraverser
                     break;
                 }
 
-                model->tank(speeds.target_left.convert(rpm) / 280, speeds.target_right.convert(rpm) / 280);
+                cache.robot_properties.odom_controller->getModel()->tank(speeds.target_left.convert(rpm) / 280, speeds.target_right.convert(rpm) / 280);
                 pros::Task::delay_until(&timestamp, 20);
             }
-            model->driveVector(0, 0);
+            cache.robot_properties.odom_controller->getModel()->driveVector(0, 0);
         }
 };
 
@@ -67,9 +66,10 @@ class PathManager
             stored_paths.insert(pair<std::string, Path>(finishedPath.getName(), finishedPath));
         }
 
-        PathTraverser loadPath(std::string path_name, TraversalParameters parameters)
+        void traversePath(std::string path_name, TraversalParameters parameters)
         {
             Path path = stored_paths[path_name];
-            return PathTraverser(path, parameters, robot_props);
+            PathTraverser traverser(path, parameters, robot_props);
+            traverser.traversePath();
         }
 };
