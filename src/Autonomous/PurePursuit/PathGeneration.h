@@ -9,8 +9,8 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
 
     for(int i = 0; i < path_outline.size() - 1; i++)
     {
-        RawPoint start_point = path_outline.at(i);
-        RawPoint end_point = path_outline.at(i+1);
+        Vector start_point = path_outline.at(i);
+        Vector end_point = path_outline.at(i+1);
 
         Vector segment(start_point, end_point);
         double injectionCount = std::ceil(segment.magnitude().convert(meter) / spacing.convert(meter));
@@ -19,16 +19,16 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
         for(int i = 0; i < injectionCount; i++)
         {
             Vector injectionVector = segment.scalarMult(i);
-            RawPoint injectionPoint = start_point;
+            Vector injectionPoint = start_point;
 
-            double injection_x = injectionPoint.x_pos.convert(meter);
-            double injection_y = injectionPoint.y_pos.convert(meter);
+            double injection_x = injectionPoint.x_component.convert(meter);
+            double injection_y = injectionPoint.y_component.convert(meter);
 
             injection_x += injectionVector.x_component.convert(meter);
             injection_y += injectionVector.y_component.convert(meter);
 
-            injectionPoint.x_pos = QLength (injection_x * meter);
-            injectionPoint.y_pos = QLength (injection_y * meter);
+            injectionPoint.x_component = QLength (injection_x * meter);
+            injectionPoint.y_component = QLength (injection_y * meter);
 
             paddedPath.add(injectionPoint);
         }
@@ -51,23 +51,23 @@ RawPath smoothPath(RawPath rough_path, GenerationParameters parameters)
         change = 0.0;
         for(int i = 1; i < rough_path.size() - 1; i++)
         {
-            RawPoint smoothed_point = smoothedPath.at(i);
-            RawPoint prev_point = smoothedPath.at(i-1);
-            RawPoint next_point = smoothedPath.at(i+1);
-            RawPoint rough_point = rough_path.at(i);
-            RawPoint orig_point = {smoothed_point.x_pos, smoothed_point.y_pos};
+            Vector smoothed_point = smoothedPath.at(i);
+            Vector prev_point = smoothedPath.at(i-1);
+            Vector next_point = smoothedPath.at(i+1);
+            Vector rough_point = rough_path.at(i);
+            Vector orig_point = {smoothed_point.x_component, smoothed_point.y_component};
             
-            double smoothed_x = smoothed_point.x_pos.convert(meter);
-            double smoothed_y = smoothed_point.y_pos.convert(meter);
+            double smoothed_x = smoothed_point.x_component.convert(meter);
+            double smoothed_y = smoothed_point.y_component.convert(meter);
 
-            smoothed_x += data_weight * (rough_point.x_pos.convert(meter) - smoothed_point.x_pos.convert(meter)) + smooth_weight * (prev_point.x_pos.convert(meter) + next_point.x_pos.convert(meter) - (2.0 * smoothed_point.x_pos.convert(meter)));
-            smoothed_y += data_weight * (rough_point.y_pos.convert(meter) - smoothed_point.y_pos.convert(meter)) + smooth_weight * (prev_point.y_pos.convert(meter) + next_point.y_pos.convert(meter) - (2.0 * smoothed_point.y_pos.convert(meter)));
+            smoothed_x += data_weight * (rough_point.x_component.convert(meter) - smoothed_point.x_component.convert(meter)) + smooth_weight * (prev_point.x_component.convert(meter) + next_point.x_component.convert(meter) - (2.0 * smoothed_point.x_component.convert(meter)));
+            smoothed_y += data_weight * (rough_point.y_component.convert(meter) - smoothed_point.y_component.convert(meter)) + smooth_weight * (prev_point.y_component.convert(meter) + next_point.y_component.convert(meter) - (2.0 * smoothed_point.y_component.convert(meter)));
 
-            change += std::abs(orig_point.x_pos.convert(meter) - smoothed_point.x_pos.convert(meter));
-            change += std::abs(orig_point.y_pos.convert(meter) - smoothed_point.y_pos.convert(meter));
+            change += std::abs(orig_point.x_component.convert(meter) - smoothed_point.x_component.convert(meter));
+            change += std::abs(orig_point.y_component.convert(meter) - smoothed_point.y_component.convert(meter));
 
-            smoothed_point.x_pos = QLength (smoothed_x * meter);
-            smoothed_point.y_pos = QLength (smoothed_y * meter);
+            smoothed_point.x_component = QLength (smoothed_x * meter);
+            smoothed_point.y_component = QLength (smoothed_y * meter);
 
             smoothedPath.at(i) = smoothed_point;
         }
@@ -82,13 +82,13 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
 
     //Calculate point distances
     QLength prev_dist = 0.0_in;
-    RawPoint prev_point = smooth_path.at(0);
+    Vector prev_point = smooth_path.at(0);
     for(int i = 0; i < smooth_path.size(); i++)
     {
-        RawPoint raw_point = smooth_path.at(i);
+        Vector raw_point = smooth_path.at(i);
         PathPoint new_point;
-        new_point.x_pos = raw_point.x_pos;
-        new_point.y_pos = raw_point.y_pos;
+        new_point.x_pos = raw_point.x_component;
+        new_point.y_pos = raw_point.y_component;
 
         new_point.distance = QLength ((prev_dist.convert(meter) + interpointDistance(prev_point, raw_point).convert(meter)) * meter);
 
@@ -149,7 +149,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
     return newPath;
 }
 
-Path generatePath(RobotProperties robot_props, GenerationParameters parameters, std::vector<RawPoint> path_outline)
+Path generatePath(RobotProperties robot_props, GenerationParameters parameters, std::vector<Vector> path_outline)
 {
     uint64_t start = pros::micros();
 

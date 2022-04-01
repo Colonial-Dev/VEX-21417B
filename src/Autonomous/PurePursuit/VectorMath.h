@@ -8,6 +8,7 @@ template <typename T> int sgnum(T val)
 class Vector
 {
     public:
+    
         QLength x_component;
         QLength y_component;
 
@@ -23,22 +24,16 @@ class Vector
             y_component = y_comp;
         }
 
-        Vector(RawPoint point)
-        {
-            x_component = point.x_pos;
-            y_component = point.y_pos;
-        }
-
         Vector(PathPoint point)
         {
             x_component = point.x_pos;
             y_component = point.y_pos;   
         }
 
-        Vector(RawPoint point_a, RawPoint point_b)
+        Vector(Vector point_a, Vector point_b)
         {
-            x_component = point_b.x_pos - point_a.x_pos;
-            y_component = point_b.y_pos - point_a.y_pos; 
+            x_component = point_b.x_component - point_a.x_component;
+            y_component = point_b.y_component - point_a.y_component; 
         }
 
         Vector(OdomState position)
@@ -76,6 +71,14 @@ class Vector
             return normalizedVector;
         }
 
+        Vector add(Vector addend)
+        {
+            Vector resultantVector;
+            resultantVector.x_component = QLength ((x_component.convert(meter) + addend.x_component.convert(meter)) * meter);
+            resultantVector.y_component = QLength ((y_component.convert(meter) + addend.y_component.convert(meter)) * meter);
+            return resultantVector;
+        }
+
         Vector subtract(Vector subtrahend)
         {
             Vector resultantVector;
@@ -90,14 +93,6 @@ class Vector
             scaledVector.x_component = QLength ((x_component.convert(meter) * scalar) * meter);
             scaledVector.y_component = QLength ((y_component.convert(meter) * scalar) * meter);
             return scaledVector;
-        }
-
-        QAngle angleBetween(Vector partner)
-        {
-            double angle = atan2(partner.y_component.convert(meter), partner.x_component.convert(meter)) - atan2(y_component.convert(meter), x_component.convert(meter));
-            angle = std::abs(angle * 180 / PI);
-            QAngle qang (angle * degree);
-            return qang;
         }
 
         double dot(Vector multiplicand)

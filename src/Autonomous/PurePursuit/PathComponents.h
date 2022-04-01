@@ -1,5 +1,4 @@
 #pragma once
-//Structs and classes that make up paths.
 
 //Constants and objects that model the robot and its components.
 //Max velocity and max acceleration can be set to any value within the actual capabilities of the robot.
@@ -32,12 +31,6 @@ struct GenerationParameters
     double initial_velocity_constant;
 };
 
-struct RawPoint
-{
-    QLength x_pos;
-    QLength y_pos;
-};
-
 struct PathPoint
 {
     QLength x_pos;
@@ -51,7 +44,7 @@ class RawPath
 {
     private:
 
-        std::vector<RawPoint> points;
+        std::vector<Vector> points;
     
     public:
 
@@ -60,16 +53,16 @@ class RawPath
             
         }
 
-        RawPath(std::vector<RawPoint> pts)
+        RawPath(std::vector<Vector> pts)
         {
             points = pts;
         }
 
         int size() { return points.size(); }
 
-        RawPoint& at(int index) { return points.at(index); } 
+        Vector& at(int index) { return points.at(index); } 
 
-        void add(RawPoint point) { points.push_back(point); }
+        void add(Vector point) { points.push_back(point); }
 };
 
 class Path

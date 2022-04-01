@@ -13,9 +13,9 @@ struct TraversalCache
     OdomState current_position;
     Path path;
     PathPoint closest_point;
-    RawPoint lookahead_point;
+    Vector lookahead_point;
     int closest_index = 0;
-    double lookahead_index = 0;
+    int lookahead_index = 0;
 };
 
 struct WheelSpeeds
@@ -62,7 +62,7 @@ double findIntersect(Vector& start, Vector& end, Vector& pos, double lookahead)
     double a = d.dot(d);
     double b = 2 * f.dot(d);
     double c = f.dot(f) - (SQ(lookahead));
-    double discriminant = SQ(b) - 4 * a * c;
+    double discriminant = SQ(b) - (4.0 * (a * c));
 
     if(discriminant < 0)
     {
@@ -98,46 +98,46 @@ void updateLookaheadPoint(TraversalCache& cache)
         double t_value = findIntersect(start, end, pos, cache.params.lookahead_distance.convert(meter));
         double fractional_index = t_value + i;
 
-        if(t_value < 0) { continue; }
+        if(t_value < 0 || fractional_index <= cache.lookahead_index) { continue; }
         else
         {   
             Vector d = end.subtract(start);
+            Vector d_scaled = d.scalarMult(t_value);
             PathPoint start_point = cache.path.at(i);
+            
+            Vector final_point = start.add(d_scaled);
 
-            double final_x = start_point.x_pos.convert(meter) + (t_value * d.x_component.convert(meter));
-            double final_y = start_point.y_pos.convert(meter) + (t_value * d.y_component.convert(meter));
-
-            RawPoint lookahead {QLength (final_x * meter), QLength (final_y * meter)};
-            printf("\n LPX:");
-            printf(to_string(lookahead.x_pos.convert(meter)).c_str());
-            printf("\n LPY:");
-            printf(to_string(lookahead.y_pos.convert(meter)).c_str());
+            Vector lookahead {final_point.x_component, final_point.y_component};
             cache.lookahead_point = lookahead;
-            cache.lookahead_index = fractional_index;
-            printf("\n LP:");
-            printf(to_string(cache.lookahead_index).c_str());
-            return;
+            cache.lookahead_index = i;
+            break;
         }
     }
+
+    printf("\n LPX:");
+    printf(to_string(cache.lookahead_point.x_component.convert(meter)).c_str());
+    printf("\n LPY:");
+    printf(to_string(cache.lookahead_point.y_component.convert(meter)).c_str());
+    printf("\n LPI:");
+    printf(to_string(cache.lookahead_index).c_str());
+    return;
 }
 
 double calculateCurvature(TraversalCache& cache)
 {
-    double lookahead_dist_x;
-    double lookahead_dist_y;
+    Vector difference = cache.lookahead_point.subtract(cache.current_position);
+    Vector lookahead = cache.lookahead_point;
 
-    double a = -std::tan(cache.current_position.theta.convert(radian));
+    double bot_angle = ((cache.current_position.theta * -1) + 90_deg).convert(radian);
+    double a = -std::tan(bot_angle);
     double b = 1;
-    double c = std::tan(cache.current_position.theta.convert(radian)) * cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter);
+    double c = -a * cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter);
 
-    double cross_product = std::sin(cache.current_position.theta.convert(radian)) * (cache.lookahead_point.x_pos.convert(meter) - cache.current_position.x.convert(meter)) - 
-           std::cos(cache.current_position.theta.convert(radian)) * (cache.lookahead_point.y_pos.convert(meter) - cache.current_position.y.convert(meter));
-    double side = sgnum(cross_product);
+    double lookahead_x = std::abs(a * lookahead.x_component.convert(meter) + b * lookahead.y_component.convert(meter) + c) / std::sqrt(SQ(a) + b);
+    int side = sgnum(std::sin(bot_angle) * difference.x_component.convert(meter) - std::cos(bot_angle) * difference.y_component.convert(meter));
 
-    lookahead_dist_x = std::abs(a * cache.lookahead_point.x_pos.convert(meter) + b * cache.lookahead_point.y_pos.convert(meter) + c) / std::sqrt(SQ(a) + SQ(b));
-
-    double curvature = (2 * lookahead_dist_x) / SQ(cache.params.lookahead_distance.convert(meter)); 
-    return curvature * side;
+    double curvature = (2 * lookahead_x) / SQ(interpointDistance(cache.current_position, lookahead).convert(meter)); 
+    return SQ(curvature) * side;
 }
 
 WheelSpeeds calculateWheelSpeeds(TraversalCache &cache, double curvature)

@@ -62,7 +62,7 @@ class PathManager
         }
 
         //Generates a standard path from the given parameters and stores it in the PathManager instance.
-        void generateStandardPath(std::string path_name, GenerationParameters parameters, std::vector<RawPoint> path_points)
+        void generateStandardPath(std::string path_name, GenerationParameters parameters, std::vector<Vector> path_points)
         {
             Path finished_path = generatePath(robot_props, parameters, path_points);
             finished_path.setName(path_name);

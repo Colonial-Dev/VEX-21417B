@@ -9,8 +9,8 @@ void dumpRawPath(RawPath path)
 
     for(int i = 0; i < path.size(); i++)
     {
-        x_coords += to_string(path.at(i).x_pos.convert(foot)) + ",";
-        y_coords += to_string(path.at(i).y_pos.convert(foot)) + ",";
+        x_coords += to_string(path.at(i).x_component.convert(foot)) + ",";
+        y_coords += to_string(path.at(i).y_component.convert(foot)) + ",";
     }
 
     x_coords.replace(x_coords.length() - 1, 1, "]");
