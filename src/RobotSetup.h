@@ -70,7 +70,7 @@ auto drive_train = okapi::ChassisControllerBuilder()
   (
       ADIEncoder{'A', 'B', true}, //Left encoder (inverted)
       ADIEncoder{'C', 'D'},  //Right encoder
-      ADIEncoder{'E', 'F', true}  //Middle encoder (inverted)
+      ADIEncoder{'E', 'F'}  //Middle encoder
   )
   .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4_in, 11_in}, okapi::imev5GreenTPR * GEAR_RATIO})
   //Specify odometry dimensions and encoder type

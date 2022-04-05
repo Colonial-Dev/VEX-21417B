@@ -6,28 +6,33 @@ struct TraversalParameters
     QLength lookahead_distance;
 };
 
-struct TraversalCache
-{
-    TraversalParameters params;
-    RobotProperties robot_properties;
-    OdomState current_position;
-    Path path;
-    PathPoint closest_point;
-    Vector lookahead_point;
-    int closest_index = 0;
-    int lookahead_index = 0;
-};
-
 struct WheelSpeeds
 {
     QAngularSpeed target_left;
     QAngularSpeed target_right;
 };
 
+struct TraversalCache
+{
+    TraversalParameters params;
+    RobotProperties robot_properties;
+    OdomState current_position;
+    Path path;
+
+    PathPoint closest_point;
+    Vector lookahead_point;
+    Vector projected_lookahead;
+    int closest_index = 0;
+    int lookahead_index = 0;
+
+    WheelSpeeds target_speeds;
+    WheelSpeeds prev_target_speeds = {0_rpm, 0_rpm};
+};
+
 void updatePosition(TraversalCache& cache)
 {
     cache.current_position = cache.robot_properties.odom_controller->getState();
-    //cache.current_position.theta = QAngle (inertial_sensor.get_rotation() * degree);
+    cache.current_position.theta = QAngle (inertial_sensor.get_rotation() * degree);
 }
 
 void updateClosestPoint(TraversalCache& cache)
@@ -102,9 +107,7 @@ void updateLookaheadPoint(TraversalCache& cache)
         else
         {   
             Vector d = end.subtract(start);
-            Vector d_scaled = d.scalarMult(t_value);
-            PathPoint start_point = cache.path.at(i);
-            
+            Vector d_scaled = d.scalarMult(t_value);            
             Vector final_point = start.add(d_scaled);
 
             Vector lookahead {final_point.x_component, final_point.y_component};
@@ -120,7 +123,14 @@ void updateLookaheadPoint(TraversalCache& cache)
     printf(to_string(cache.lookahead_point.y_component.convert(meter)).c_str());
     printf("\n LPI:");
     printf(to_string(cache.lookahead_index).c_str());
-    return;
+}
+
+void projectLookaheadPoint(TraversalCache& cache)
+{
+    Vector ray = cache.lookahead_point.subtract(cache.current_position);
+    ray = ray.normalize().scalarMult(cache.params.lookahead_distance.convert(meter));
+    ray = ray.add(cache.current_position);
+    cache.projected_lookahead = ray;
 }
 
 double calculateCurvature(TraversalCache& cache)
@@ -128,36 +138,53 @@ double calculateCurvature(TraversalCache& cache)
     Vector difference = cache.lookahead_point.subtract(cache.current_position);
     Vector lookahead = cache.lookahead_point;
 
-    double bot_angle = ((cache.current_position.theta * -1) + 90_deg).convert(radian);
+    double bot_angle = (cache.current_position.theta).convert(radian);
     double a = -std::tan(bot_angle);
     double b = 1;
-    double c = -a * cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter);
+    double c = std::tan(bot_angle) * (cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter));
 
-    double lookahead_x = std::abs(a * lookahead.x_component.convert(meter) + b * lookahead.y_component.convert(meter) + c) / std::sqrt(SQ(a) + b);
+    double lookahead_x = std::abs(a * lookahead.x_component.convert(meter) + b * lookahead.y_component.convert(meter) + c) / std::sqrt(SQ(a) + SQ(b));
+    printf("\nLookX: ");
+    printf(to_string(lookahead_x).c_str());
     int side = sgnum(std::sin(bot_angle) * difference.x_component.convert(meter) - std::cos(bot_angle) * difference.y_component.convert(meter));
 
     double curvature = (2 * lookahead_x) / SQ(interpointDistance(cache.current_position, lookahead).convert(meter)); 
-    return SQ(curvature) * side;
+    return curvature * side;
 }
 
-WheelSpeeds calculateWheelSpeeds(TraversalCache &cache, double curvature)
+bool checkDistance(TraversalCache& cache, QLength threshold = 6_in)
 {
+    double distance = std::abs(interpointDistance(cache.current_position, cache.path.at(cache.path.size() - 1)).convert(inch));
+    printf("\nDistance: ");
+    printf(to_string(distance).c_str());
+    return distance <= threshold.convert(inch);
+}
+
+void calculateWheelSpeeds(TraversalCache &cache, double curvature)
+{    
     QSpeed point_velocity = cache.closest_point.target_velocity;
-    printf("\n pV: ");
-    printf(to_string(point_velocity.convert(mps)).c_str());
     QSpeed target_velocity = limiter.getLimited(point_velocity, cache.robot_properties.max_acceleration);
-    printf("\n TV: ");
-    printf(to_string(target_velocity.convert(mps)).c_str());
-    QSpeed left_velocity = target_velocity * (2.0 + cache.robot_properties.track_width.convert(meter) * curvature) / 2.0;
-    QSpeed right_velocity = target_velocity * (2.0 - cache.robot_properties.track_width.convert(meter) * curvature) / 2.0;
+    QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
+    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 + curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
 
     QAngularSpeed left_wheels = (left_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
     QAngularSpeed right_wheels = (right_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
+    left_wheels = QAngularSpeed (std::clamp(left_wheels.convert(rpm), -200.0, 200.0) * rpm);
+    right_wheels = QAngularSpeed (std::clamp(right_wheels.convert(rpm), -200.0, 200.0) * rpm);
 
+    printf("\n pV: ");
+    printf(to_string(point_velocity.convert(mps)).c_str());
+    printf("\n TV: ");
+    printf(to_string(target_velocity.convert(mps)).c_str());
+    printf("\n CVels:");
+    printf(to_string(left_velocity.convert(mps)).c_str());
+    printf(" ");
+    printf(to_string(right_velocity.convert(mps)).c_str());
     printf("\n WVels:");
     printf(to_string(left_wheels.convert(rpm)).c_str());
     printf(" ");
     printf(to_string(right_wheels.convert(rpm)).c_str());
 
-    return WheelSpeeds {left_wheels, right_wheels};
+    cache.prev_target_speeds = cache.target_speeds;
+    cache.target_speeds = WheelSpeeds {left_wheels, right_wheels};
 }

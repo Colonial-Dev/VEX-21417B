@@ -40,6 +40,9 @@ struct PathPoint
     double curvature;
 };
 
+#include "VectorMath.h"
+#include "CoordinateMath.h"
+
 class RawPath
 {
     private:
@@ -84,4 +87,3 @@ class Path
 
         void add(PathPoint point) { points.push_back(point); }
 };
-

@@ -1,6 +1,4 @@
 #pragma once
-#include "CoordinateMath.h"
-#include "VectorMath.h"
 #define SQ(x) std::pow(x, 2)
 
 RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
@@ -137,6 +135,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
         newPath.at(i).target_velocity = QSpeed (std::min(robot.max_velocity.convert(mps), params.initial_velocity_constant / newPath.at(i).curvature) * mps);
     }
 
+    newPath.at(newPath.size() - 1).target_velocity = 0_mps;
     //Smooth deceleration velocities
     for(int i = newPath.size() - 2; i >= 0; i--)
     {

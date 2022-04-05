@@ -22,27 +22,34 @@ class PathTraverser
 
         void traversePath()
         {
-            std::uint32_t timestamp = pros::millis();
+            std::uint32_t delay_timestamp = pros::millis();
+            std::uint32_t dt_timestamp = pros::millis();
             while(true)
             {
                 updatePosition(cache);
                 updateClosestPoint(cache);
                 updateLookaheadPoint(cache);
-                double curvature = calculateCurvature(cache);
-                WheelSpeeds speeds = calculateWheelSpeeds(cache, curvature);
-                
-                double distance = std::abs(interpointDistance(cache.current_position, cache.path.at(cache.path.size() - 1)).convert(inch));
-                printf("\nDistance: ");
-                printf(to_string(distance).c_str());
-                if(distance < 6.0)
-                {
-                    break;
-                }
+                projectLookaheadPoint(cache);
 
-                cache.robot_properties.odom_controller->getModel()->tank(speeds.target_left.convert(rpm) / 200, speeds.target_right.convert(rpm) / 200);
-                pros::Task::delay_until(&timestamp, 20);
+                double curvature = calculateCurvature(cache);
+                printf("\nCurvature: ");
+                printf(to_string(curvature).c_str());
+                //curvature = cache.closest_point.curvature;
+                
+                calculateWheelSpeeds(cache, curvature);
+                
+                if(checkDistance(cache)) { break; }
+
+                cache.robot_properties.odom_controller->getModel()->tank(cache.target_speeds.target_left.convert(rpm) / 200, cache.target_speeds.target_right.convert(rpm) / 200);
+
+                pros::Task::delay_until(&delay_timestamp, 20);
             }
             cache.robot_properties.odom_controller->getModel()->driveVector(0, 0);
+        }
+
+        void simulatePath(OdomState position)
+        {
+            //TODO calculate + dump function outputs given hypothetical position
         }
 };
 
