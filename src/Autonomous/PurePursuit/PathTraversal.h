@@ -26,7 +26,6 @@ struct TraversalCache
     int lookahead_index = 0;
 
     WheelSpeeds target_speeds;
-    WheelSpeeds prev_target_speeds = {0_rpm, 0_rpm};
 };
 
 void updatePosition(TraversalCache& cache)
@@ -52,10 +51,8 @@ void updateClosestPoint(TraversalCache& cache)
 
     cache.closest_index = curr_closest_index;
     cache.closest_point = cache.path.at(curr_closest_index);
-    printf("\n CP:");
-    printf(to_string(cache.closest_index).c_str());
-    printf("/");
-    printf(to_string(cache.path.size()).c_str());
+
+    PRINT "\nCP: " + to_string(cache.closest_index) + "/" + to_string(cache.path.size());
 }
 
 
@@ -117,12 +114,9 @@ void updateLookaheadPoint(TraversalCache& cache)
         }
     }
 
-    printf("\n LPX:");
-    printf(to_string(cache.lookahead_point.x_component.convert(meter)).c_str());
-    printf("\n LPY:");
-    printf(to_string(cache.lookahead_point.y_component.convert(meter)).c_str());
-    printf("\n LPI:");
-    printf(to_string(cache.lookahead_index).c_str());
+    PRINT "\nLPX: " + to_string(cache.lookahead_point.x_component.convert(meter));
+    PRINT "\nLPY: " + to_string(cache.lookahead_point.y_component.convert(meter));
+    PRINT "\nLPI: " + to_string(cache.lookahead_index);
 }
 
 void projectLookaheadPoint(TraversalCache& cache)
@@ -144,8 +138,7 @@ double calculateCurvature(TraversalCache& cache)
     double c = std::tan(bot_angle) * (cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter));
 
     double lookahead_x = std::abs(a * lookahead.x_component.convert(meter) + b * lookahead.y_component.convert(meter) + c) / std::sqrt(SQ(a) + SQ(b));
-    printf("\nLookX: ");
-    printf(to_string(lookahead_x).c_str());
+    PRINT "\nLookX: " + to_string(lookahead_x);
     int side = sgnum(std::sin(bot_angle) * difference.x_component.convert(meter) - std::cos(bot_angle) * difference.y_component.convert(meter));
 
     double curvature = (2 * lookahead_x) / SQ(interpointDistance(cache.current_position, lookahead).convert(meter)); 
@@ -155,8 +148,7 @@ double calculateCurvature(TraversalCache& cache)
 bool checkDistance(TraversalCache& cache, QLength threshold = 6_in)
 {
     double distance = std::abs(interpointDistance(cache.current_position, cache.path.at(cache.path.size() - 1)).convert(inch));
-    printf("\nDistance: ");
-    printf(to_string(distance).c_str());
+    PRINT "\nDistance: " + to_string(distance);
     return distance <= threshold.convert(inch);
 }
 
@@ -172,19 +164,10 @@ void calculateWheelSpeeds(TraversalCache &cache, double curvature)
     left_wheels = QAngularSpeed (std::clamp(left_wheels.convert(rpm), -200.0, 200.0) * rpm);
     right_wheels = QAngularSpeed (std::clamp(right_wheels.convert(rpm), -200.0, 200.0) * rpm);
 
-    printf("\n pV: ");
-    printf(to_string(point_velocity.convert(mps)).c_str());
-    printf("\n TV: ");
-    printf(to_string(target_velocity.convert(mps)).c_str());
-    printf("\n CVels:");
-    printf(to_string(left_velocity.convert(mps)).c_str());
-    printf(" ");
-    printf(to_string(right_velocity.convert(mps)).c_str());
-    printf("\n WVels:");
-    printf(to_string(left_wheels.convert(rpm)).c_str());
-    printf(" ");
-    printf(to_string(right_wheels.convert(rpm)).c_str());
+    PRINT "\npV: " + to_string(point_velocity.convert(mps));
+    PRINT "\ntV: " + to_string(target_velocity.convert(mps));
+    PRINT "\nCVels: " + to_string(left_velocity.convert(mps)) + " " + to_string(right_velocity.convert(mps));
+    PRINT "\nWVels: " + to_string(left_wheels.convert(rpm)) + " " + to_string(right_wheels.convert(rpm));
 
-    cache.prev_target_speeds = cache.target_speeds;
     cache.target_speeds = WheelSpeeds {left_wheels, right_wheels};
 }

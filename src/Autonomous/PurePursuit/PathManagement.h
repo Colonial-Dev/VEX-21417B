@@ -32,9 +32,7 @@ class PathTraverser
                 projectLookaheadPoint(cache);
 
                 double curvature = calculateCurvature(cache);
-                printf("\nCurvature: ");
-                printf(to_string(curvature).c_str());
-                //curvature = cache.closest_point.curvature;
+                PRINT "\nCurvature: " + to_string(curvature);
                 
                 calculateWheelSpeeds(cache, curvature);
                 

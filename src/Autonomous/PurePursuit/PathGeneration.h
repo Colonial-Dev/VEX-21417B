@@ -158,10 +158,7 @@ Path generatePath(RobotProperties robot_props, GenerationParameters parameters, 
     Path finished_path = processPath(new_path, robot_props, parameters);
 
     uint64_t finish = pros::micros();
-    printf("\nPathgen done, took ");
-    printf(to_string(finish - start).c_str());
-    printf(" microseconds.");
-
+    PRINT "\nPathgen done, took " + to_string(finish - start) + " microseconds.";
     return finished_path;
 }
 

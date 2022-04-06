@@ -6,6 +6,7 @@
 using namespace std;
 using namespace okapi;
 
+#define PRINT std::cout <<
 #include "RobotManager.h"
 #include "Autonomous/PurePursuit/RateLimiter.h"
 #include "RobotSetup.h"

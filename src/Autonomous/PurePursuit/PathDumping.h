@@ -2,7 +2,7 @@
 
 void dumpRawPath(RawPath path)
 {
-    printf("\n-----\nDUMPING RAW PATH");
+    PRINT "\n-----\nDUMPING RAW PATH";
 
     std::string x_coords = "\n X [";
     std::string y_coords = "\n Y [";
@@ -16,14 +16,12 @@ void dumpRawPath(RawPath path)
     x_coords.replace(x_coords.length() - 1, 1, "]");
     y_coords.replace(y_coords.length() - 1, 1, "]");
 
-    printf((x_coords + y_coords).c_str());
-    printf("\n-----");
+    PRINT x_coords + y_coords + "\n-----";
 }
 
 void dumpFullPath(Path path)
 {
-    printf("\n-----\nDUMPING PATH: ");
-    printf(path.getName().c_str());
+    PRINT "\n-----\nDUMPING PATH: " + path.getName();
 
     std::string x_coords = "\n X [";
     std::string y_coords = "\n Y [";
@@ -46,6 +44,5 @@ void dumpFullPath(Path path)
     target_vels.replace(target_vels.length() - 1, 1, "]");
     curvatures.replace(curvatures.length() - 1, 1, "]");
 
-    printf((x_coords + y_coords + distances + target_vels + curvatures).c_str());
-    printf("\n-----");
+    PRINT x_coords + y_coords + distances + target_vels + curvatures + "\n-----";
 }
