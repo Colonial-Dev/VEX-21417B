@@ -29,11 +29,6 @@ enum AutonStrat
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
 
-//Overwatch is an interface for managing the bot.
-//You can use it to do things like test autons and reset the robot without shuttering the program first.
-RobotManager overwatch;
-RateLimiter limiter;
-
 //Initialize drivetrain motors
 pros::Motor right_back (12, true);
 pros::Motor right_middle (15);

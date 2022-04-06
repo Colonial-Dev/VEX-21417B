@@ -12,13 +12,13 @@ class Vector
         QLength x_component;
         QLength y_component;
 
-        Vector Vector::operator + (Vector addend) { return {x_component + addend.x_component, y_component + addend.y_component}; }
+        Vector operator + (Vector addend) { return {x_component + addend.x_component, y_component + addend.y_component}; }
 
-        Vector Vector::operator - (Vector subtrahend) { return {x_component - subtrahend.x_component, y_component - subtrahend.y_component}; }
+        Vector operator - (Vector subtrahend) { return {x_component - subtrahend.x_component, y_component - subtrahend.y_component}; }
 
-        Vector Vector::operator * (double scalar) { return {x_component * scalar, y_component * scalar}; }
+        Vector operator * (double scalar) { return {x_component * scalar, y_component * scalar}; }
 
-        Vector Vector::operator / (double scalar) { return {x_component / scalar, y_component / scalar}; }
+        Vector operator / (double scalar) { return {x_component / scalar, y_component / scalar}; }
         
 
         Vector()

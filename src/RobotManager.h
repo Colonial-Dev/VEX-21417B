@@ -64,3 +64,8 @@ class RobotManager
         }
 
 };
+
+//Overwatch is an interface for managing the bot.
+//You can use it to do things like test autons and reset the robot without shuttering the program first.
+RobotManager overwatch;
+RateLimiter limiter;
