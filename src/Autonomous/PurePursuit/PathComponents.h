@@ -41,7 +41,6 @@ struct PathPoint
 };
 
 #include "VectorMath.h"
-#include "CoordinateMath.h"
 
 class RawPath
 {

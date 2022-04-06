@@ -58,8 +58,8 @@ void updateClosestPoint(TraversalCache& cache)
 
 double findIntersect(Vector& start, Vector& end, Vector& pos, double lookahead)
 {
-    Vector d = end.subtract(start);
-    Vector f = start.subtract(pos);
+    Vector d = end - start;
+    Vector f = start - pos;
 
     double a = d.dot(d);
     double b = 2 * f.dot(d);
@@ -103,9 +103,9 @@ void updateLookaheadPoint(TraversalCache& cache)
         if(t_value < 0 || fractional_index <= cache.lookahead_index) { continue; }
         else
         {   
-            Vector d = end.subtract(start);
-            Vector d_scaled = d.scalarMult(t_value);            
-            Vector final_point = start.add(d_scaled);
+            Vector d = end - start;
+            Vector d_scaled = d * t_value;          
+            Vector final_point = start + d_scaled;
 
             Vector lookahead {final_point.x_component, final_point.y_component};
             cache.lookahead_point = lookahead;
@@ -121,15 +121,15 @@ void updateLookaheadPoint(TraversalCache& cache)
 
 void projectLookaheadPoint(TraversalCache& cache)
 {
-    Vector ray = cache.lookahead_point.subtract(cache.current_position);
-    ray = ray.normalize().scalarMult(cache.params.lookahead_distance.convert(meter));
-    ray = ray.add(cache.current_position);
+    Vector ray = cache.lookahead_point - cache.current_position;
+    ray = ray.normalize() * cache.params.lookahead_distance.convert(meter);
+    ray = ray + cache.current_position;
     cache.projected_lookahead = ray;
 }
 
 double calculateCurvature(TraversalCache& cache)
 {
-    Vector difference = cache.lookahead_point.subtract(cache.current_position);
+    Vector difference = cache.lookahead_point - cache.current_position;
     Vector lookahead = cache.lookahead_point;
 
     double bot_angle = (cache.current_position.theta).convert(radian);

@@ -12,6 +12,15 @@ class Vector
         QLength x_component;
         QLength y_component;
 
+        Vector Vector::operator + (Vector addend) { return {x_component + addend.x_component, y_component + addend.y_component}; }
+
+        Vector Vector::operator - (Vector subtrahend) { return {x_component - subtrahend.x_component, y_component - subtrahend.y_component}; }
+
+        Vector Vector::operator * (double scalar) { return {x_component * scalar, y_component * scalar}; }
+
+        Vector Vector::operator / (double scalar) { return {x_component / scalar, y_component / scalar}; }
+        
+
         Vector()
         {
             x_component = 0_in;
@@ -28,12 +37,6 @@ class Vector
         {
             x_component = point.x_pos;
             y_component = point.y_pos;   
-        }
-
-        Vector(Vector point_a, Vector point_b)
-        {
-            x_component = point_b.x_component - point_a.x_component;
-            y_component = point_b.y_component - point_a.y_component; 
         }
 
         Vector(OdomState position)
@@ -71,32 +74,16 @@ class Vector
             return normalizedVector;
         }
 
-        Vector add(Vector addend)
-        {
-            Vector resultantVector;
-            resultantVector.x_component = QLength ((x_component.convert(meter) + addend.x_component.convert(meter)) * meter);
-            resultantVector.y_component = QLength ((y_component.convert(meter) + addend.y_component.convert(meter)) * meter);
-            return resultantVector;
-        }
-
-        Vector subtract(Vector subtrahend)
-        {
-            Vector resultantVector;
-            resultantVector.x_component = QLength ((x_component.convert(meter) - subtrahend.x_component.convert(meter)) * meter);
-            resultantVector.y_component = QLength ((y_component.convert(meter) - subtrahend.y_component.convert(meter)) * meter);
-            return resultantVector;
-        }
-
-        Vector scalarMult(double scalar)
-        {
-            Vector scaledVector;
-            scaledVector.x_component = QLength ((x_component.convert(meter) * scalar) * meter);
-            scaledVector.y_component = QLength ((y_component.convert(meter) * scalar) * meter);
-            return scaledVector;
-        }
-
         double dot(Vector multiplicand)
         {
             return (x_component.convert(meter) * multiplicand.x_component.convert(meter)) + (y_component.convert(meter) * multiplicand.y_component.convert(meter));
         }
 };
+
+QLength interpointDistance(Vector point_a, Vector point_b)
+{
+    double x_components = std::pow(point_b.x_component.convert(meter) - point_a.x_component.convert(meter), 2);
+    double y_components = std::pow(point_b.y_component.convert(meter) - point_a.y_component.convert(meter), 2);
+    QLength qlen = ((std::sqrt(x_components + y_components)) * meter);
+    return qlen;
+}

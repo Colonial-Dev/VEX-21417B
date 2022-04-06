@@ -10,13 +10,13 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
         Vector start_point = path_outline.at(i);
         Vector end_point = path_outline.at(i+1);
 
-        Vector segment(start_point, end_point);
+        Vector segment = start_point - end_point;
         double injectionCount = std::ceil(segment.magnitude().convert(meter) / spacing.convert(meter));
-        segment = segment.normalize().scalarMult(spacing.convert(meter));
+        segment = segment.normalize() * spacing.convert(meter);
         
         for(int i = 0; i < injectionCount; i++)
         {
-            Vector injectionVector = segment.scalarMult(i);
+            Vector injectionVector = segment * i;
             Vector injectionPoint = start_point;
 
             double injection_x = injectionPoint.x_component.convert(meter);
