@@ -56,21 +56,15 @@ double GEAR_RATIO = 60.0/84.0;
 
 auto drive_train = okapi::ChassisControllerBuilder()
   .withMotors({19, 6, 9}, {12, 15, 16})
-  .withGains
-  (
-      {0.001, 0, 0.0001}, //Distance gains
-      {0.0032, 0.0003, 0.0001}, //Turn gains
-      {0.7, 0.001, 0.0001}  //Angle gains
-  )
   .withSensors
   (
-      ADIEncoder{'A', 'B', true}, //Left encoder (inverted)
+      ADIEncoder{'A', 'B', true}, //Left encoder
       ADIEncoder{'C', 'D'},  //Right encoder
       ADIEncoder{'E', 'F'}  //Middle encoder
   )
-  .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4_in, 11_in}, okapi::imev5GreenTPR * GEAR_RATIO})
+  .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4.125_in, 11.5_in}, okapi::imev5GreenTPR * GEAR_RATIO})
   //Specify odometry dimensions and encoder type
-  .withOdometry({{3.819_in, 5.16495_in, 3.5_in, 2.75_in}, quadEncoderTPR})
+  .withOdometry({{2.875_in, 4.715_in, 3.5_in, 2.875_in}, quadEncoderTPR})
   .buildOdometry(); //Build an odometry-enabled chassis
   
 void setupBrakeModes()

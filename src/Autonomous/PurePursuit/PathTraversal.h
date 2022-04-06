@@ -31,7 +31,7 @@ struct TraversalCache
 void updatePosition(TraversalCache& cache)
 {
     cache.current_position = cache.robot_properties.odom_controller->getState();
-    cache.current_position.theta = QAngle (inertial_sensor.get_rotation() * degree);
+    //cache.current_position.theta = QAngle (inertial_sensor.get_rotation() * degree);
 }
 
 void updateClosestPoint(TraversalCache& cache)
@@ -157,7 +157,7 @@ void calculateWheelSpeeds(TraversalCache &cache, double curvature)
     QSpeed point_velocity = cache.closest_point.target_velocity;
     QSpeed target_velocity = limiter.getLimited(point_velocity, cache.robot_properties.max_acceleration);
     QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
-    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 + curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
+    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
 
     QAngularSpeed left_wheels = (left_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
     QAngularSpeed right_wheels = (right_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;

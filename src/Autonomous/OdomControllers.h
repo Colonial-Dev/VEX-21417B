@@ -12,9 +12,13 @@
 
 QAngle constrainAngle(QAngle angle)
 {
+    printf("\nOriginal angle: ");
+    printf(to_string(angle.convert(degree)).c_str());
     double x = angle.convert(degree);
     x = std::fmod(x, 360);
     if (x < 0) { x += 360; }
+    printf("\nConstrained angle :");
+    printf(to_string(x).c_str());
     return QAngle (x * degree);
 }
 
@@ -30,14 +34,18 @@ void turnRelative(QAngle target_angle)
 	double integral;
 	double derivative;
 	double prevError;
-	double kp = 1.2;
-	double ki = 0.0025;
-	double kd = 7.5;
+	double kp = 0.01;
+	double ki = 0;
+	double kd = 0;
 
+    PRINT "\n" + to_string(error);
     while(fabs(error) > threshold)
     {  
+        PRINT to_string(error);
+        printf("\n");
+        printf(to_string(error).c_str());
         error = target_angle.convert(degree) - getRobotHeading().convert(degree);
-        integral  = integral + error;
+        integral = integral + error;
 
 		if(error == 0 || fabs(error) >= target_angle.convert(degree))
         {

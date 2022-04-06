@@ -6,21 +6,6 @@ class RobotManager
 
         std::vector<pros::Task> driverTasks;
 
-        void runAuton()
-        {
-            pros::Controller master (CONTROLLER_MASTER);
-
-            pros::delay(50);
-            master.rumble("-");
-            pros::delay(1000);
-            master.rumble("-");
-            pros::delay(1000);
-            master.rumble("---");
-            pros::delay(1000);
-
-            autonomous();
-        }
-
     public:
 
         void registerDriverTask(pros::task_t task)
@@ -46,13 +31,6 @@ class RobotManager
             }
         }
 
-        void testAutonomous()
-        {
-            suspendDriverControl();
-            runAuton();
-            resumeDriverControl();
-        }
-
         //Resets all relative sensor values to default, simulating a restart of the program.
         void reinitialize()
         {
@@ -69,3 +47,21 @@ class RobotManager
 //You can use it to do things like test autons and reset the robot without shuttering the program first.
 RobotManager overwatch;
 RateLimiter limiter;
+
+void autonomousAsync()
+{
+    pros::Controller master (CONTROLLER_MASTER);
+
+    overwatch.suspendDriverControl();
+    pros::delay(50);
+    master.rumble("-");
+    pros::delay(1000);
+    master.rumble("-");
+    pros::delay(1000);
+    master.rumble("---");
+    pros::delay(1000);
+
+    autonomous();
+
+    overwatch.resumeDriverControl();
+}
