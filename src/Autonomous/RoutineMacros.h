@@ -4,7 +4,7 @@
 
 #define DELAY(x) pros::delay(x);
 
-#define TURN(x) inertialTurn(x);
+#define TURN(x)
 
 #define CONVEYOR_OFF
 #define CONVEYOR_ON

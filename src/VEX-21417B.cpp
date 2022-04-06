@@ -11,7 +11,6 @@ using namespace okapi;
 #include "Autonomous/PurePursuit/RateLimiter.h"
 #include "RobotSetup.h"
 #include "Autonomous/RoutineMacros.h"
-#include "Autonomous/Subroutines.h"
 #include "Autonomous/OdomControllers.h"
 #include "Autonomous/PurePursuit/PathManagement.h"
 #include "Display/DisplaySuite.h"

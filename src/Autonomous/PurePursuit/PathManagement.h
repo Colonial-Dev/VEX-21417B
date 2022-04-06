@@ -1,5 +1,6 @@
 #pragma once
 #include "PathComponents.h"
+#include "PathObjects.h"
 #include "PathDumping.h"
 #include "PathGeneration.h"
 #include "PathTraversal.h"
@@ -106,4 +107,5 @@ class PathManager
             Path path = stored_paths[path_name];
             dumpFullPath(path);
         }
+
 };
