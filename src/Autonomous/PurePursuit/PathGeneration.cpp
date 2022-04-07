@@ -1,5 +1,8 @@
-#pragma once
-#define SQ(x) std::pow(x, 2)
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathObjects.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathGeneration.hpp"
 
 RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
 {
@@ -158,7 +161,7 @@ Path generatePath(RobotProperties robot_props, GenerationParameters parameters, 
     Path finished_path = processPath(new_path, robot_props, parameters);
 
     uint64_t finish = pros::micros();
-    PRINT "\nPathgen done, took " + to_string(finish - start) + " microseconds.";
+    PRINT "\nPathgen done, took " + std::to_string(finish - start) + " microseconds.";
     return finished_path;
 }
 

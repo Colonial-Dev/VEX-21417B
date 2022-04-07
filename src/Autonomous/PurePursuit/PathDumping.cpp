@@ -1,4 +1,6 @@
-#pragma once
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathDumping.hpp"
 
 void dumpRawPath(RawPath path)
 {
@@ -9,8 +11,8 @@ void dumpRawPath(RawPath path)
 
     for(int i = 0; i < path.size(); i++)
     {
-        x_coords += to_string(path.at(i).x_component.convert(foot)) + ",";
-        y_coords += to_string(path.at(i).y_component.convert(foot)) + ",";
+        x_coords += std::to_string(path.at(i).x_component.convert(foot)) + ",";
+        y_coords += std::to_string(path.at(i).y_component.convert(foot)) + ",";
     }
 
     x_coords.replace(x_coords.length() - 1, 1, "]");
@@ -31,11 +33,11 @@ void dumpFullPath(Path path)
 
     for(int i = 0; i < path.size(); i++)
     {
-        x_coords += to_string(path.at(i).x_pos.convert(foot)) + ",";
-        y_coords += to_string(path.at(i).y_pos.convert(foot)) + ",";
-        distances += to_string(path.at(i).distance.convert(foot)) + ",";
-        target_vels += to_string(path.at(i).target_velocity.convert(mps)) + ",";
-        curvatures += to_string(path.at(i).curvature) + ",";
+        x_coords += std::to_string(path.at(i).x_pos.convert(foot)) + ",";
+        y_coords += std::to_string(path.at(i).y_pos.convert(foot)) + ",";
+        distances += std::to_string(path.at(i).distance.convert(foot)) + ",";
+        target_vels += std::to_string(path.at(i).target_velocity.convert(mps)) + ",";
+        curvatures += std::to_string(path.at(i).curvature) + ",";
     }
 
     x_coords.replace(x_coords.length() - 1, 1, "]");

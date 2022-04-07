@@ -1,4 +1,8 @@
 #pragma once
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "pros/apix.h"
+
 #define LVOBJ lv_obj_t *
 #define SCREEN lv_scr_act()
 #define HIDE(x) lv_obj_set_hidden(x, true);
@@ -26,11 +30,11 @@ enum ModeControls
   Kill
 };
 
-//Global state constants
-int targetAutonSide = Right;
-int targetAutonStrategy = DoubleRush;
-std::string targetAutonSideLabel = "";
-std::string targetAutonStrategyLabel = "";
+//Global state variables
+extern int targetAutonSide;
+extern int targetAutonStrategy;
+extern std::string targetAutonSideLabel;
+extern std::string targetAutonStrategyLabel;
 
 //Global LVGL objects/data
 static const char * switcher_map[] = {"Status", "Controls", ""}; 
@@ -43,26 +47,26 @@ static const char * side_map[] = {"#0000FF Left#", "#FF0000 Right#", "\n",
 static const char * strat_map[] = {"Alpha", "Beta", "\n", 
                                    "Gamma", "Delta", ""}; 
 
-lv_theme_t * theme =  lv_theme_alien_init(180, NULL);
-static lv_style_t status_style;
-static lv_style_t confirm_style;
+extern lv_theme_t * theme;
+extern lv_style_t status_style;
+extern lv_style_t confirm_style;
 
-LVOBJ home_page;
-
-LVOBJ left_panel;
-LVOBJ status_page;
-LVOBJ controls_page;
-LVOBJ status_text;
-LVOBJ status_mode_switcher;
-LVOBJ mode_controls;
-LVOBJ autonomous_mask;
-
-LVOBJ right_panel;
-LVOBJ side_page;
-LVOBJ strat_page;
-LVOBJ ready_page;
-LVOBJ waiting_label;
-LVOBJ side_buttons;
-LVOBJ strat_buttons;
-LVOBJ selector_cancel;
-LVOBJ selector_finalized;
+extern LVOBJ home_page;
+ 
+extern LVOBJ left_panel;
+extern LVOBJ status_page;
+extern LVOBJ controls_page;
+extern LVOBJ status_text;
+extern LVOBJ status_mode_switcher;
+extern LVOBJ mode_controls;
+extern LVOBJ autonomous_mask;
+ 
+extern LVOBJ right_panel;
+extern LVOBJ side_page;
+extern LVOBJ strat_page;
+extern LVOBJ ready_page;
+extern LVOBJ waiting_label;
+extern LVOBJ side_buttons;
+extern LVOBJ strat_buttons;
+extern LVOBJ selector_cancel;
+extern LVOBJ selector_finalized;

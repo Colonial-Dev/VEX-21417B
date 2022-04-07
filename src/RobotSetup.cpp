@@ -1,31 +1,8 @@
-#pragma once
-#include "Autonomous/PurePursuit/RateLimiter.h"
-
-using namespace okapi::literals;
-
-//Robot state enums
-enum ConveyorStatus
-{
-  Idle,
-  Forward,
-  Reverse
-};
-
-enum AutonSide
-{
-  Left,
-  Right,
-  Skills,
-  None
-};
-
-enum AutonStrat
-{
-  SimpleRush, //Go straight forwards, grab the mobile goal, and return.
-  DoubleRush, //Go straight forwards, grab the mobile goal, turn and grab the colored goal, and finally return.
-  StackRush, //Grab the colored goal as a counterweight, then pick up the middle mobile goal and return.
-};
-
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "robokauz/ROBOT.hpp"
+#include "robokauz/PURE_PURSUIT.hpp"
+#include "robokauz/Autonomous/InertialOdometry.hpp"
 
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
@@ -53,9 +30,9 @@ pros::ADIEncoder middle_encoder ('E', 'F');
 pros::ADIAnalogIn potentiometer ('H'); 
 
 //Drivetrain gear ratio constant
-double GEAR_RATIO = 60.0/84.0;
+const double GEAR_RATIO = 60.0/84.0;
 
-auto drive_train = okapi::ChassisControllerBuilder()
+std::shared_ptr<okapi::OdomChassisController> drive_train = okapi::ChassisControllerBuilder()
   .withMotors({19, 6, 9}, {12, 15, 16})
   .withSensors
   (
@@ -68,8 +45,15 @@ auto drive_train = okapi::ChassisControllerBuilder()
   .withOdometry({{2.875_in, 4.715_in, 3.5_in, 2.875_in}, quadEncoderTPR})
   .buildOdometry(); //Build an odometry-enabled chassis
 
+
 EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
 InertialOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
+
+ModeManager overwatch;
+RateLimiter limiter;
+
+const RobotProperties robot_properties = {1_mps, 0.1_mps2, 11.5_in, 4.125_in, drive_train, 0, 0, 0};
+PathManager wayfarer(robot_properties);
   
 void setupBrakeModes()
 {

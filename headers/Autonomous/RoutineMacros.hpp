@@ -1,4 +1,7 @@
 #pragma once
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathManagement.hpp"
 
 #define EMERGENCY_STOP abort();
 

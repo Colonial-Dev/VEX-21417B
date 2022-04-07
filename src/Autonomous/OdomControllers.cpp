@@ -1,4 +1,9 @@
-#pragma once
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "robokauz/ROBOT.hpp"
+#include "robokauz/Autonomous/VectorMath.hpp"
+#include "robokauz/Autonomous/InertialOdometry.hpp"
+#include "robokauz/Autonomous/OdomControllers.hpp"
 
 //TODO write PID loops using continuous odom feedback. 
 
@@ -13,12 +18,12 @@
 QAngle constrainAngle(QAngle angle)
 {
     printf("\nOriginal angle: ");
-    printf(to_string(angle.convert(degree)).c_str());
+    printf(std::to_string(angle.convert(degree)).c_str());
     double x = angle.convert(degree);
     x = std::fmod(x, 360);
     if (x < 0) { x += 360; }
     printf("\nConstrained angle :");
-    printf(to_string(x).c_str());
+    printf(std::to_string(x).c_str());
     return QAngle (x * degree);
 }
 
@@ -38,12 +43,12 @@ void turnRelative(QAngle target_angle)
 	double ki = 0;
 	double kd = 0;
 
-    PRINT "\n" + to_string(error);
+    PRINT "\n" + std::to_string(error);
     while(fabs(error) > threshold)
     {  
-        PRINT to_string(error);
+        PRINT std::to_string(error);
         printf("\n");
-        printf(to_string(error).c_str());
+        printf(std::to_string(error).c_str());
         error = target_angle.convert(degree) - getRobotHeading().convert(degree);
         integral = integral + error;
 

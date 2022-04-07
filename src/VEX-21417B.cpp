@@ -1,23 +1,13 @@
-#include "main.h"
-#include "api.h"
-#include "okapi/api.hpp"
-#include <string>
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "robokauz/ROBOT.hpp"
+#include "robokauz/DISPLAY.hpp"
+#include "robokauz/PURE_PURSUIT.hpp"
 
-using namespace std;
-using namespace okapi;
-
-#define PRINT std::cout <<
-#include "Autonomous/InertialOdometry.h"
-#include "RobotSetup.h"
-#include "RobotManager.h"
-#include "Autonomous/RoutineMacros.h"
-#include "Autonomous/OdomControllers.h"
-#include "Autonomous/PurePursuit/PathManagement.h"
-#include "Display/DisplaySuite.h"
-#include "DriverControl.h"
-
-RobotProperties global_robot_properties {1_mps, 0.1_mps2, 11.5_in, 4.125_in, drive_train, 0, 0, 0};
-PathManager wayfarer(global_robot_properties);
+#include "robokauz/DriverControl.hpp"
+#include "robokauz/Autonomous/InertialOdometry.hpp"
+#include "robokauz/Autonomous/RoutineMacros.hpp"
+#include "robokauz/Autonomous/OdomControllers.hpp"
 
 void initialize() 
 {

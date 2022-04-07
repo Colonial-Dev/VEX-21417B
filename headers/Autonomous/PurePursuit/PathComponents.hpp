@@ -1,4 +1,5 @@
 #pragma once
+#include "robokauz/PROS.hpp"
 
 //Constants and objects that model the robot and its components.
 //Max velocity and max acceleration can be set to any value within the actual capabilities of the robot.

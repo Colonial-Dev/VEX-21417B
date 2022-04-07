@@ -1,4 +1,8 @@
-#pragma once
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "pros/apix.h"
+#include "robokauz/Display/DisplayGlobals.hpp"
+#include "robokauz/Display/DisplayUtils.hpp"
 
 void configureTheming()
 {

@@ -1,14 +1,15 @@
 //Note: Rendering area is 480x239 pixels
-#pragma once
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
 #include "pros/apix.h"
-#include "GraphicsGlobals.h"
-#include "GraphicsUtils.h"
-#include "EventHandlers.h"
+#include "robokauz/Display/EventHandlers.hpp"
+#include "robokauz/Display/DisplayGlobals.hpp"
+#include "robokauz/Display/DisplayUtils.hpp"
 
 void initializeDisplay()
 {
     configureTheming();
-    home_page = createPage(SCREEN, 480, 239, LV_ALIGN_IN_TOP_MID, 0, 0);
+    home_page = createPage(SCREEN, 480, 239, LV_ALIGN_IN_TOP_MID, 0, 0, false);
     lv_style_copy(&status_style, home_page->style_p);
     lv_style_copy(&confirm_style, home_page->style_p);
     configureStyling();

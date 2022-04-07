@@ -1,4 +1,11 @@
-#pragma once
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "robokauz/ROBOT.hpp"
+#include "pros/apix.h"
+#include "robokauz/Display/EventHandlers.hpp"
+#include "robokauz/Display/DisplayGlobals.hpp"
+#include "robokauz/Display/DisplayUtils.hpp"
+#include "robokauz/ModeManager.hpp"
 
 std::string precise_string(double value, const int n = 2)
 {
@@ -24,15 +31,15 @@ void statusUpdateTask(void*)
     else if(pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#808080 DISABLED#]"; }
 
     if(inertial_sensor.get_heading() == INFINITY) { inertialHeading = "Calibrating..."; }
-    else{ inertialHeading = to_string(inertial_sensor.get_heading()); }
+    else{ inertialHeading = std::to_string(inertial_sensor.get_heading()); }
 
 
     statusReadout += "\n LINK " + connectionMode + " | MODE " + operatingMode + "\n";
-    statusReadout += " BATTERY [" + to_string(int (pros::battery::get_capacity())) + "% | " + precise_string(pros::battery::get_voltage() / 1000.0, 3) + "V]\n";
+    statusReadout += " BATTERY [" + std::to_string(int (pros::battery::get_capacity())) + "% | " + precise_string(pros::battery::get_voltage() / 1000.0, 3) + "V]\n";
     statusReadout += " POSITION [" + precise_string(drive_train->getState().x.convert(foot)) + " | " + precise_string(drive_train->getState().y.convert(foot)) + "]\n";
     statusReadout += " IMU POSITION [" + precise_string(imu_odometer.getPosition().x.convert(foot)) + " | " + precise_string(imu_odometer.getPosition().y.convert(foot)) + "]\n";
     statusReadout += " HEADING [" + precise_string(drive_train->getState().theta.convert(degree)) + " | " + inertialHeading + "]\n";
-    statusReadout += " ENCODERS [L " + to_string(left_encoder.get_value()) + " | M " + to_string(middle_encoder.get_value()) + " | R " + to_string(right_encoder.get_value()) + "]\n";
+    statusReadout += " ENCODERS [L " + std::to_string(left_encoder.get_value()) + " | M " + std::to_string(middle_encoder.get_value()) + " | R " + std::to_string(right_encoder.get_value()) + "]\n";
     statusPrint(statusReadout);
 }
 

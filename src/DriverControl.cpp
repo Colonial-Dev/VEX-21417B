@@ -1,5 +1,7 @@
-#pragma once
-#define WAIT_FOR_AUTH pros::Task::notify_take(true, TIMEOUT_MAX); pros::Task::current().notify_ext(1, NOTIFY_ACTION_OWRITE, NULL);
+#include "robokauz/PROS.hpp"
+#include "robokauz/COMMON.hpp"
+#include "robokauz/ROBOT.hpp"
+#include "robokauz/DriverControl.hpp"
 
 //Axis 3 is translation, axis 1 is rotation
 void splitTransmission()
