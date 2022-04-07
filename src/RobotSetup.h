@@ -1,4 +1,5 @@
 #pragma once
+#include "Autonomous/PurePursuit/RateLimiter.h"
 
 using namespace okapi::literals;
 
@@ -66,6 +67,9 @@ auto drive_train = okapi::ChassisControllerBuilder()
   //Specify odometry dimensions and encoder type
   .withOdometry({{2.875_in, 4.715_in, 3.5_in, 2.875_in}, quadEncoderTPR})
   .buildOdometry(); //Build an odometry-enabled chassis
+
+EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
+InertialOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
   
 void setupBrakeModes()
 {

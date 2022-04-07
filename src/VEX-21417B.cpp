@@ -7,7 +7,7 @@ using namespace std;
 using namespace okapi;
 
 #define PRINT std::cout <<
-#include "Autonomous/PurePursuit/RateLimiter.h"
+#include "Autonomous/InertialOdometry.h"
 #include "RobotSetup.h"
 #include "RobotManager.h"
 #include "Autonomous/RoutineMacros.h"

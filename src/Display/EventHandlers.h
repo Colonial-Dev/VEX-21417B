@@ -30,8 +30,9 @@ void statusUpdateTask(void*)
     statusReadout += "\n LINK " + connectionMode + " | MODE " + operatingMode + "\n";
     statusReadout += " BATTERY [" + to_string(int (pros::battery::get_capacity())) + "% | " + precise_string(pros::battery::get_voltage() / 1000.0, 3) + "V]\n";
     statusReadout += " POSITION [" + precise_string(drive_train->getState().x.convert(foot)) + " | " + precise_string(drive_train->getState().y.convert(foot)) + "]\n";
+    statusReadout += " IMU POSITION [" + precise_string(imu_odometer.getPosition().x.convert(foot)) + " | " + precise_string(imu_odometer.getPosition().y.convert(foot)) + "]\n";
     statusReadout += " HEADING [" + precise_string(drive_train->getState().theta.convert(degree)) + " | " + inertialHeading + "]\n";
-    statusReadout += " ENCODERS [" + to_string(right_encoder.get_value()) + " | " + to_string(middle_encoder.get_value()) + " | " + to_string(left_encoder.get_value()) + "]\n";
+    statusReadout += " ENCODERS [L " + to_string(left_encoder.get_value()) + " | M " + to_string(middle_encoder.get_value()) + " | R " + to_string(right_encoder.get_value()) + "]\n";
     statusPrint(statusReadout);
 }
 
@@ -164,6 +165,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
         case Autonomous:
         {
             pros::Task autonomous_async(autonomousAsync);
+            switchLeftPanePage(Status);
             break;
         }
         case Reset:
