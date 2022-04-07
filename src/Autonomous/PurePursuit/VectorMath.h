@@ -20,7 +20,6 @@ class Vector
 
         Vector operator / (double scalar) { return {x_component / scalar, y_component / scalar}; }
         
-
         Vector()
         {
             x_component = 0_in;
@@ -31,6 +30,12 @@ class Vector
         {
             x_component = x_comp;
             y_component = y_comp;
+        }
+
+        Vector(QLength magnitude, QAngle direction)
+        {
+            x_component = (magnitude.convert(meter) * std::cos(direction.convert(radian))) * meter;
+            y_component = (magnitude.convert(meter) * std::sin(direction.convert(radian))) * meter;
         }
 
         Vector(PathPoint point)
@@ -60,6 +65,13 @@ class Vector
             double corrected = std::fmod((theta + 360), 360); 
             QAngle qang (corrected * degree);
             return qang;
+        }
+
+        QLength distance(Vector target)
+        {
+            double x_components = std::pow(target.x_component.convert(meter) - x_component.convert(meter), 2);
+            double y_components = std::pow(target.y_component.convert(meter) - y_component.convert(meter), 2);
+            return ((std::sqrt(x_components + y_components)) * meter);
         }
 
         Vector normalize()
