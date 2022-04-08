@@ -15,6 +15,7 @@ Vector::Vector(QLength x_comp, QLength y_comp)
 
 Vector::Vector(QLength magnitude, QAngle direction)
 {
+    magnitude = magnitude.abs();
     x_component = (magnitude.convert(meter) * std::cos(direction.convert(radian))) * meter;
     y_component = (magnitude.convert(meter) * std::sin(direction.convert(radian))) * meter;
 }
@@ -36,7 +37,7 @@ QLength Vector::magnitude()
     double x_pow = std::pow((x_component.convert(meter)), 2);
     double y_pow = std::pow((y_component.convert(meter)), 2);
     double rooted = std::sqrt(x_pow + y_pow);
-    QLength qlen = (rooted * meter);
+    QLength qlen = (std::abs(rooted) * meter);
     return qlen;
 }
 

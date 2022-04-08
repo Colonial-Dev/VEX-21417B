@@ -33,17 +33,15 @@ void IMUOdometer::odometryLoop()
             updateState();
 
             int parallel_encoder_change = ((current_state.left - previous_state.left) + (current_state.right - previous_state.right)) / 2;
-            QLength parallel_distance = (parallel_encoder_change / 360) * wheel_circumfrence;
+            QLength parallel_distance = ((parallel_encoder_change / 360.0) * wheel_circumfrence.convert(inch)) * inch;
             Vector parallel_displacement(parallel_distance, current_state.rotation);
 
             int perpendicular_encoder_change = (current_state.middle - previous_state.middle);
             int direction = sgnum(perpendicular_encoder_change); //1 indicates right, -1 indicates left
-            QLength perpendicular_distance = (perpendicular_encoder_change / 360) * wheel_circumfrence;
-            Vector perpendicular_displacement(perpendicular_distance, current_state.rotation + (90_deg * direction));
+            QLength perpendicular_distance = (perpendicular_encoder_change / 360.0) * wheel_circumfrence;
+            Vector perpendicular_displacement(perpendicular_distance, current_state.rotation + (90.0_deg * direction));
             
             Vector total_displacement = parallel_displacement + perpendicular_displacement;
-            printf("\n X:");
-            printf(std::to_string(total_displacement.x_component.convert(inch)).c_str());
 
             updatePosition(total_displacement, current_state.rotation);
         }
@@ -54,7 +52,7 @@ void IMUOdometer::odometryLoop()
 IMUOdometer::IMUOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tracking_wheel_diameter) : imu(inertial), encoder_left(encoders.left), encoder_middle(encoders.middle), encoder_right(encoders.right)
 {
     wheel_diameter = tracking_wheel_diameter;
-    wheel_circumfrence = 1_pi * wheel_diameter;
+    wheel_circumfrence = (1_pi * wheel_diameter.convert(inch)) * inch;
 
     current_position = {0_ft, 0_ft, 0_deg};
 
