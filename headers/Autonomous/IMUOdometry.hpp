@@ -12,10 +12,10 @@ struct EncoderGroup
 
 struct SensorState
 {
-    QAngle rotation;
-    int left;
-    int middle;
-    int right;
+    QAngle rotation = 0_deg;
+    int left = 0;
+    int middle = 0;
+    int right = 0;
 };
 
 class IMUOdometer
