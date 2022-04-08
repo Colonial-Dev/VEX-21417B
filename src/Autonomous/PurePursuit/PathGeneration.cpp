@@ -13,25 +13,14 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
         Vector start_point = path_outline.at(i);
         Vector end_point = path_outline.at(i+1);
 
-        Vector segment = start_point - end_point;
+        Vector segment = end_point - start_point;
         double injectionCount = std::ceil(segment.magnitude().convert(meter) / spacing.convert(meter));
         segment = segment.normalize() * spacing.convert(meter);
         
         for(int i = 0; i < injectionCount; i++)
         {
-            Vector injectionVector = segment * i;
-            Vector injectionPoint = start_point;
-
-            double injection_x = injectionPoint.x_component.convert(meter);
-            double injection_y = injectionPoint.y_component.convert(meter);
-
-            injection_x += injectionVector.x_component.convert(meter);
-            injection_y += injectionVector.y_component.convert(meter);
-
-            injectionPoint.x_component = QLength (injection_x * meter);
-            injectionPoint.y_component = QLength (injection_y * meter);
-
-            paddedPath.add(injectionPoint);
+            Vector injection = start_point + (segment * i);
+            paddedPath.add(injection);
         }
     }
 
@@ -73,7 +62,6 @@ RawPath smoothPath(RawPath rough_path, GenerationParameters parameters)
             smoothedPath.at(i) = smoothed_point;
         }
     }
-
     return smoothedPath;
 }
 

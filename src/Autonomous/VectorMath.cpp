@@ -37,8 +37,8 @@ QLength Vector::magnitude()
     double x_pow = std::pow((x_component.convert(meter)), 2);
     double y_pow = std::pow((y_component.convert(meter)), 2);
     double rooted = std::sqrt(x_pow + y_pow);
-    QLength qlen = (std::abs(rooted) * meter);
-    return qlen;
+    QLength qlen = (rooted * meter);
+    return qlen.abs();
 }
 
 QAngle Vector::direction()
