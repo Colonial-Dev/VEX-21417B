@@ -3,7 +3,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/Autonomous/VectorMath.hpp"
-#include "robokauz/Autonomous/InertialOdometry.hpp"
+#include "robokauz/Autonomous/IMUOdometry.hpp"
 
 QAngle constrainAngle(QAngle angle);
 

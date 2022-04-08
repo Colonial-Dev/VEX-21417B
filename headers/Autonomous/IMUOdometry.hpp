@@ -18,7 +18,7 @@ struct SensorState
     int right;
 };
 
-class InertialOdometer
+class IMUOdometer
 {
     private:
 
@@ -44,7 +44,7 @@ class InertialOdometer
 
     public:
 
-        InertialOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tracking_wheel_diameter);
+        IMUOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tracking_wheel_diameter);
 
         OdomState getPosition();
 

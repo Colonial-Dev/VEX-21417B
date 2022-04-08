@@ -2,7 +2,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/Autonomous/VectorMath.hpp"
-#include "robokauz/Autonomous/InertialOdometry.hpp"
+#include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/OdomControllers.hpp"
 
 //TODO write PID loops using continuous odom feedback. 

@@ -2,7 +2,7 @@
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ModeManager.hpp"
-#include "robokauz/Autonomous/InertialOdometry.hpp"
+#include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathManagement.hpp"
 #include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"
 
@@ -55,7 +55,7 @@ extern const double GEAR_RATIO;
 extern std::shared_ptr<okapi::OdomChassisController> drive_train;
 
 extern EncoderGroup encoders;
-extern InertialOdometer imu_odometer;
+extern IMUOdometer imu_odometer;
 
 extern ModeManager overwatch;
 extern RateLimiter limiter;

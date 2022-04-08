@@ -2,7 +2,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
-#include "robokauz/Autonomous/InertialOdometry.hpp"
+#include "robokauz/Autonomous/IMUOdometry.hpp"
 
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
@@ -47,7 +47,7 @@ std::shared_ptr<okapi::OdomChassisController> drive_train = okapi::ChassisContro
 
 
 EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
-InertialOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
+IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
 
 ModeManager overwatch;
 RateLimiter limiter;

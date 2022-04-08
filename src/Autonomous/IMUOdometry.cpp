@@ -1,20 +1,20 @@
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/Autonomous/VectorMath.hpp"
-#include "robokauz/Autonomous/InertialOdometry.hpp"
+#include "robokauz/Autonomous/IMUOdometry.hpp"
 
-QAngle InertialOdometer::getRotation()
+QAngle IMUOdometer::getRotation()
 {
     return imu.get_rotation() * degree;
 }
 
-void InertialOdometer::updateState()
+void IMUOdometer::updateState()
 {
     previous_state = current_state;
     current_state = {getRotation(), encoder_left.get_value(), encoder_middle.get_value(), encoder_right.get_value()};
 }
 
-void InertialOdometer::updatePosition(Vector displacement_vector, QAngle heading)
+void IMUOdometer::updatePosition(Vector displacement_vector, QAngle heading)
 {
     OdomState new_position;
     new_position.x = current_position.x + displacement_vector.x_component;
@@ -23,7 +23,7 @@ void InertialOdometer::updatePosition(Vector displacement_vector, QAngle heading
     current_position = new_position;
 }
 
-void InertialOdometer::odometryLoop()
+void IMUOdometer::odometryLoop()
 {
     imu.reset();
     while(imu.is_calibrating())
@@ -55,7 +55,7 @@ void InertialOdometer::odometryLoop()
     }
 }
 
-InertialOdometer::InertialOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tracking_wheel_diameter) : imu(inertial), encoder_left(encoders.left), encoder_middle(encoders.middle), encoder_right(encoders.right)
+IMUOdometer::IMUOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tracking_wheel_diameter) : imu(inertial), encoder_left(encoders.left), encoder_middle(encoders.middle), encoder_right(encoders.right)
 {
     wheel_diameter = tracking_wheel_diameter;
     wheel_circumfrence = 1_pi * wheel_diameter;
@@ -67,7 +67,7 @@ InertialOdometer::InertialOdometer(pros::IMU& inertial, EncoderGroup& encoders, 
     pros::Task odomLoop([this] { odometryLoop(); }, TASK_PRIORITY_DEFAULT + 2);
 }
 
-OdomState InertialOdometer::getPosition()
+OdomState IMUOdometer::getPosition()
 {
     return current_position;
 }

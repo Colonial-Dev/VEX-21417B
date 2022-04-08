@@ -5,7 +5,7 @@
 #include "robokauz/PURE_PURSUIT.hpp"
 
 #include "robokauz/DriverControl.hpp"
-#include "robokauz/Autonomous/InertialOdometry.hpp"
+#include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/RoutineMacros.hpp"
 #include "robokauz/Autonomous/OdomControllers.hpp"
 
