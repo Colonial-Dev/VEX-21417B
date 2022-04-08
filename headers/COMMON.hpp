@@ -1,6 +1,6 @@
 #pragma once
 
-#define PRINT std::cout <<
+#define PRINT(x) std::cout << x << std::endl
 #define SQ(x) std::pow(x, 2)
 
 template <typename T> int sgnum(T val) 

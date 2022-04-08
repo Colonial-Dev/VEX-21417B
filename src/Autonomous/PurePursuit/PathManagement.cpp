@@ -29,7 +29,7 @@ void PathTraverser::traversePath()
         projectLookaheadPoint(cache);
 
         double curvature = calculateCurvature(cache);
-        PRINT "\nCurvature: " + std::to_string(curvature);
+        PRINT("\nCurvature: " + std::to_string(curvature));
         
         calculateWheelSpeeds(cache, curvature);
         

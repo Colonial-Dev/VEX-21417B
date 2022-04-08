@@ -43,10 +43,10 @@ void turnRelative(QAngle target_angle)
 	double ki = 0;
 	double kd = 0;
 
-    PRINT "\n" + std::to_string(error);
+    PRINT("\n" + std::to_string(error));
     while(fabs(error) > threshold)
     {  
-        PRINT std::to_string(error);
+        PRINT(std::to_string(error));
         printf("\n");
         printf(std::to_string(error).c_str());
         error = target_angle.convert(degree) - getRobotHeading().convert(degree);

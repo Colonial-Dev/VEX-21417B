@@ -29,7 +29,7 @@ void updateClosestPoint(TraversalCache& cache)
     cache.closest_index = curr_closest_index;
     cache.closest_point = cache.path.at(curr_closest_index);
 
-    PRINT "\nCP: " + std::to_string(cache.closest_index) + "/" + std::to_string(cache.path.size());
+    PRINT("\nCP: " + std::to_string(cache.closest_index) + "/" + std::to_string(cache.path.size()));
 }
 
 
@@ -91,9 +91,9 @@ void updateLookaheadPoint(TraversalCache& cache)
         }
     }
 
-    PRINT "\nLPX: " + std::to_string(cache.lookahead_point.x_component.convert(meter));
-    PRINT "\nLPY: " + std::to_string(cache.lookahead_point.y_component.convert(meter));
-    PRINT "\nLPI: " + std::to_string(cache.lookahead_index);
+    PRINT("\nLPX: " + std::to_string(cache.lookahead_point.x_component.convert(meter)));
+    PRINT("\nLPY: " + std::to_string(cache.lookahead_point.y_component.convert(meter)));
+    PRINT("\nLPI: " + std::to_string(cache.lookahead_index));
 }
 
 void projectLookaheadPoint(TraversalCache& cache)
@@ -115,7 +115,7 @@ double calculateCurvature(TraversalCache& cache)
     double c = std::tan(bot_angle) * (cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter));
 
     double lookahead_x = std::abs(a * lookahead.x_component.convert(meter) + b * lookahead.y_component.convert(meter) + c) / std::sqrt(SQ(a) + SQ(b));
-    PRINT "\nLookX: " + std::to_string(lookahead_x);
+    PRINT("\nLookX: " + std::to_string(lookahead_x));
     int side = sgnum(std::sin(bot_angle) * difference.x_component.convert(meter) - std::cos(bot_angle) * difference.y_component.convert(meter));
 
     double curvature = (2 * lookahead_x) / SQ(interpointDistance(cache.current_position, lookahead).convert(meter)); 
@@ -125,7 +125,7 @@ double calculateCurvature(TraversalCache& cache)
 bool checkDistance(TraversalCache& cache, QLength threshold = 6_in)
 {
     double distance = std::abs(interpointDistance(cache.current_position, cache.path.at(cache.path.size() - 1)).convert(inch));
-    PRINT "\nDistance: " + std::to_string(distance);
+    PRINT("\nDistance: " + std::to_string(distance));
     return distance <= threshold.convert(inch);
 }
 
@@ -141,10 +141,10 @@ void calculateWheelSpeeds(TraversalCache &cache, double curvature)
     left_wheels = QAngularSpeed (std::clamp(left_wheels.convert(rpm), -200.0, 200.0) * rpm);
     right_wheels = QAngularSpeed (std::clamp(right_wheels.convert(rpm), -200.0, 200.0) * rpm);
 
-    PRINT "\npV: " + std::to_string(point_velocity.convert(mps));
-    PRINT "\ntV: " + std::to_string(target_velocity.convert(mps));
-    PRINT "\nCVels: " + std::to_string(left_velocity.convert(mps)) + " " + std::to_string(right_velocity.convert(mps));
-    PRINT "\nWVels: " + std::to_string(left_wheels.convert(rpm)) + " " + std::to_string(right_wheels.convert(rpm));
+    PRINT("\npV: " + std::to_string(point_velocity.convert(mps)));
+    PRINT("\ntV: " + std::to_string(target_velocity.convert(mps)));
+    PRINT("\nCVels: " + std::to_string(left_velocity.convert(mps)) + " " + std::to_string(right_velocity.convert(mps)));
+    PRINT("\nWVels: " + std::to_string(left_wheels.convert(rpm)) + " " + std::to_string(right_wheels.convert(rpm)));
 
     cache.target_speeds = WheelSpeeds {left_wheels, right_wheels};
 }
