@@ -24,7 +24,8 @@ enum LeftPanelSwitcher
 
 enum ModeControls
 {
-  Driver,
+  Unlock,
+  Lock,
   Autonomous,
   Reset,
   Kill
@@ -38,10 +39,16 @@ extern std::string targetAutonStrategyLabel;
 
 //Global LVGL objects/data
 static const char * switcher_map[] = {"Status", "Controls", ""}; 
-static const char * controls_map[] = {"#00ff00 Driver#", "\n",
-                                      "#0000ff Autonomous#", "\n",
-                                      "#FFA500 Reset#", "\n",
-                                      "#ff0000 Abort#", ""}; 
+static const char * controls_map_unlocked[] = {"\261#808080 Unlock#", "#ffff00 Lock#" , "\n",
+                                      "\221#0000ff Run Autonomous#", "\n",
+                                      "#FFA500 Reinitialize#", "\n",
+                                      "#ff0000 E-Stop#", ""}; 
+
+static const char * controls_map_locked[] = {"#00ff00 Unlock#", "\261#808080 Lock#" , "\n",
+"\221#0000ff Run Autonomous#", "\n",
+"#FFA500 Reinitialize#", "\n",
+"#ff0000 E-Stop#", ""}; 
+
 static const char * side_map[] = {"#0000FF Left#", "#FF0000 Right#", "\n", 
                                   "#FFFF00 Skills#", "#808080 None#", ""}; 
 static const char * strat_map[] = {"Alpha", "Beta", "\n", 

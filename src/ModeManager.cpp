@@ -3,6 +3,19 @@
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/ModeManager.hpp"
 
+void ModeManager::setBrakeMode(pros::motor_brake_mode_e_t brake_mode)
+{
+    right_back.set_brake_mode(brake_mode);
+    right_middle.set_brake_mode(brake_mode);
+    right_front.set_brake_mode(brake_mode);
+    left_back.set_brake_mode(brake_mode);
+    left_middle.set_brake_mode(brake_mode);
+    left_front.set_brake_mode(brake_mode);
+
+    arm_motor.set_brake_mode(brake_mode);
+    conveyor_motor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+}
+
 
 void ModeManager::registerDriverTask(pros::task_t task)
 {
@@ -35,7 +48,9 @@ void ModeManager::reinitialize()
     left_encoder.reset();
     middle_encoder.reset();
     right_encoder.reset();
-    drive_train.reset();
+    drive_train->getOdometry()->step();
+    drive_train->setState({0_in, 0_in, 0_deg});
+    imu_odometer.reset();
 }
 
 void autonomousAsync()

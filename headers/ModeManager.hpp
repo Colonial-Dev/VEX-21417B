@@ -10,6 +10,8 @@ class ModeManager
 
     public:
 
+        void setBrakeMode(pros::motor_brake_mode_e_t brake_mode);
+
         void registerDriverTask(pros::task_t task);
 
         void suspendDriverControl();

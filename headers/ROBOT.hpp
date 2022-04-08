@@ -62,5 +62,3 @@ extern RateLimiter limiter;
 
 extern const RobotProperties robot_properties;
 extern PathManager wayfarer;
-
-void setupBrakeModes();

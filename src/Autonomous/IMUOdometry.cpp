@@ -28,18 +28,19 @@ void IMUOdometer::odometryLoop()
     std::uint32_t delay_timestamp = pros::millis();
     while(true)
     {
-        if(imu.get_heading() != INFINITY)
+        if(getStatus() == Operational)
         {
             updateState();
 
             int parallel_encoder_change = ((current_state.left - previous_state.left) + (current_state.right - previous_state.right)) / 2;
+            int parallel_direction = std::min(sgnum(parallel_encoder_change), 0); //0 indicates forwards, -1 indicates backwards
             QLength parallel_distance = ((parallel_encoder_change / 360.0) * wheel_circumfrence.convert(inch)) * inch;
-            Vector parallel_displacement(parallel_distance, current_state.rotation);
+            Vector parallel_displacement(parallel_distance, current_state.rotation + (180.0_deg * parallel_direction));
 
             int perpendicular_encoder_change = (current_state.middle - previous_state.middle);
-            int direction = sgnum(perpendicular_encoder_change); //1 indicates right, -1 indicates left
+            int perpendicular_direction = sgnum(perpendicular_encoder_change); //1 indicates right, -1 indicates left
             QLength perpendicular_distance = (perpendicular_encoder_change / 360.0) * wheel_circumfrence;
-            Vector perpendicular_displacement(perpendicular_distance, current_state.rotation + (90.0_deg * direction));
+            Vector perpendicular_displacement(perpendicular_distance, current_state.rotation + (90.0_deg * perpendicular_direction));
             
             Vector total_displacement = parallel_displacement + perpendicular_displacement;
 
@@ -54,7 +55,7 @@ IMUOdometer::IMUOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tr
     wheel_diameter = tracking_wheel_diameter;
     wheel_circumfrence = (1_pi * wheel_diameter.convert(inch)) * inch;
 
-    current_position = {0_ft, 0_ft, 0_deg};
+    setPosition({0_ft, 0_ft, 0_deg});
 
     pros::Task odomLoop([this] { odometryLoop(); }, TASK_PRIORITY_DEFAULT + 2);
 }
@@ -62,4 +63,35 @@ IMUOdometer::IMUOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tr
 OdomState IMUOdometer::getPosition()
 {
     return current_position;
+}
+
+void IMUOdometer::setPosition(OdomState position)
+{
+    current_position = position;
+}
+
+void IMUOdometer::reset()
+{
+    updateState();
+    updateState();
+    setPosition({0_ft, 0_ft, 0_deg});
+}
+
+int IMUOdometer::getStatus()
+{
+    if(imu.is_calibrating()) { return Calibrating; }
+    else if(imu.get_rotation() == INFINITY) { return Error; }
+    else { return Operational; }
+}
+
+std::string IMUOdometer::getPrettyPosition()
+{
+    if(getStatus() == Calibrating) { return "[#808080 CALIBRATING#]"; }
+    else if(getStatus() == Error) { return "[#ff0000 ERROR#]"; }
+
+    std::string x_coordinate = precise_string(current_position.x.convert(foot));
+    std::string y_coordinate = precise_string(current_position.y.convert(foot));
+    std::string rotation = precise_string(current_position.theta.convert(degree), 3);
+
+    return "[" + x_coordinate + " | " + y_coordinate + " | " + rotation + "]";
 }

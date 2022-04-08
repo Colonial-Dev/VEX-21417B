@@ -54,16 +54,3 @@ RateLimiter limiter;
 
 const RobotProperties robot_properties = {1_mps, 0.1_mps2, 11.5_in, 4.125_in, drive_train, 0, 0, 0};
 PathManager wayfarer(robot_properties);
-  
-void setupBrakeModes()
-{
-  right_back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  right_middle.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  right_front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_back.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_middle.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_front.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-
-  arm_motor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  conveyor_motor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-}

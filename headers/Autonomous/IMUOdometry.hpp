@@ -18,6 +18,13 @@ struct SensorState
     int right = 0;
 };
 
+enum IMUOdomState
+{
+    Error, //Inertial sensor not found.
+    Calibrating, //Inertial sensor is calibrating.
+    Operational //Inertial sensor is OK; position tracking is online.
+};
+
 class IMUOdometer
 {
     private:
@@ -47,6 +54,14 @@ class IMUOdometer
         IMUOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tracking_wheel_diameter);
 
         OdomState getPosition();
+
+        void setPosition(OdomState position);
+
+        void reset();
+
+        std::string getPrettyPosition();
+
+        int getStatus();
 
 };
 

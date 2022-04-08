@@ -7,7 +7,7 @@
 #include "robokauz/Display/DisplayUtils.hpp"
 #include "robokauz/ModeManager.hpp"
 
-std::string precise_string(double value, const int n = 2)
+std::string precise_string(double value, const int n)
 {
     std::ostringstream out;
     out.precision(n);
@@ -20,7 +20,6 @@ void statusUpdateTask(void*)
     std::string statusReadout;
     std::string connectionMode;
     std::string operatingMode;
-    std::string inertialHeading;
 
     if(pros::competition::is_connected()) { connectionMode = "[#00ff00 SWITCH#]"; } 
     else if(!pros::competition::is_connected() && master.is_connected()) { connectionMode = "[#0000ff RADIO#]"; }
@@ -30,15 +29,10 @@ void statusUpdateTask(void*)
     else if(!pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#00ff00 DRIVER#]"; }
     else if(pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#808080 DISABLED#]"; }
 
-    if(inertial_sensor.get_heading() == INFINITY) { inertialHeading = "Calibrating..."; }
-    else{ inertialHeading = std::to_string(inertial_sensor.get_heading()); }
-
-
     statusReadout += "\n LINK " + connectionMode + " | MODE " + operatingMode + "\n";
     statusReadout += " BATTERY [" + std::to_string(int (pros::battery::get_capacity())) + "% | " + precise_string(pros::battery::get_voltage() / 1000.0, 3) + "V]\n";
-    statusReadout += " POSITION [" + precise_string(drive_train->getState().x.convert(foot)) + " | " + precise_string(drive_train->getState().y.convert(foot)) + "]\n";
-    statusReadout += " IMU POSITION [" + precise_string(imu_odometer.getPosition().x.convert(foot)) + " | " + precise_string(imu_odometer.getPosition().y.convert(foot)) + "]\n";
-    statusReadout += " HEADING [" + precise_string(drive_train->getState().theta.convert(degree)) + " | " + inertialHeading + "]\n";
+    statusReadout += " #ff0000 ODO# [" + precise_string(drive_train->getState().x.convert(foot)) + " | " + precise_string(drive_train->getState().y.convert(foot)) + " | " + precise_string(drive_train->getState().theta.convert(degree), 3) + "]\n";
+    statusReadout += " #0000ff IMU# " + imu_odometer.getPrettyPosition() + "\n";
     statusReadout += " ENCODERS [L " + std::to_string(left_encoder.get_value()) + " | M " + std::to_string(middle_encoder.get_value()) + " | R " + std::to_string(right_encoder.get_value()) + "]\n";
     statusPrint(statusReadout);
 }
@@ -164,9 +158,18 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
     int toggled = lv_btnm_get_pressed(obj);
     switch(toggled)
     {
-        case Driver:
+        case Unlock:
         {
+            overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
             overwatch.resumeDriverControl();
+            lv_btnm_set_map(mode_controls, controls_map_unlocked);    
+            break;
+        }
+        case Lock:
+        {
+            overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+            overwatch.suspendDriverControl();
+            lv_btnm_set_map(mode_controls, controls_map_locked);    
             break;
         }
         case Autonomous:
@@ -178,6 +181,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
         case Reset:
         {
             overwatch.reinitialize();
+            switchLeftPanePage(Status);
             break;
         }
         case Kill:

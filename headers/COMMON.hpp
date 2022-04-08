@@ -7,3 +7,5 @@ template <typename T> int sgnum(T val)
 {
     return (T(0) < val) - (val < T(0));
 }
+
+std::string precise_string(double value, const int n = 2);
