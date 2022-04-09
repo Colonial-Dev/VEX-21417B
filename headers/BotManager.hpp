@@ -2,7 +2,7 @@
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
 
-class ModeManager
+class BotManager
 {
     private:
 

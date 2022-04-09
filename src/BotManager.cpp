@@ -1,9 +1,9 @@
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
-#include "robokauz/ModeManager.hpp"
+#include "robokauz/BotManager.hpp"
 
-void ModeManager::setBrakeMode(pros::motor_brake_mode_e_t brake_mode)
+void BotManager::setBrakeMode(pros::motor_brake_mode_e_t brake_mode)
 {
     right_back.set_brake_mode(brake_mode);
     right_middle.set_brake_mode(brake_mode);
@@ -17,14 +17,14 @@ void ModeManager::setBrakeMode(pros::motor_brake_mode_e_t brake_mode)
 }
 
 
-void ModeManager::registerDriverTask(pros::task_t task)
+void BotManager::registerDriverTask(pros::task_t task)
 {
     pros::Task newTask(task);
     newTask.notify();
     driverTasks.push_back(newTask);
 }
 
-void ModeManager::suspendDriverControl()
+void BotManager::suspendDriverControl()
 {
     for(int i = 0; i < driverTasks.size(); i++)
     {
@@ -32,7 +32,7 @@ void ModeManager::suspendDriverControl()
     }
 }
 
-void ModeManager::resumeDriverControl()
+void BotManager::resumeDriverControl()
 {
     for(int i = 0; i < driverTasks.size(); i++)
     {
@@ -42,7 +42,7 @@ void ModeManager::resumeDriverControl()
 
 //Resets all relative sensor values to default, simulating a restart of the program.
 //Causes a segmentation fault for some fucking reason???
-void ModeManager::reinitialize()
+void BotManager::reinitialize()
 {
     inertial_sensor.reset();
     left_encoder.reset();

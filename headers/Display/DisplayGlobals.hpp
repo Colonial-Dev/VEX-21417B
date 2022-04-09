@@ -39,12 +39,13 @@ extern std::string targetAutonStrategyLabel;
 
 //Global LVGL objects/data
 static const char * switcher_map[] = {"Status", "Controls", ""}; 
-static const char * controls_map_unlocked[] = {"\261#808080 Unlock#", "#ffff00 Lock#" , "\n",
+
+static const char * controls_map_unlocked[] = {"\261#808080 Unlocked#", "#ffff00 Lock#" , "\n",
                                       "\221#0000ff Run Autonomous#", "\n",
                                       "#FFA500 Reinitialize#", "\n",
                                       "#ff0000 E-Stop#", ""}; 
 
-static const char * controls_map_locked[] = {"#00ff00 Unlock#", "\261#808080 Lock#" , "\n",
+static const char * controls_map_locked[] = {"#00ff00 Unlock#", "\261#808080 Locked#" , "\n",
 "\221#0000ff Run Autonomous#", "\n",
 "#FFA500 Reinitialize#", "\n",
 "#ff0000 E-Stop#", ""}; 

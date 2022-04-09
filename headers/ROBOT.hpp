@@ -1,7 +1,7 @@
 #pragma once
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/ModeManager.hpp"
+#include "robokauz/BotManager.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathManagement.hpp"
 #include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"
@@ -57,7 +57,7 @@ extern std::shared_ptr<okapi::OdomChassisController> drive_train;
 extern EncoderGroup encoders;
 extern IMUOdometer imu_odometer;
 
-extern ModeManager overwatch;
+extern BotManager overwatch;
 extern RateLimiter limiter;
 
 extern const RobotProperties robot_properties;

@@ -49,7 +49,7 @@ std::shared_ptr<okapi::OdomChassisController> drive_train = okapi::ChassisContro
 EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
 IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
 
-ModeManager overwatch;
+BotManager overwatch;
 RateLimiter limiter;
 
 const RobotProperties robot_properties = {1_mps, 0.1_mps2, 11.5_in, 4.125_in, drive_train, 0, 0, 0};

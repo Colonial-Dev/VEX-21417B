@@ -5,7 +5,7 @@
 #include "robokauz/Display/EventHandlers.hpp"
 #include "robokauz/Display/DisplayGlobals.hpp"
 #include "robokauz/Display/DisplayUtils.hpp"
-#include "robokauz/ModeManager.hpp"
+#include "robokauz/BotManager.hpp"
 
 std::string precise_string(double value, const int n)
 {

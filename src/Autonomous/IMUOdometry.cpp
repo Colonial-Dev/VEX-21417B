@@ -32,7 +32,7 @@ void IMUOdometer::odometryLoop()
         {
             updateState();
 
-            int parallel_encoder_change = ((current_state.left - previous_state.left) + (current_state.right - previous_state.right)) / 2;
+            double parallel_encoder_change = ((current_state.left - previous_state.left) + (current_state.right - previous_state.right)) / 2.0;
             int parallel_direction = std::min(sgnum(parallel_encoder_change), 0); //0 indicates forwards, -1 indicates backwards
             QLength parallel_distance = ((parallel_encoder_change / 360.0) * wheel_circumfrence.convert(inch)) * inch;
             Vector parallel_displacement(parallel_distance, current_state.rotation + (180.0_deg * parallel_direction));
