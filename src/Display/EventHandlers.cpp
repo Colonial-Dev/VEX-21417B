@@ -7,36 +7,19 @@
 #include "robokauz/Display/DisplayUtils.hpp"
 #include "robokauz/BotManager.hpp"
 
-std::string precise_string(double value, const int n)
-{
-    std::ostringstream out;
-    out.precision(n);
-    out << std::fixed << value;
-    return out.str();
-}
-
 void statusUpdateTask(void*)
 {
     std::string statusReadout;
-    std::string connectionMode;
-    std::string operatingMode;
 
-    if(pros::competition::is_connected()) { connectionMode = "[#00ff00 SWITCH#]"; } 
-    else if(!pros::competition::is_connected() && master.is_connected()) { connectionMode = "[#0000ff RADIO#]"; }
-    else { connectionMode = "[#808080 NONE#]"; }
-
-    if(!pros::competition::is_disabled() && pros::competition::is_autonomous()) { operatingMode = "[#ff0000 AUTONOMOUS#]"; }
-    else if(!pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#00ff00 DRIVER#]"; }
-    else if(pros::competition::is_disabled() && !pros::competition::is_autonomous()) { operatingMode = "[#808080 DISABLED#]"; }
-
-    statusReadout += "\n LINK " + connectionMode + " | MODE " + operatingMode + "\n";
-    statusReadout += " BATTERY [" + std::to_string(int (pros::battery::get_capacity())) + "% | " + precise_string(pros::battery::get_voltage() / 1000.0, 3) + "V]\n";
-    statusReadout += " #ff0000 ODO# [" + precise_string(drive_train->getState().x.convert(foot)) + " | " + precise_string(drive_train->getState().y.convert(foot)) + " | " + precise_string(drive_train->getState().theta.convert(degree), 3) + "]\n";
+    statusReadout += "\n LINK " + overwatch.getPrettyConnectionMode() + " | MODE " + overwatch.getPrettyOperatingMode() + "\n";
+    statusReadout += " BATTERY" + overwatch.getPrettyBattery() + "\n";
+    statusReadout += " TEMPS " + overwatch.getPrettyTemperatures() + "\n";
+    statusReadout += " #ff0000 ODO# " + overwatch.getPrettyOdomState() + "\n";
     statusReadout += " #0000ff IMU# " + imu_odometer.getPrettyPosition() + "\n";
-    statusReadout += " ENCODERS [L " + std::to_string(left_encoder.get_value()) + " | M " + std::to_string(middle_encoder.get_value()) + " | R " + std::to_string(right_encoder.get_value()) + "]\n";
+    statusReadout += " ENCODERS" + overwatch.getPrettyEncoders() + "\n";
+    
     statusPrint(statusReadout);
 }
-
 
 void switchSelectorStage(int targetStage)
 {
@@ -160,14 +143,12 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
     {
         case Unlock:
         {
-            overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
             overwatch.resumeDriverControl();
             lv_btnm_set_map(mode_controls, controls_map_unlocked);    
             break;
         }
         case Lock:
         {
-            overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
             overwatch.suspendDriverControl();
             lv_btnm_set_map(mode_controls, controls_map_locked);    
             break;
