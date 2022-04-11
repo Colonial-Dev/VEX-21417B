@@ -13,6 +13,10 @@
 #define CONVEYOR_ON
 #define CONVEYOR_REVERSE
 
+#define LIFT_FLOOR
+#define LIFT_HOVER
+#define LIFT_CEIL
+
 #define CLAMP_OPEN
 #define CLAMP_CLOSE
 #define CLAMP_TOGGLE

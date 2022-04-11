@@ -54,7 +54,6 @@ class BotManager
 
         void resumeDriverControl();
 
-        //Resets all relative sensor values to default, simulating a restart of the program.
         void reinitialize();
 };
 

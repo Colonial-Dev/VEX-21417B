@@ -157,7 +157,6 @@ void BotManager::resumeDriverControl()
 }
 
 //Resets all relative sensor values to default, simulating a restart of the program.
-//Causes a segmentation fault for some fucking reason???
 void BotManager::reinitialize()
 {
     inertial_sensor.reset();
