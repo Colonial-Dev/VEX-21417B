@@ -24,37 +24,92 @@ class BotManager
 {
     private:
 
+        /**
+         * @brief A vector of all the Tasks responsible for running driver control.
+         */
         std::vector<pros::Task> driverTasks;
 
+        /**
+         * @brief Gets the color-coded string version of a motor temperature value.
+         */
         std::string getTemperatureColored(double temp);
 
     public:
 
+        /**
+         * @brief Gets the robot's current connection mode.
+         * @return A value of Manager::ConnectionMode - None, Switch or Wireless.
+         */
         int getConnectionMode();
 
+        /**
+         * @brief Gets the robot's current operating mode. 
+         * @return A value of Manager::OperatingMode - Disabled, Autonomous, Driver or Free.
+         */
         int getOperatingMode();
 
+        /**
+         * @brief Gets the color-coded string representation of the robot's current connection mode.
+         */
         std::string getPrettyConnectionMode();
 
+        /**
+         * @brief Gets the color-coded string representation of the robot's current operating mode.
+         */
         std::string getPrettyOperatingMode();
 
+        /**
+         * @brief Gets the color-coded string representation of the robot's current average motor temperatures.
+         */
         std::string getPrettyTemperatures();
 
+        /**
+         * @brief Gets the color-coded string representation of the robot's current OkapiLib odometry state.
+         */
         std::string getPrettyOdomState();
 
+        /**
+         * @brief Gets the string representation of the robot's current battery level and voltage.
+         */
         std::string getPrettyBattery();
 
+        /**
+         * @brief Gets the string representation of the robot's current tracking encoder values.
+         */
         std::string getPrettyEncoders();
 
+        /**
+         * @brief Sets the brake mode of the drive train and manipulators.
+         * @param brake_mode A pros::motor_brake_mode_e_t value.
+         */
         void setBrakeMode(pros::motor_brake_mode_e_t brake_mode);
 
+        /**
+         * @brief Register a PROS task with the manager.
+         * @param task The task to register.
+         */
         void registerDriverTask(pros::task_t task);
 
+        /**
+         * @brief Suspends driver control.
+         * @note This is useful for preventing interference/race conditions while testing autons.
+         */
         void suspendDriverControl();
 
+        /**
+         * @brief Resumes driver control.
+         */
         void resumeDriverControl();
-
+        
+        /**
+         * @brief Simulates a program restart; all sensors and odometry implementations are zeroed out and/or recalibrated.
+         */
         void reinitialize();
 };
 
+/**
+ * @brief Meant to be called as a Task. 
+ * Suspends driver control, performs a ~3 second countdown (with controller vibration) then runs the autonomous function.
+ * Resumes driver control once the autonomous function exits.
+ */
 void autonomousAsync();

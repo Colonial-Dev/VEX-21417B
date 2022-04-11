@@ -52,8 +52,7 @@ void IMUOdometer::odometryLoop()
 
 IMUOdometer::IMUOdometer(pros::IMU& inertial, EncoderGroup& encoders, QLength tracking_wheel_diameter) : imu(inertial), encoder_left(encoders.left), encoder_middle(encoders.middle), encoder_right(encoders.right)
 {
-    wheel_diameter = tracking_wheel_diameter;
-    wheel_circumfrence = (1_pi * wheel_diameter.convert(inch)) * inch;
+    wheel_circumfrence = (1_pi * tracking_wheel_diameter.convert(inch)) * inch;
 
     setPosition({0_ft, 0_ft, 0_deg});
 

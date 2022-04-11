@@ -1,42 +1,92 @@
 #pragma once
 #include "robokauz/PROS.hpp"
 
-//Constants and objects that model the robot and its components.
-//Max velocity and max acceleration can be set to any value within the actual capabilities of the robot.
-//Track width is the distance between the drive wheels on the robot. May be adjusted empirically to account for scrub.
-//Wheel diameter is the diameter of the drive wheels.
-//odom_controller is a shared_ptr to a correctly configured Okapi OdomChassisController.
-//kv, ka and kp are PID constants and should be adjusted as needed.
+/**
+ * @brief Constants and objects that model/control a robot and its components.
+ */
 struct RobotProperties
-{
+{   
+    /**
+     * @brief The maximum velocity reachable by the robot.
+     * @note Can be lowered to cap the robot's speed.
+     * @warning Raising this beyond the robot's actual maximum speed will cause impossible paths to be generated.
+     */
     QSpeed max_velocity;
+
+    /**
+     * @brief The maximum acceleration achievable by the robot.
+     * @note Can be lowered to cap the robot's acceleration.
+     * @warning Raising this beyond the robot's actual maximum acceleration will cause impossible paths to be generated.
+     */
     QAcceleration max_acceleration;
+
+    /**
+     * @brief The width between the drive wheels/tracks on the robot.
+     * @warning Track width is measured between two different wheel tracks, typically on the left and right sides, NOT wheels on the same track/side.
+     * @note Can be adjusted empirically to account for scrub and other factors.
+     */
     QLength track_width;
+
+    /**
+     * @brief The diameter of the drive wheels.
+     */
     QLength wheel_diam;
+
+    //A shared_ptr to a correctly configured Okapi OdomChassisController.
+
+    /**
+     * @brief A shared_ptr to a correctly configured Okapi OdomChassisController. 
+     * @details Used both for position tracking and robot movement.
+     */
     std::shared_ptr<OdomChassisController> odom_controller;
-    double kv;
-    double ka;
-    double kp;
 };
 
-//Constants used in path generation - primarily in the smoothing operation.
-//A larger smooth_weight means a smoother path. Values of 0.75-0.98 seem to work well.
-//data_weight should be equal to (1 - smooth_weight). 
-//Tolerance is best held constant at 0.001.
-//intial_velocity_constant mainly controls how fast the bot takes turns.
+/**
+ * @brief Constants used in path generation - primarily in the smoothing operation.
+ */
 struct GenerationParameters
 {
-    double data_weight;
+    /**
+     * @brief Controls path smoothness - the larger, the smoother. Values of 0.75-0.98 work best in most situations.
+     */
     double smooth_weight;
+    /**
+     * @brief Can be tweaked, but a good default is (1 - smooth_weight)/
+     */
+    double data_weight;
+    /**
+     * @brief Best held constant at 0.001.
+     */
     double tolerance;
+    /**
+     * @brief Limits how fast the robot will take turns. The higher, the faster. Values between 1-5 work best in most situations.
+     */
     double initial_velocity_constant;
 };
 
+/**
+ * @brief Represents a point in a fully generated path.
+ */
 struct PathPoint
 {
+    /**
+     * @brief The point's X position.
+     */
     QLength x_pos;
+    /**
+     * @brief The point's Y position.
+     */
     QLength y_pos;
+    /**
+     * @brief The straight-line distance from the point to the start of the path.
+     */
     QLength distance;
+    /**
+     * @brief The precalculated target velocity of the robot at the point.
+     */
     QSpeed target_velocity;
+    /**
+     * @brief The curvature of the path at the point.
+     */
     double curvature;
 };
