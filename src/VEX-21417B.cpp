@@ -4,7 +4,7 @@
 #include "robokauz/DISPLAY.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 
-#include "robokauz/DriverControl.hpp"
+#include "robokauz/Other/DriverControl.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/Macrolang.hpp"
 #include "robokauz/Autonomous/OdomControllers.hpp"

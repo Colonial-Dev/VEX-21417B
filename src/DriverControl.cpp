@@ -1,7 +1,7 @@
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
-#include "robokauz/DriverControl.hpp"
+#include "robokauz/Other/DriverControl.hpp"
 
 //Axis 3 is translation, axis 1 is rotation
 void splitTransmission()

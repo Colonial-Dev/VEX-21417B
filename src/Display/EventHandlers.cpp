@@ -5,7 +5,7 @@
 #include "robokauz/Display/EventHandlers.hpp"
 #include "robokauz/Display/DisplayGlobals.hpp"
 #include "robokauz/Display/DisplayUtils.hpp"
-#include "robokauz/BotManager.hpp"
+#include "robokauz/Other/BotManager.hpp"
 
 void statusUpdateTask(void*)
 {

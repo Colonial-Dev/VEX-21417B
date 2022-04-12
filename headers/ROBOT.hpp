@@ -1,7 +1,7 @@
 #pragma once
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/BotManager.hpp"
+#include "robokauz/Other/BotManager.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathManagement.hpp"
 #include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"

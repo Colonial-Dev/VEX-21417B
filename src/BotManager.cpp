@@ -1,7 +1,7 @@
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
-#include "robokauz/BotManager.hpp"
+#include "robokauz/Other/BotManager.hpp"
 
 int BotManager::getConnectionMode()
 {
