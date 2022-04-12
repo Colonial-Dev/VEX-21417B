@@ -1,5 +1,6 @@
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
+#include "robokauz/Autonomous/VectorMath.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathObjects.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathGeneration.hpp"
@@ -19,8 +20,12 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
         
         for(int i = 0; i < injectionCount; i++)
         {
-            Vector injection = start_point + (segment * i);
-            paddedPath.add(injection);
+            Vector injectionVector = start_point + (segment * i);
+
+            RawPoint injectionPoint = injectionVector;
+            injectionPoint.lookahead_distance = path_outline.at(i).lookahead_distance;
+
+            paddedPath.add(injectionPoint);
         }
     }
 
@@ -79,9 +84,9 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
         new_point.x_pos = raw_point.x_component;
         new_point.y_pos = raw_point.y_component;
 
-        new_point.distance = QLength ((prev_dist.convert(meter) + interpointDistance(prev_point, raw_point).convert(meter)) * meter);
+        new_point.absolute_distance = QLength ((prev_dist.convert(meter) + interpointDistance(prev_point, raw_point).convert(meter)) * meter);
 
-        prev_dist = new_point.distance;
+        prev_dist = new_point.absolute_distance;
         prev_point = raw_point;
         newPath.add(new_point);
     }
@@ -139,7 +144,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
     return newPath;
 }
 
-Path generatePath(RobotProperties robot_props, GenerationParameters parameters, std::vector<Vector> path_outline)
+Path generatePath(RobotProperties robot_props, GenerationParameters parameters, std::vector<RawPoint> path_outline)
 {
     uint64_t start = pros::micros();
 

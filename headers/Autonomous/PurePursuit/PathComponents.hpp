@@ -64,29 +64,24 @@ struct GenerationParameters
     double initial_velocity_constant;
 };
 
-/**
- * @brief Represents a point in a fully generated path.
- */
+class Vector;
+
+struct RawPoint
+{
+    QLength x_pos;
+    QLength y_pos;
+    QLength lookahead_distance;
+
+    RawPoint(Vector vector);
+    RawPoint(Point point);
+};
+
 struct PathPoint
 {
-    /**
-     * @brief The point's X position.
-     */
     QLength x_pos;
-    /**
-     * @brief The point's Y position.
-     */
     QLength y_pos;
-    /**
-     * @brief The straight-line distance from the point to the start of the path.
-     */
-    QLength distance;
-    /**
-     * @brief The precalculated target velocity of the robot at the point.
-     */
+    QLength lookahead_distance;
+    QLength absolute_distance;
     QSpeed target_velocity;
-    /**
-     * @brief The curvature of the path at the point.
-     */
     double curvature;
 };

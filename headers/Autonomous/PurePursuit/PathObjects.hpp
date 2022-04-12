@@ -1,6 +1,5 @@
 #pragma once
 #include "robokauz/PROS.hpp"
-#include "../VectorMath.hpp"
 #include "PathComponents.hpp"
 
 /**
@@ -8,14 +7,12 @@
  */
 class RawPath
 {
-    private:
+    public:
 
         /**
-         * @brief A vector of Vectors, containing the (X,Y) points of the path in sequential order.
+         * @brief A vector of RawPoints, containing the (X,Y) points of the path in sequential order.
          */
-        std::vector<Vector> points;
-
-    public:
+        std::vector<RawPoint> points;
 
         /**
          * @brief Constructs a new Raw Path object with no information.
@@ -24,9 +21,9 @@ class RawPath
 
         /**
          * @brief Constructs a new Raw Path object from a provided set of points.
-         * @param pts A vector of Vectors, containg the (X,Y) points of the path in sequential order.
+         * @param pts A vector of RawPoints, containg the (X,Y) points of the path in sequential order.
          */
-        RawPath(std::vector<Vector> pts);
+        RawPath(std::vector<RawPoint> pts);
 
         /**
          * @brief Returns the size of the path.
@@ -34,17 +31,17 @@ class RawPath
         int size();
 
         /**
-         * @brief Gets the Vector point at the specified index in the path.
+         * @brief Gets the RawPoint at the specified index in the path.
          * @param index The index of the point to fetch.
-         * @return A reference to the Vector point at the specified index.
+         * @return A reference to the RawPoint at the specified index.
          */
-        Vector& at(int index);
+        RawPoint& at(int index);
 
         /**
-         * @brief Adds a Vector point to the end of the path.
-         * @param point The Vector point to add.
+         * @brief Adds a RawPoint to the end of the path.
+         * @param point The RawPoint to add.
          */
-        void add(Vector point);
+        void add(RawPoint point);
 };
 
 /**
@@ -59,12 +56,12 @@ class Path
          */
         std::string name;
 
+    public:
+
         /**
          * @brief A vector of PathPoints, representing the (X,Y) points of the path and associated data in sequential order.
          */
         std::vector<PathPoint> points;
-
-    public:
 
         /**
          * @brief Sets the path's name.

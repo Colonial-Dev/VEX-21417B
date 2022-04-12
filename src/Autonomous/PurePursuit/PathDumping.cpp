@@ -11,8 +11,8 @@ void dumpRawPath(RawPath path)
 
     for(int i = 0; i < path.size(); i++)
     {
-        x_coords += std::to_string(path.at(i).x_component.convert(foot)) + ",";
-        y_coords += std::to_string(path.at(i).y_component.convert(foot)) + ",";
+        x_coords += std::to_string(path.at(i).x_pos.convert(foot)) + ",";
+        y_coords += std::to_string(path.at(i).y_pos.convert(foot)) + ",";
     }
 
     x_coords.replace(x_coords.length() - 1, 1, "]");
@@ -35,7 +35,7 @@ void dumpFullPath(Path path)
     {
         x_coords += std::to_string(path.at(i).x_pos.convert(foot)) + ",";
         y_coords += std::to_string(path.at(i).y_pos.convert(foot)) + ",";
-        distances += std::to_string(path.at(i).distance.convert(foot)) + ",";
+        distances += std::to_string(path.at(i).absolute_distance.convert(foot)) + ",";
         target_vels += std::to_string(path.at(i).target_velocity.convert(mps)) + ",";
         curvatures += std::to_string(path.at(i).curvature) + ",";
     }

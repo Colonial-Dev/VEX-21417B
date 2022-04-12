@@ -10,10 +10,9 @@
 
 /// --- PathTraverser --
 
-PathTraverser::PathTraverser(Path path_to_traverse, TraversalParameters parameters, RobotProperties robot)
+PathTraverser::PathTraverser(Path path_to_traverse, RobotProperties robot)
 {
     cache.path = path_to_traverse;
-    cache.params = parameters;
     cache.robot_properties = robot;
 }
 
@@ -26,7 +25,6 @@ void PathTraverser::traversePath()
         updatePosition(cache);
         updateClosestPoint(cache);
         updateLookaheadPoint(cache);
-        projectLookaheadPoint(cache);
 
         double curvature = calculateCurvature(cache);
         PRINT("\nCurvature: " + std::to_string(curvature));
@@ -42,11 +40,6 @@ void PathTraverser::traversePath()
     cache.robot_properties.odom_controller->getModel()->driveVector(0, 0);
 }
 
-void PathTraverser::simulatePath(OdomState position)
-{
-    //TODO calculate + dump function outputs given hypothetical position
-}
-
 // --- PathManager ---
 
 int PathManager::getStatus()
@@ -59,9 +52,9 @@ void PathManager::setStatus(int new_status)
     current_status = new_status;
 }
 
-void PathManager::traversePath(Path path, TraversalParameters parameters)
+void PathManager::traversePath(Path path)
 {
-    PathTraverser traverser(path, parameters, robot_props);
+    PathTraverser traverser(path, robot_props);
     setStatus(PurePursuitStatus::Traversing);
     traverser.traversePath();
     setStatus(PurePursuitStatus::Idle);
@@ -88,17 +81,20 @@ std::string PathManager::getPrettyStatus()
     return "[#ff0000 ERROR]";
 }
 
-void PathManager::generateStandardPath(std::string path_name, GenerationParameters parameters, std::vector<Vector> path_points)
+PathBuilder PathManager::buildPath(std::string name, GenerationParameters g_params)
 {
-    Path finished_path = generatePath(robot_props, parameters, path_points);
-    finished_path.setName(path_name);
-    stored_paths.insert(std::pair<std::string, Path>(finished_path.getName(), finished_path));
+    return PathBuilder(name, g_params, robot_props, *this);
 }
 
-void PathManager::traverseStoredPath(std::string path_name, TraversalParameters parameters)
+void PathManager::insertPath(Path path)
+{
+    stored_paths.insert(std::pair<std::string, Path>(path.getName(), path));
+}
+
+void PathManager::traverseStoredPath(std::string path_name)
 {
     Path path = stored_paths[path_name];
-    traversePath(path, parameters);
+    traversePath(path);
 }
 
 void PathManager::dumpStoredPath(std::string path_name)

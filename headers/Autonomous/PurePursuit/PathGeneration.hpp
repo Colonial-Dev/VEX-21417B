@@ -30,10 +30,10 @@ RawPath smoothPath(RawPath rough_path, GenerationParameters parameters);
 Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameters params);
 
 /**
- * @brief Generates a full Path from a Vector waypoint outline using injectPoints(), smoothPath() and processPath().
+ * @brief Generates a full Path from a RawPoint waypoint outline using injectPoints(), smoothPath() and processPath().
  * @param robot_props A correctly-configured RobotProperties structure.
  * @param parameters A configured GenerationParameters structure.
- * @param path_outline A std::vector of Vectors, representing the outline of the path.
+ * @param path_outline A std::vector of RawPoints, representing the outline of the path.
  * @return A ready-to-traverse Path object.
  */
-Path generatePath(RobotProperties robot_props, GenerationParameters parameters, std::vector<Vector> path_outline);
+Path generatePath(RobotProperties robot_props, GenerationParameters parameters, std::vector<RawPoint> path_outline);

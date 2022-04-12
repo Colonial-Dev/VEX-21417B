@@ -74,7 +74,7 @@ void updateLookaheadPoint(TraversalCache& cache)
         Vector start (cache.path.at(i));
         Vector end (cache.path.at(i+1));
         Vector pos (cache.current_position);
-        double t_value = findIntersect(start, end, pos, cache.params.lookahead_distance.convert(meter));
+        double t_value = findIntersect(start, end, pos, cache.closest_point.lookahead_distance.convert(meter));
         double fractional_index = t_value + i;
 
         if(t_value < 0 || fractional_index <= cache.lookahead_index) { continue; }
@@ -94,14 +94,6 @@ void updateLookaheadPoint(TraversalCache& cache)
     PRINT("\nLPX: " + std::to_string(cache.lookahead_point.x_component.convert(meter)));
     PRINT("LPY: " + std::to_string(cache.lookahead_point.y_component.convert(meter)));
     PRINT("LPI: " + std::to_string(cache.lookahead_index));
-}
-
-void projectLookaheadPoint(TraversalCache& cache)
-{
-    Vector ray = cache.lookahead_point - cache.current_position;
-    ray = ray.normalize() * cache.params.lookahead_distance.convert(meter);
-    ray = ray + cache.current_position;
-    cache.projected_lookahead = ray;
 }
 
 double calculateCurvature(TraversalCache& cache)

@@ -5,17 +5,6 @@
 #include "PathObjects.hpp"
 
 /**
- * @brief Constants and objects that control how the robot traverses a path.
- */
-struct TraversalParameters
-{
-    /**
-     * @brief The desired lookahead distance. Typically tweaked per-path.
-     */
-    QLength lookahead_distance;
-};
-
-/**
  * @brief Target angular wheel speeds for the left and right sides. Used in path traversal.
  */
 struct WheelSpeeds
@@ -29,10 +18,6 @@ struct WheelSpeeds
  */
 struct TraversalCache
 {
-    /**
-     * @brief A user-provided TraversalParameters structure.
-     */
-    TraversalParameters params;
 
     /**
      * @brief A user-provided RobotProperties structure.
@@ -58,12 +43,6 @@ struct TraversalCache
      * @brief The current Vector lookahead point.
      */
     Vector lookahead_point;
-
-    /**
-     * @brief The current projected Vector lookahead point.
-     * @deprecated Currently unused, may be removed.
-     */
-    Vector projected_lookahead;
 
     /**
      * @brief The index of the current closest point in the path.
@@ -109,13 +88,6 @@ double findIntersect(Vector& start, Vector& end, Vector& pos, double lookahead);
  * @param cache A reference to the TraversalCache structure to update.
  */
 void updateLookaheadPoint(TraversalCache& cache);
-
-/**
- * @brief Project the current lookahead point onto the robot's lookahead distance circle.
- * @deprecated Currently unused; may be removed.
- * @param cache A reference to the TraversalCache structure to update.
- */
-void projectLookaheadPoint(TraversalCache& cache);
 
 /**
  * @brief Calculate the curvature from the robot's current position and angle to the lookahead point.

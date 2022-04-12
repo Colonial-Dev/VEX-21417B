@@ -18,28 +18,21 @@ void initialize()
 void autonomous()
 {
   GenerationParameters g_params {0.2, 0.8, 0.001, 3};
-  TraversalParameters t_params {24_in};
 
-  wayfarer.generateStandardPath("Test", g_params,
-                                {{0_ft, 0_ft}, {2_ft, 0_ft}, {4_ft, 2_ft}});
+  wayfarer.buildPath("Alpha", g_params)
+      .withLookahead(18_in)
+      .withOrigin()
+      .withPoint({1.04_ft, 1.47_ft})
+      .withPoint({1.1_ft, 4.3_ft})
+      .withLookahead(40_in)
+      .withPoint({0.86_ft, 4.2_ft})
+      .generatePath();
 
-  wayfarer.generateStandardPath("Skills_1", g_params,
-                                {{0_ft, 0_ft}, {1.04_ft, 1.47_ft}});//, {1.22_ft, 2.28_ft}, {0.86_ft, 4.2_ft}});
-
-  wayfarer.generateStandardPath("Skills_2", g_params,
-                                {{1.04_ft, 1.47_ft}, {1.1_ft, 4.3_ft}});
-
-  wayfarer.generateStandardPath("Skills_3", g_params,
-                                {{1.22_ft, 2.28_ft}, {0.86_ft, 4.2_ft}});
-  
-  wayfarer.dumpStoredPath("Test");
-  wayfarer.traverseStoredPath("Test", t_params);
-  //CLIP_CLOSE
-  //wayfarer.traverseStoredPath("Skills_1", t_params);
-  //drive_train->turnToPoint({0.59_ft, 3.91_ft});
-  //wayfarer.traverseStoredPath("Skills_2", {30_in});
-  //wayfarer.traverseStoredPath("Skills_3", {40_in}); 
-  //CLAMP_CLOSE
-  pros::delay(1000);
-  }
+  wayfarer.buildPath("Test", g_params)
+      .withLookahead(24_in)
+      .withOrigin()
+      .withPoint({2_ft, 0_ft})
+      .withPoint({4_ft, 2_ft})
+      .generatePath();
+}
 

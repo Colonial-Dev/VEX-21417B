@@ -1,11 +1,7 @@
 #pragma once
 #include "robokauz/PROS.hpp"
 #include "robokauz/COMMON.hpp"
-#include "PathComponents.hpp"
-#include "PathObjects.hpp"
-#include "PathDumping.hpp"
-#include "PathGeneration.hpp"
-#include "PathTraversal.hpp"
+#include "robokauz/PURE_PURSUIT.hpp"
 #include <map>
 
 namespace PurePursuitStatus
@@ -35,21 +31,15 @@ class PathTraverser
          * @brief Constructs a new Path Traverser object.
          * 
          * @param path_to_traverse The Path object to traverse.
-         * @param parameters A configured TraversalParameters structure.
          * @param robot A correctly-configured RobotProperties structure.
          */
-        PathTraverser(Path path_to_traverse, TraversalParameters parameters, RobotProperties robot);
+        PathTraverser(Path path_to_traverse, RobotProperties robot);
 
         /**
          * @brief Traverses the path specified in the constructor.
          */
         void traversePath();
 
-        /**
-         * @brief Simulates the outputs from traversal algorithms given a hypothetical position, then dumps the results to std::cout.
-         * @param position An OdomState structure set to the desired hypothetical position.
-         */
-        void simulatePath(OdomState position);
 };
 
 class PathManager
@@ -80,7 +70,7 @@ class PathManager
          * @brief Traverses the provided path.
          * @param path The path to traverse.
          */
-        void traversePath(Path path, TraversalParameters parameters);
+        void traversePath(Path path);
 
     public:
 
@@ -101,14 +91,9 @@ class PathManager
          */
         std::string getPrettyStatus();
 
-        /**
-         * @brief Generates a standard path and stores it in the PathManager instance.
-         * @param path_name The name of the path. Must be unique.
-         * @param parameters A configured GenerationParameters struct.
-         * @param path_points A std::vector of Vectors representing the path outline.
-         * Using brace initialization syntax is recommended, e.g.: {{0_ft, 0_ft}, {2_ft, 0_ft}}.
-         */
-        void generateStandardPath(std::string path_name, GenerationParameters parameters, std::vector<Vector> path_points);
+        PathBuilder buildPath(std::string name, GenerationParameters g_params);
+
+        void insertPath(Path path);
 
         //Generates a temporary straight-line path from the robot's current position to a given point, then traverses it.
         void pathfindLinear();
@@ -119,9 +104,8 @@ class PathManager
         /**
          * @brief Traverses a stored path.
          * @param path_name The name of the desired path.
-         * @param parameters A configured TraversalParameters object.
          */
-        void traverseStoredPath(std::string path_name, TraversalParameters parameters);
+        void traverseStoredPath(std::string path_name);
 
         /**
          * @brief Dumps a stored path to std::cout.
