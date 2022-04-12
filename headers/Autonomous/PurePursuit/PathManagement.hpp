@@ -76,6 +76,12 @@ class PathManager
          */
         void setStatus(int new_status);
 
+        /**
+         * @brief Traverses the provided path.
+         * @param path The path to traverse.
+         */
+        void traversePath(Path path, TraversalParameters parameters);
+
     public:
 
         /**
@@ -109,9 +115,6 @@ class PathManager
 
         //Generates a temporary straight-line path from the robot's current position to a point X distance forwards, then traverses it.
         void pathfindDistance();
-
-        //Generates a temporary arc path from the robot's current position to a given point, then traverses it.
-        void pathfindArc();
 
         /**
          * @brief Traverses a stored path.

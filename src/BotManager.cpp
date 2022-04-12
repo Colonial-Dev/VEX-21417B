@@ -144,6 +144,7 @@ void BotManager::suspendDriverControl()
     {
         driverTasks.at(i).notify_ext(0, NOTIFY_ACTION_OWRITE, NULL);
     }
+    overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 }
 
 void BotManager::resumeDriverControl()
@@ -170,6 +171,8 @@ void BotManager::reinitialize()
 void autonomousAsync()
 {
     overwatch.suspendDriverControl();
+    overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD); //Necessary to prevent skidding 
+    
     pros::delay(50);
     master.rumble("-");
     pros::delay(1000);

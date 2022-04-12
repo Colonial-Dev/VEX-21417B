@@ -67,6 +67,7 @@ OdomState IMUOdometer::getPosition()
 void IMUOdometer::setPosition(OdomState position)
 {
     current_position = position;
+    imu.set_rotation(position.theta.convert(degree));
 }
 
 void IMUOdometer::reset()

@@ -54,10 +54,17 @@ int PathManager::getStatus()
     return current_status;
 }
 
-
 void PathManager::setStatus(int new_status)
 {
     current_status = new_status;
+}
+
+void PathManager::traversePath(Path path, TraversalParameters parameters)
+{
+    PathTraverser traverser(path, parameters, robot_props);
+    setStatus(PurePursuitStatus::Traversing);
+    traverser.traversePath();
+    setStatus(PurePursuitStatus::Idle);
 }
 
 PathManager::PathManager(RobotProperties properties)
@@ -91,10 +98,7 @@ void PathManager::generateStandardPath(std::string path_name, GenerationParamete
 void PathManager::traverseStoredPath(std::string path_name, TraversalParameters parameters)
 {
     Path path = stored_paths[path_name];
-    PathTraverser traverser(path, parameters, robot_props);
-    setStatus(PurePursuitStatus::Traversing);
-    traverser.traversePath();
-    setStatus(PurePursuitStatus::Idle);
+    traversePath(path, parameters);
 }
 
 void PathManager::dumpStoredPath(std::string path_name)
