@@ -58,18 +58,6 @@ void rearClampControl()
 	}
 }
 
-//X to close, A to open
-void topClampControl()
-{
-	while(true)
-	{
-		if(master.get_digital_new_press(DIGITAL_X)) { top_piston.set_value(true); }
-		else if(master.get_digital_new_press(DIGITAL_A)) { top_piston.set_value(false); }
-		WAIT_FOR_AUTH
-		pros::delay(2);
-	}
-}
-
 //R1 forward, R2 reverse
 void conveyorControl()
 {
@@ -104,13 +92,11 @@ void opcontrol()
 	pros::Task frontLift(mainLiftControl);
 	pros::Task frontClamp(frontClampControl);
 	pros::Task rearClamp(rearClampControl);
-	pros::Task topClamp(topClampControl);
 	pros::Task conveyor(conveyorControl);
 
 	overwatch.registerDriverTask(transmission);
 	overwatch.registerDriverTask(frontLift);
 	overwatch.registerDriverTask(frontClamp);
 	overwatch.registerDriverTask(rearClamp);
-	overwatch.registerDriverTask(topClamp);
 	overwatch.registerDriverTask(conveyor);
 }

@@ -18,9 +18,8 @@ pros::Motor left_front (9);
 //Initialize manipulator motors/pneumatics
 pros::Motor arm_motor (5);
 pros::Motor conveyor_motor (8);
-pros::ADIDigitalOut back_piston ( {{13 , 'F'}});
+pros::ADIDigitalOut back_piston ( {{11 , 'E'}});
 pros::ADIDigitalOut clamp_piston ('G');
-pros::ADIDigitalOut top_piston ( {{13 , 'E'}});
 
 //Initialize sensors
 pros::IMU inertial_sensor (14);
