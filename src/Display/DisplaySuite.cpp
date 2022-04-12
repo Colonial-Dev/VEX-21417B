@@ -24,7 +24,7 @@ void initializeDisplay()
     lv_obj_set_size(status_text, 260, 214);
 
     controls_page = createPage(left_panel, 240, 214, LV_ALIGN_IN_TOP_LEFT, 0, 0, true);
-    mode_controls = createMatrix(controls_map_unlocked, 240, 214, controls_page, LV_ALIGN_IN_TOP_MID, 0, 0, *handleControls);
+    mode_controls = createMatrix(controls_map_locked, 240, 214, controls_page, LV_ALIGN_IN_TOP_MID, 0, 0, *handleControls);
 
     right_panel = createContainer(home_page, 240, 239, LV_ALIGN_IN_RIGHT_MID, -120, 0, LV_LAYOUT_COL_M);
     

@@ -84,8 +84,8 @@ std::string BotManager::getPrettyTemperatures()
     drive_train_temps /= 6;
     manipulator_temps /= 2;
 
-    std::string drive_train_avg = "DRIVE " + getTemperatureColored(drive_train_temps) + "C";
-    std::string manipulator_avg = "MANIPS " + getTemperatureColored(manipulator_temps) + "C";
+    std::string drive_train_avg = "DRV " + getTemperatureColored(drive_train_temps) + "C";
+    std::string manipulator_avg = "MAN " + getTemperatureColored(manipulator_temps) + "C";
     return "[" + drive_train_avg + " | " + manipulator_avg + "]";
 }
 
@@ -144,7 +144,6 @@ void BotManager::suspendDriverControl()
     {
         driverTasks.at(i).notify_ext(0, NOTIFY_ACTION_OWRITE, NULL);
     }
-    overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 }
 
 void BotManager::resumeDriverControl()
@@ -153,7 +152,7 @@ void BotManager::resumeDriverControl()
     {
         driverTasks.at(i).notify();
     }
-    overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+    overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);   
 }
 
 //Resets all relative sensor values to default, simulating a restart of the program.

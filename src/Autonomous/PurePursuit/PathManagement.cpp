@@ -33,7 +33,7 @@ void PathTraverser::traversePath()
         
         calculateWheelSpeeds(cache, curvature);
         
-        if(checkDistance(cache, 6_in)) { break; }
+        if(cache.closest_index == cache.path.size() - 1) { break; }
 
         cache.robot_properties.odom_controller->getModel()->tank(cache.target_speeds.target_left.convert(rpm) / 200, cache.target_speeds.target_right.convert(rpm) / 200);
 
@@ -49,13 +49,38 @@ void PathTraverser::simulatePath(OdomState position)
 
 // --- PathManager ---
 
-//Construct a new PathManager with the given robot properties.
+int PathManager::getStatus()
+{
+    return current_status;
+}
+
+
+void PathManager::setStatus(int new_status)
+{
+    current_status = new_status;
+}
+
 PathManager::PathManager(RobotProperties properties)
 {
     robot_props = properties;
 }
 
-//Generates a standard path from the given parameters and stores it in the PathManager instance.
+std::string PathManager::getPrettyStatus()
+{
+    switch(getStatus())
+    {
+        case PurePursuitStatus::Idle:
+        {
+            return "[#00ff00 IDLE#]";
+        }
+        case PurePursuitStatus::Traversing:
+        {
+            return "[#ffff00 TRAVERSING#]";
+        }
+    }
+    return "[#ff0000 ERROR]";
+}
+
 void PathManager::generateStandardPath(std::string path_name, GenerationParameters parameters, std::vector<Vector> path_points)
 {
     Path finished_path = generatePath(robot_props, parameters, path_points);
@@ -63,33 +88,15 @@ void PathManager::generateStandardPath(std::string path_name, GenerationParamete
     stored_paths.insert(std::pair<std::string, Path>(finished_path.getName(), finished_path));
 }
 
-//Generates a temporary straight-line path from the robot's current position to a given point, then traverses it.
-void PathManager::pathfindLinear()
-{
-
-}
-
-//Generates a temporary straight-line path from the robot's current position to a point X distance forwards, then traverses it.
-void PathManager::pathfindDistance()
-{
-
-}
-
-//Generates a temporary arc path from the robot's current position to a given point, then traverses it.
-void PathManager::pathfindArc()
-{
-
-}
-
-//Traverses a stored path, as identified by its name.
 void PathManager::traverseStoredPath(std::string path_name, TraversalParameters parameters)
 {
     Path path = stored_paths[path_name];
     PathTraverser traverser(path, parameters, robot_props);
+    setStatus(PurePursuitStatus::Traversing);
     traverser.traversePath();
+    setStatus(PurePursuitStatus::Idle);
 }
 
-//Dumps a stored path to the terminal.
 void PathManager::dumpStoredPath(std::string path_name)
 {
     Path path = stored_paths[path_name];

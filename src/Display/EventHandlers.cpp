@@ -17,6 +17,7 @@ void statusUpdateTask(void*)
     statusReadout += " #ff0000 ODO# " + overwatch.getPrettyOdomState() + "\n";
     statusReadout += " #0000ff IMU# " + imu_odometer.getPrettyPosition() + "\n";
     statusReadout += " ENCODERS" + overwatch.getPrettyEncoders() + "\n";
+    statusReadout += " PURE PURSUIT " + wayfarer.getPrettyStatus() + "\n";
     
     statusPrint(statusReadout);
 }
@@ -143,14 +144,16 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
     {
         case Unlock:
         {
-            overwatch.resumeDriverControl();
-            lv_btnm_set_map(mode_controls, controls_map_unlocked);    
+            overwatch.suspendDriverControl();
+            overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);    
+            lv_btnm_set_map(mode_controls, controls_map_unlocked);
             break;
         }
         case Lock:
         {
-            overwatch.suspendDriverControl();
-            lv_btnm_set_map(mode_controls, controls_map_locked);    
+            overwatch.resumeDriverControl();
+            lv_btnm_set_map(mode_controls, controls_map_locked); 
+            overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);   
             break;
         }
         case Autonomous:

@@ -8,6 +8,15 @@
 #include "PathTraversal.hpp"
 #include <map>
 
+namespace PurePursuitStatus
+{
+    enum PurePursuitStatus
+    {
+        Idle,
+        Traversing
+    };
+}
+
 /**
  * @brief Transient object used to mediate path traversal.
  */
@@ -57,6 +66,16 @@ class PathManager
          */
         std::map<std::string, Path> stored_paths;
 
+        /**
+         * @brief The current status of the manager.
+         */
+        int current_status = PurePursuitStatus::Idle;
+        
+        /**
+         * @brief Set the status of the manager.
+         */
+        void setStatus(int new_status);
+
     public:
 
         /**
@@ -64,6 +83,17 @@ class PathManager
          * @param properties A correctly-configured RobotProperties structure.
          */
         PathManager(RobotProperties properties);
+
+        /**
+         * @brief Gets the current status of the manager
+         * @return A value from PurePursuitStatus - Idle or Traversing.
+         */
+        int getStatus();
+
+        /**
+         * @brief Gets the string representation of the manager's current status.
+         */
+        std::string getPrettyStatus();
 
         /**
          * @brief Generates a standard path and stores it in the PathManager instance.
