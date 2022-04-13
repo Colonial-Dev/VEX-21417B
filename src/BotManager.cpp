@@ -133,9 +133,8 @@ void BotManager::setBrakeMode(pros::motor_brake_mode_e_t brake_mode)
 
 void BotManager::registerDriverTask(pros::task_t task)
 {
-    pros::Task newTask(task);
-    newTask.notify();
-    driverTasks.push_back(newTask);
+    driverTasks.emplace_back(task);
+    driverTasks.back().notify();
 }
 
 void BotManager::suspendDriverControl()
