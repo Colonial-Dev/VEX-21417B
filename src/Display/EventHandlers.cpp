@@ -12,11 +12,11 @@ void statusUpdateTask(void*)
     std::string statusReadout;
 
     statusReadout += "\n LINK " + overwatch.getPrettyConnectionMode() + " | MODE " + overwatch.getPrettyOperatingMode() + "\n";
-    statusReadout += " BATTERY" + overwatch.getPrettyBattery() + "\n";
+    statusReadout += " BATTERY " + overwatch.getPrettyBattery() + "\n";
     statusReadout += " TEMPS " + overwatch.getPrettyTemperatures() + "\n";
     statusReadout += " #ff0000 ODO# " + overwatch.getPrettyOdomState() + "\n";
     statusReadout += " #0000ff IMU# " + imu_odometer.getPrettyPosition() + "\n";
-    statusReadout += " ENCODERS" + overwatch.getPrettyEncoders() + "\n";
+    statusReadout += " ENCODERS " + overwatch.getPrettyEncoders() + "\n";
     statusReadout += " PURE PURSUIT " + wayfarer.getPrettyStatus() + "\n";
     
     statusPrint(statusReadout);
