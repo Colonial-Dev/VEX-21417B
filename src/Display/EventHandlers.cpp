@@ -19,6 +19,11 @@ void statusUpdateTask(void*)
     statusReadout += " ENCODERS " + overwatch.getPrettyEncoders() + "\n";
     statusReadout += " PURE PURSUIT " + wayfarer.getPrettyStatus() + "\n";
     
+    /*std::string input;
+    //std::getline(std::cin, input);
+    statusReadout += " TEST " + std::to_string(std::getchar()) + " \n";
+    std::cout << "\b \b";*/
+    
     statusPrint(statusReadout);
 }
 

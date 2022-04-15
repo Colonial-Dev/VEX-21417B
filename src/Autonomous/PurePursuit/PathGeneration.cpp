@@ -18,9 +18,9 @@ RawPath injectPoints(RawPath path_outline, QLength spacing = 6.0_in)
         double injectionCount = std::ceil(segment.magnitude().convert(meter) / spacing.convert(meter));
         segment = segment.normalize() * spacing.convert(meter);
         
-        for(int i = 0; i < injectionCount; i++)
+        for(int j = 0; j < injectionCount; j++)
         {
-            Vector injectionVector = start_point + (segment * i);
+            Vector injectionVector = start_point + (segment * j);
 
             RawPoint injectionPoint = injectionVector;
             injectionPoint.lookahead_distance = path_outline.at(i).lookahead_distance;
@@ -65,6 +65,7 @@ RawPath smoothPath(RawPath rough_path, GenerationParameters parameters)
             smoothed_point.y_component = QLength (smoothed_y * meter);
 
             smoothedPath.at(i) = smoothed_point;
+            smoothedPath.at(i).lookahead_distance = rough_path.at(i).lookahead_distance;
         }
     }
     return smoothedPath;
@@ -74,7 +75,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
 {
     Path newPath;
 
-    //Calculate point distances
+    //Calculate point distances and transfer lookaheads
     QLength prev_dist = 0.0_in;
     Vector prev_point = smooth_path.at(0);
     for(int i = 0; i < smooth_path.size(); i++)
@@ -85,6 +86,7 @@ Path processPath(RawPath smooth_path, RobotProperties robot, GenerationParameter
         new_point.y_pos = raw_point.y_component;
 
         new_point.absolute_distance = QLength ((prev_dist.convert(meter) + interpointDistance(prev_point, raw_point).convert(meter)) * meter);
+        new_point.lookahead_distance = smooth_path.at(i).lookahead_distance;
 
         prev_dist = new_point.absolute_distance;
         prev_point = raw_point;

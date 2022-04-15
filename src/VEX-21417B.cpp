@@ -23,8 +23,8 @@ void autonomous()
       .withLookahead(18_in)
       .withOrigin()
       .withPoint({1.04_ft, 1.47_ft})
-      .withPoint({1.1_ft, 4.3_ft})
       .withLookahead(40_in)
+      .withPoint({1.1_ft, 4.3_ft})
       .withPoint({0.86_ft, 4.2_ft})
       .withDebugDump()
       .generatePath();
@@ -34,6 +34,7 @@ void autonomous()
       .withOrigin()
       .withPoint({2_ft, 0_ft})
       .withPoint({4_ft, 2_ft})
+      .withDebugDump()
       .generatePath();
 }
 
