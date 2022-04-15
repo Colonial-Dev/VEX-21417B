@@ -78,6 +78,12 @@ PathBuilder PathBuilder::withPrealignment()
     return *this;
 }
 
+PathBuilder PathBuilder::withDebugDump()
+{
+    doDebugDump = true;
+    return *this;
+}
+
 PathBuilder PathBuilder::makeReversed()
 {
     computeReversed = true;
@@ -129,5 +135,7 @@ void PathBuilder::generatePath()
     Path computed_path = processPath(combined_path, robot_props, gen_params);
     computed_path.setName(path_name);
     calling_manager.insertPath(computed_path);
+
+    if(doDebugDump) { dumpFullPath(computed_path); }
 }
 

@@ -26,6 +26,7 @@ void autonomous()
       .withPoint({1.1_ft, 4.3_ft})
       .withLookahead(40_in)
       .withPoint({0.86_ft, 4.2_ft})
+      .withDebugDump()
       .generatePath();
 
   wayfarer.buildPath("Test", g_params)

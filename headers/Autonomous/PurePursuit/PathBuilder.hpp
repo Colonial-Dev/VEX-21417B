@@ -26,6 +26,8 @@ class PathBuilder
 
         bool computeReversed = false;
 
+        bool doDebugDump = false;
+
         void finalizeCurrentComponent();
 
     public:
@@ -51,6 +53,8 @@ class PathBuilder
         PathBuilder withPrealignment();
 
         PathBuilder makeReversed();
+
+        PathBuilder withDebugDump();
 
         void generatePath();
 };
