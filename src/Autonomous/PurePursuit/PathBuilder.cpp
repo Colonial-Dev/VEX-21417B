@@ -66,51 +66,11 @@ PathBuilder PathBuilder::withDebugDump()
 
 void PathBuilder::generatePath()
 {
-    /*finalizeCurrentComponent();
-
-    std::vector<RawPath> path_segments;
-
-    for(int i = 0; i < path_components.size(); i++)
-    {
-        if(path_components.at(i).size() != 0)
-        {
-            path_segments.push_back(path_components.at(i));
-        }
-    }
-
-    for(int i = 0; i < path_segments.size(); i++)
-    {
-        RawPath processed_segment = injectPoints(path_segments.at(i), 6_in);
-        processed_segment = smoothPath(processed_segment, gen_params);
-        path_segments.at(i) = processed_segment;
-    }
-
-    RawPath combined_path;
-
-    //Avoid expensive vector concatenation if we only have one segment
-    if(path_segments.size() > 1) 
-    {
-        std::vector<RawPoint> all_points;
-        
-        for(int i = 0; i < path_segments.size(); i++)
-        {
-            all_points.insert(all_points.end(), 
-            path_segments.at(i).points.begin(),
-            path_segments.at(i).points.end());
-        }
-
-        combined_path = RawPath(all_points);
-    }
-    else
-    {
-        combined_path = path_segments.at(0);
-    }
-
-    Path computed_path = processPath(combined_path, robot_props, gen_params);
-    computed_path.setName(path_name);
+    PathFinder pathfinder(robot_props);
+    Path computed_path = pathfinder.generatePath(path_name, path_waypoints);
     calling_manager.insertPath(computed_path);
 
-    if(computeReversed)
+    /*if(computeReversed)
     {
         RawPath reversed_path = combined_path;
         std::reverse(reversed_path.points.begin(), reversed_path.points.end());
@@ -119,8 +79,8 @@ void PathBuilder::generatePath()
         computed_reversed_path.setName(path_name + "_rev");
         computed_reversed_path.setReversed(true);
         calling_manager.insertPath(computed_reversed_path);
-    }
+    }*/
 
-    if(doDebugDump) { dumpFullPath(computed_path); }*/
+    if(doDebugDump) { dumpFullPath(computed_path); }
 }
 
