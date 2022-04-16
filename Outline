@@ -1,0 +1,56 @@
+V5 PROGRAMMING FOR DUMMIES
+
+- What you need to know at minimum:
+  - Programming fundamentals, including variables, control structures, loops, and functions.
+  - The basics of C-derived programming syntax.
+
+- What you need to know for advanced autonomous:
+  - Basic trigonometry, primarily radians as well as sine/cosine/tangent and their inverses.
+  - Vectors in the 2D plane.
+  
+ - PROS: What it is, why you should use it, and how to set it up.
+   - The ability to use any sane IDE/editor instead of VEXCode is invaluable.
+   - Access to third-party libraries, even just those bundled with PROS, is extremely useful.
+   - On OkapiLib: it's an invaluable tool, but not an ultimate solution.
+   
+ - Introduction: implementing operator controls with tasks
+ 
+ - Level 0: naive autonomous and its failings
+ 
+ - Interlude: Version control with Git
+   - Git gives you much greater freedom to experiment with your code.
+   - When combined with a free GitHub account, it's also a great way to back up and sync/share code.
+ 
+ - Level 1: PID control
+   - Terminal debugging
+ 
+ - Interlude: C++, code organization and you
+   - Enums
+   - Macros
+   - Separation of declaration in headers from implementation in translation units
+   - Includes
+ 
+ - Level 2: Odometry theory
+   - "Classical" (tri-wheel) odometry is difficult and subject to a variety of pitfalls
+   - IMU odometry (1-3 wheels + inertial sensor) is much easier to implement and more robust.
+   - Using encoders, geometry and 2D vectors to measure displacement.
+ 
+ - Interlude: the joys of Object Orientation
+   - OO Basics/advantages
+   - Structs
+   - Classes
+ 
+ - Level 3: IMU Odometry implementation
+ 
+ - Interlude: Viva la LVGL
+   - Briefly touch on LVGL for brain UI
+   - Legacy LCD emulator as a touch-and-go alternative
+ 
+ - Level 3-1: Odometry movement
+   - Surprise, it's PID again!
+   - Turning and driving to a point using our odometer instance to determine the error
+ 
+ - Level 4: Pure Pursuit
+   - Curvy wurvy
+ 
+ - Resources + Free Code!
