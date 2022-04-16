@@ -2,7 +2,6 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathDumping.hpp"
-#include "robokauz/Autonomous/PurePursuit/PathGeneration.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathManagement.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathObjects.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathTraversal.hpp"
@@ -27,7 +26,7 @@ void PathTraverser::traversePath()
         updateLookaheadPoint(cache);
         projectLookaheadPoint(cache);
 
-        cache.isOnPath = interpointDistance(cache.current_position, cache.closest_point) <= cache.closest_point.lookahead_distance;
+        cache.isOnPath = interpointDistance(cache.current_position, cache.closest_point) <= cache.path.lookahead_distance;
         cache.endWithinLookahead = interpointDistance(cache.closest_point, cache.path.end()) < 6_in &&
                                    interpointDistance(cache.current_position, cache.path.end()) < 6_in;
 
@@ -92,9 +91,9 @@ std::string PathManager::getPrettyStatus()
     return "[#ff0000 ERROR]";
 }
 
-PathBuilder PathManager::buildPath(std::string name, GenerationParameters g_params)
+PathBuilder PathManager::buildPath(std::string name, GenerationParameters g_params, QLength lookahead)
 {
-    return PathBuilder(name, g_params, robot_props, *this);
+    return PathBuilder(name, g_params, robot_props, lookahead, *this);
 }
 
 void PathManager::insertPath(Path path)

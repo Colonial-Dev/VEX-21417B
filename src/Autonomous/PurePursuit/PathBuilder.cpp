@@ -3,17 +3,12 @@
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
-PathBuilder::PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, PathManager& caller) : calling_manager(caller)
+PathBuilder::PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, QLength lookahead, PathManager& caller) : calling_manager(caller)
 {
     path_name = name;
     gen_params = g_params;
     robot_props = r_props;
-}
-
-void PathBuilder::finalizeCurrentComponent()
-{
-    path_components.push_back(current_component);
-    current_component.clear();
+    lookahead_distance = lookahead;
 }
 
 PathBuilder PathBuilder::withRobotProperties(RobotProperties r_props)
@@ -22,15 +17,14 @@ PathBuilder PathBuilder::withRobotProperties(RobotProperties r_props)
     return *this;
 }
 
-PathBuilder PathBuilder::withPoint(Point point)
+PathBuilder PathBuilder::withPoint(Waypoint point)
 {
-    RawPoint new_point = point;
-    new_point.lookahead_distance = current_lookahead;
-    current_component.push_back(new_point);
+    Waypoint new_point = point;
+    path_waypoints.push_back(new_point);
     return *this;
 }
 
-PathBuilder PathBuilder::withPoints(std::vector<Point> points)
+PathBuilder PathBuilder::withPoints(std::vector<Waypoint> points)
 {
     for(int i = 0; i < points.size(); i++)
     {
@@ -41,34 +35,14 @@ PathBuilder PathBuilder::withPoints(std::vector<Point> points)
 
 PathBuilder PathBuilder::withOrigin()
 {
-    withPoint({0_ft, 0_ft});
+    withPoint({0_ft, 0_ft, 0_deg});
     return *this;
 }
 
 PathBuilder PathBuilder::withCurrentPosition(IMUOdometer& odometer)
 {   
     OdomState position = odometer.getPosition();
-    withPoint({position.x, position.y});
-    return *this;
-}
-
-PathBuilder PathBuilder::withLookahead(QLength lookahead)
-{
-    current_lookahead = lookahead;
-    return *this;
-}
-
-PathBuilder PathBuilder::segment()
-{
-    finalizeCurrentComponent();
-    return *this;
-}
-
-PathBuilder PathBuilder::linkedSegment()
-{
-    RawPoint last_point = current_component.back();
-    finalizeCurrentComponent();
-    withPoint({last_point.x_pos, last_point.y_pos});
+    withPoint({position.x, position.y, position.theta});
     return *this;
 }
 
@@ -92,7 +66,7 @@ PathBuilder PathBuilder::withDebugDump()
 
 void PathBuilder::generatePath()
 {
-    finalizeCurrentComponent();
+    /*finalizeCurrentComponent();
 
     std::vector<RawPath> path_segments;
 
@@ -147,6 +121,6 @@ void PathBuilder::generatePath()
         calling_manager.insertPath(computed_reversed_path);
     }
 
-    if(doDebugDump) { dumpFullPath(computed_path); }
+    if(doDebugDump) { dumpFullPath(computed_path); }*/
 }
 

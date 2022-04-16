@@ -74,7 +74,7 @@ void updateLookaheadPoint(TraversalCache& cache)
         Vector start (cache.path.at(i));
         Vector end (cache.path.at(i+1));
         Vector pos (cache.current_position);
-        double t_value = findIntersect(start, end, pos, cache.closest_point.lookahead_distance.convert(meter));
+        double t_value = findIntersect(start, end, pos, cache.path.lookahead_distance.convert(meter));
         double fractional_index = t_value + i;
 
         if(t_value < 0 || fractional_index <= cache.lookahead_index) { continue; }
@@ -99,7 +99,7 @@ void updateLookaheadPoint(TraversalCache& cache)
 void projectLookaheadPoint(TraversalCache& cache)
 {
     Vector ray = cache.lookahead_point - cache.current_position;
-    ray = ray.normalize() * cache.closest_point.lookahead_distance.convert(meter);
+    ray = ray.normalize() * cache.path.lookahead_distance.convert(meter);
     ray = ray + cache.current_position;
     cache.lookahead_point = ray;
 }
@@ -134,32 +134,16 @@ bool checkDistance(TraversalCache& cache, QLength threshold = 6_in)
 
 void calculateWheelSpeeds(TraversalCache &cache)
 {    
-    QSpeed point_velocity = cache.closest_point.target_velocity;
-
-    if(point_velocity.convert(mps) == 0)
-    {
-        if(interpointDistance(cache.current_position, cache.path.end()) < 3_in)
-        {
-            //pass
-        }
-        else if(interpointDistance(cache.current_position, cache.closest_point) > 1_in)
-        {
-            point_velocity = std::min(cache.robot_properties.max_velocity, (3.0 / std::abs(cache.curvature)) * mps);
-        }
-    }
-
-
-    QSpeed target_velocity = limiter.getLimited(point_velocity, cache.robot_properties.max_acceleration);
-    QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
-    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
+    QSpeed left_velocity = (cache.closest_point.left_velocity.convert(mps) * (2.0 + cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
+    QSpeed right_velocity = (cache.closest_point.right_velocity.convert(mps) * (2.0 - cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
 
     QAngularSpeed left_wheels = (left_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
     QAngularSpeed right_wheels = (right_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
     left_wheels = QAngularSpeed (std::clamp(left_wheels.convert(rpm), -200.0, 200.0) * rpm);
     right_wheels = QAngularSpeed (std::clamp(right_wheels.convert(rpm), -200.0, 200.0) * rpm);
 
-    PRINT("\npV: " + std::to_string(point_velocity.convert(mps)));
-    PRINT("tV: " + std::to_string(target_velocity.convert(mps)));
+    PRINT("\nLpV: " + std::to_string(left_velocity.convert(mps)));
+    PRINT("\nRpV: " + std::to_string(right_velocity.convert(mps)));
     PRINT("CVels: " + std::to_string(left_velocity.convert(mps)) + " " + std::to_string(right_velocity.convert(mps)));
     PRINT("WVels: " + std::to_string(left_wheels.convert(rpm)) + " " + std::to_string(right_wheels.convert(rpm)));
 

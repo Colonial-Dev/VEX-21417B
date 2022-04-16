@@ -50,7 +50,7 @@ QLength Vector::magnitude()
 
 QAngle Vector::direction()
 {
-    double theta = std::atan2(y_component.convert(meter), x_component.convert(meter)) * 180 / PI;
+    double theta = std::atan2(y_component.convert(meter), x_component.convert(meter)) * 180 / pi;
     double corrected = std::fmod((theta + 360), 360); 
     QAngle qang (corrected * degree);
     return qang;

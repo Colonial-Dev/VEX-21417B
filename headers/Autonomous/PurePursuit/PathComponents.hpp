@@ -80,8 +80,8 @@ struct PathPoint
 {
     QLength x_pos;
     QLength y_pos;
-    QLength lookahead_distance;
-    QLength absolute_distance;
-    QSpeed target_velocity;
-    double curvature;
+    QAngle heading;
+    
+    QSpeed left_velocity;
+    QSpeed right_velocity;
 };

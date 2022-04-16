@@ -86,7 +86,7 @@ void turnToPoint(Point point)
     auto odom_state = drive_train->getState();
     double x_component = point.x.convert(meter) - odom_state.x.convert(meter);
     double y_component = point.y.convert(meter) - odom_state.y.convert(meter);
-    double output = std::atan2(y_component, x_component) * 180 / PI;
+    double output = std::atan2(y_component, x_component) * 180 / pi;
     output = std::fmod((output + 360), 360);
     QAngle target_angle = QAngle(output * degree);
     target_angle = constrainAngle(target_angle);

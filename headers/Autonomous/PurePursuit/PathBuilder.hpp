@@ -14,11 +14,9 @@ class PathBuilder
 
         RobotProperties robot_props;
 
-        QLength current_lookahead = 12_in;
+        QLength lookahead_distance = 12_in;
 
-        std::vector<RawPoint> current_component;
-
-        std::vector<std::vector<RawPoint>> path_components;
+        std::vector<Waypoint> path_waypoints;
 
         PathManager& calling_manager;
 
@@ -28,27 +26,19 @@ class PathBuilder
 
         bool doDebugDump = false;
 
-        void finalizeCurrentComponent();
-
     public:
 
-        PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, PathManager& caller);
+        PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, QLength lookahead, PathManager& caller);
 
         PathBuilder withRobotProperties(RobotProperties r_props);
 
-        PathBuilder withPoint(Point point);
+        PathBuilder withPoint(Waypoint point);
 
-        PathBuilder withPoints(std::vector<Point> points);
+        PathBuilder withPoints(std::vector<Waypoint> points);
 
         PathBuilder withOrigin();
 
         PathBuilder withCurrentPosition(IMUOdometer& odometer);
-
-        PathBuilder withLookahead(QLength lookahead);
-
-        PathBuilder segment();
-
-        PathBuilder linkedSegment();
 
         PathBuilder withPrealignment();
 

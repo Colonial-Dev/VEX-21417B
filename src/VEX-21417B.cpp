@@ -57,12 +57,11 @@ void autonomous()
 
   CLIP_CLOSE
 
-  wayfarer.buildPath("WinPoint_TurnOut", g_params)
-    .withLookahead(10_in)
+  wayfarer.buildPath("WinPoint_TurnOut", g_params, 10_in)
     .withRobotProperties({0.3_mps, 0.1_mps2, 11.5_in, 4.125_in, drive_train})
-    .withOrigin()
-    .withPoint({0_ft, -0.9_ft})
-    .withPoint({1.5_ft, -0.9_ft})
+    .withPoint({0_ft, 0_ft, -90_deg})
+    .withPoint({0_ft, -0.9_ft, -45_deg})
+    .withPoint({1.5_ft, -0.9_ft, 0_deg})
     //.withPoint({3_ft, 0_ft})
     //.withPoint({3_ft, 1_ft})
     //.withPoint({3_ft, 3_ft})
@@ -70,10 +69,9 @@ void autonomous()
     .withDebugDump()
     .generatePath();
   
-  wayfarer.buildPath("WinPoint_Long", g_params)
-    .withLookahead(18_in)
-    .withPoint({3_ft, 1_ft})
-    .withPoint({3.5_ft, 5.25_ft})
+  wayfarer.buildPath("WinPoint_Long", g_params, 18_in)
+    .withPoint({3_ft, 1_ft, 90_deg})
+    .withPoint({3.5_ft, 5.25_ft, 90_deg})
     .generatePath();
 
   wayfarer.traverseStoredPath("WinPoint_TurnOut");

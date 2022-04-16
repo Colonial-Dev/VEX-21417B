@@ -62,6 +62,8 @@ class Path
          */
         std::vector<PathPoint> points;
 
+        QLength lookahead_distance;
+
         /**
          * @brief Sets the path's name.
          * @param new_name The new name for the path.
