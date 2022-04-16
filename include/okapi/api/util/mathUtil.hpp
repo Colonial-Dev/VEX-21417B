@@ -65,7 +65,7 @@ static constexpr std::int32_t imev5GreenTPR = 900;
 /**
  * The ticks per rotation of the V5 motor with a blue gearset.
  */
-static constexpr std::int32_t imev5GreenTpr = 300;
+static constexpr std::int32_t imev5BlueTPR = 300;
 
 /**
  * The ticks per rotation of the red quadrature encoders.
@@ -140,9 +140,9 @@ constexpr double ipow(const double base, const int expo) {
 constexpr double cutRange(const double value, const double min, const double max) {
   const double middle = max - ((max - min) / 2);
 
-  if(value > min && value < middle) {
+  if (value > min && value < middle) {
     return min;
-  } else if(value <= max && value >= middle) {
+  } else if (value <= max && value >= middle) {
     return max;
   }
 
@@ -227,7 +227,7 @@ constexpr std::int32_t gearsetToTPR(const AbstractMotor::gearset igearset) noexc
   case AbstractMotor::gearset::blue:
   case AbstractMotor::gearset::invalid:
   default:
-    return imev5GreenTpr;
+    return imev5BlueTPR;
   }
 }
 
@@ -245,9 +245,9 @@ constexpr std::int32_t gearsetToTPR(const AbstractMotor::gearset igearset) noexc
  * @return An equivalent ADI port number.
  */
 constexpr std::int8_t transformADIPort(const std::int8_t port) {
-  if(port >= 'a' && port <= 'h') {
+  if (port >= 'a' && port <= 'h') {
     return port - ('a' - 1);
-  } else if(port >= 'A' && port <= 'H') {
+  } else if (port >= 'A' && port <= 'H') {
     return port - ('A' - 1);
   } else {
     return port;

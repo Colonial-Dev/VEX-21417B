@@ -31,7 +31,7 @@ template <std::size_t n> class MedianFilter : public Filter {
    */
   double filter(const double ireading) override {
     data[index++] = ireading;
-    if(index >= n) {
+    if (index >= n) {
       index = 0;
     }
 
@@ -74,7 +74,7 @@ template <std::size_t n> class MedianFilter : public Filter {
         while (x < dataCopy[j]) {
           j--;
         }
-        if(i <= j) {
+        if (i <= j) {
           const double t = dataCopy[i];
           dataCopy[i] = dataCopy[j];
           dataCopy[j] = t;
@@ -82,9 +82,9 @@ template <std::size_t n> class MedianFilter : public Filter {
           j--;
         }
       } while (i <= j);
-      if(j < middleIndex)
+      if (j < middleIndex)
         l = i;
-      if(middleIndex < i)
+      if (middleIndex < i)
         m = j;
     }
 
