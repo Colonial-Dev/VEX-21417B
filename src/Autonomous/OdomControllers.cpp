@@ -29,7 +29,7 @@ QAngle constrainAngle(QAngle angle)
 
 QAngle getRobotHeading()
 {
-    return constrainAngle(drive_train->getState().theta);
+    return (inertial_sensor.get_rotation()) * degree;
 }
 
 void turnRelative(QAngle target_angle)
@@ -39,16 +39,12 @@ void turnRelative(QAngle target_angle)
 	double integral;
 	double derivative;
 	double prevError;
-	double kp = 0.01;
-	double ki = 0;
-	double kd = 0;
+	double kp = 1.2;
+	double ki = 0.0025;
+	double kd = 7.5;
 
-    PRINT("\n" + std::to_string(error));
     while(fabs(error) > threshold)
     {  
-        PRINT(std::to_string(error));
-        printf("\n");
-        printf(std::to_string(error).c_str());
         error = target_angle.convert(degree) - getRobotHeading().convert(degree);
         integral = integral + error;
 
@@ -65,16 +61,13 @@ void turnRelative(QAngle target_angle)
 
 		double vel = p + i + d;
 
-        if(error > 0)
-        {
-            drive_train->getModel()->left(vel);
-            drive_train->getModel()->right(-vel);
-        }
-        else
-        {
-            drive_train->getModel()->left(-vel);
-            drive_train->getModel()->right(vel);
-        }
+		right_back.move_velocity(-vel);
+        right_middle.move_velocity(-vel);
+        right_front.move_velocity(-vel);
+
+        left_back.move_velocity(vel);
+        left_middle.move_velocity(vel);
+        left_front.move_velocity(vel);
 
 		pros::delay(15);
 	}

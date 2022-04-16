@@ -4,7 +4,7 @@ YELLOW='\e[1;33m'
 BLUE='\e[36m'
 GREEN='\e[1;32m'
 
-sshpass -p "robokauz" ssh eagle@cubesat.local 'cd ~ && sudo bash link_forward.sh'
+#sshpass -p "robokauz" ssh eagle@cubesat.local 'cd ~ && sudo bash link_forward.sh'
 
 rm -f /dev/vex0 > /dev/null 2>&1
 rm -f /dev/vex1 > /dev/null 2>&1

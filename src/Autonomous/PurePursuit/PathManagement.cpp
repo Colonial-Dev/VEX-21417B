@@ -25,15 +25,26 @@ void PathTraverser::traversePath()
         updatePosition(cache);
         updateClosestPoint(cache);
         updateLookaheadPoint(cache);
+        projectLookaheadPoint(cache);
 
-        double curvature = calculateCurvature(cache);
-        PRINT("\nCurvature: " + std::to_string(curvature));
-        
-        calculateWheelSpeeds(cache, curvature);
-        
-        if(cache.closest_index == cache.path.size() - 1) { break; }
+        cache.isOnPath = interpointDistance(cache.current_position, cache.closest_point) <= cache.closest_point.lookahead_distance;
+        cache.endWithinLookahead = interpointDistance(cache.closest_point, cache.path.end()) < 6_in &&
+                                   interpointDistance(cache.current_position, cache.path.end()) < 6_in;
 
-        cache.robot_properties.odom_controller->getModel()->tank(cache.target_speeds.target_left.convert(rpm) / 200, cache.target_speeds.target_right.convert(rpm) / 200);
+        calculateCurvature(cache);
+        calculateWheelSpeeds(cache);
+
+        checkDistance(cache, 1_in);
+        if(cache.closest_index == cache.path.size() - 1 && checkDistance(cache, 3_in)) { break; }
+
+        if(!cache.path.isReversed())
+        {
+            cache.robot_properties.odom_controller->getModel()->tank(cache.target_speeds.target_left.convert(rpm) / 200, cache.target_speeds.target_right.convert(rpm) / 200);
+        }
+        else
+        {
+            cache.robot_properties.odom_controller->getModel()->tank(-cache.target_speeds.target_left.convert(rpm) / 200, -cache.target_speeds.target_right.convert(rpm) / 200);
+        }
 
         pros::Task::delay_until(&delay_timestamp, 20);
     }

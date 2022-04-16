@@ -18,45 +18,19 @@ struct WheelSpeeds
  */
 struct TraversalCache
 {
-
-    /**
-     * @brief A user-provided RobotProperties structure.
-     */
     RobotProperties robot_properties;
-
-    /**
-     * @brief The robot's current position and rotation.
-     */
     OdomState current_position;
-
-    /**
-     * @brief The path being followed.
-     */
     Path path;
 
-    /**
-     * @brief The current closest point in the path.
-     */
     PathPoint closest_point;
-
-    /**
-     * @brief The current Vector lookahead point.
-     */
     Vector lookahead_point;
-
-    /**
-     * @brief The index of the current closest point in the path.
-     */
     int closest_index = 0;
-
-    /**
-     * @brief The closest index in the path to the lookahead point.
-     */
     int lookahead_index = 0;
-    
-    /**
-     * @brief The current target wheel speeds.
-     */
+
+    bool isOnPath;
+    bool endWithinLookahead;
+    double curvature;
+
     WheelSpeeds target_speeds;
 };
 
@@ -89,12 +63,13 @@ double findIntersect(Vector& start, Vector& end, Vector& pos, double lookahead);
  */
 void updateLookaheadPoint(TraversalCache& cache);
 
+void projectLookaheadPoint(TraversalCache& cache);
+
 /**
  * @brief Calculate the curvature from the robot's current position and angle to the lookahead point.
- * @param cache A reference to the TraversalCache structure to use.
- * @return double The calculated curvature.
+ * @param cache A reference to the TraversalCache structure to update.
  */
-double calculateCurvature(TraversalCache& cache);
+void calculateCurvature(TraversalCache& cache);
 
 /**
  * @brief Checks to see if the robot is within a specified distance of the path's endpoint.
@@ -108,6 +83,5 @@ bool checkDistance(TraversalCache& cache, QLength threshold);
 /**
  * @brief Calculate the wheel speeds needed to pursue the current lookahead point.
  * @param cache A reference to the TraversalCache structure to update.
- * @param curvature The curvature from the robot to the lookahead point.
  */
-void calculateWheelSpeeds(TraversalCache &cache, double curvature);
+void calculateWheelSpeeds(TraversalCache &cache);

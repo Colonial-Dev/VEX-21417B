@@ -51,10 +51,9 @@ class Path
 {
     private:
 
-        /**
-         * @brief The name of the path.
-         */
         std::string name;
+
+        bool reversed = false;
 
     public:
 
@@ -73,6 +72,10 @@ class Path
          * @brief Get the path's name.
          */
         std::string getName();
+
+        void setReversed(bool value);
+
+        bool isReversed();
         
         /**
          * @brief Returns the size of the path.
@@ -85,6 +88,12 @@ class Path
          * @return A reference to the point at the specified index.
          */
         PathPoint& at(int index);
+        
+        /**
+         * @brief Gets the point at the end of the path.
+         * @return A reference to the point at the end of the path.
+         */
+        PathPoint& end();
 
         /**
          * @brief Adds a point to the end of the path.

@@ -51,5 +51,5 @@ IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
 BotManager overwatch;
 RateLimiter limiter;
 
-const RobotProperties robot_properties = {1.4_mps, 0.6_mps2, 11.5_in, 4.125_in, drive_train};
+const RobotProperties robot_properties = {1.45_mps, 0.7_mps2, 11.5_in, 4.125_in, drive_train};
 PathManager wayfarer(robot_properties);

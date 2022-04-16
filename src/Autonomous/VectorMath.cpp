@@ -56,6 +56,13 @@ QAngle Vector::direction()
     return qang;
 }
 
+QAngle Vector::angleFrom(OdomState position)
+{
+    Vector difference = Vector(position) - *this;
+    QAngle angle = (std::atan2(difference.x_component.convert(meter), difference.y_component.convert(meter)) * radian) - position.theta;
+    return angle - 360.0_deg * std::floor((angle.convert(degree) + 180.0) / 360.0);
+}
+
 QLength Vector::distance(Vector target)
 {
     double x_components = std::pow(target.x_component.convert(meter) - x_component.convert(meter), 2);

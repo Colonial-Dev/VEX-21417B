@@ -88,6 +88,8 @@ class Vector
          */
         QAngle direction();
 
+        QAngle angleFrom(OdomState position);
+
         /**
          * @brief Calculates the straight-line distance between the endpoints of two Vectors.
          * @param target The target Vector.

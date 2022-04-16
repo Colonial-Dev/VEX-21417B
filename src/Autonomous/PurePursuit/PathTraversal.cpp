@@ -16,7 +16,7 @@ void updateClosestPoint(TraversalCache& cache)
     QLength curr_closest_distance (DBL_MAX * meter);
     int curr_closest_index = cache.closest_index;
 
-    for(int i = curr_closest_index; i < cache.path.size(); i++)
+    for(int i = 0; i < cache.path.size(); i++)
     {
         QLength distance = interpointDistance(cache.current_position, cache.path.at(i));
         if(distance.convert(meter) < curr_closest_distance.convert(meter))
@@ -91,12 +91,20 @@ void updateLookaheadPoint(TraversalCache& cache)
         }
     }
 
-    PRINT("\nLPX: " + std::to_string(cache.lookahead_point.x_component.convert(meter)));
-    PRINT("LPY: " + std::to_string(cache.lookahead_point.y_component.convert(meter)));
-    PRINT("LPI: " + std::to_string(cache.lookahead_index));
+    PRINT("\nLPX: " + std::to_string(cache.lookahead_point.x_component.convert(foot)));
+    PRINT("LPY: " + std::to_string(cache.lookahead_point.y_component.convert(foot)));
+    PRINT("LPI: " + std::to_string(cache.lookahead_index + 1));
 }
 
-double calculateCurvature(TraversalCache& cache)
+void projectLookaheadPoint(TraversalCache& cache)
+{
+    Vector ray = cache.lookahead_point - cache.current_position;
+    ray = ray.normalize() * cache.closest_point.lookahead_distance.convert(meter);
+    ray = ray + cache.current_position;
+    cache.lookahead_point = ray;
+}
+
+void calculateCurvature(TraversalCache& cache)
 {
     Vector difference = cache.lookahead_point - cache.current_position;
     Vector lookahead = cache.lookahead_point;
@@ -104,14 +112,17 @@ double calculateCurvature(TraversalCache& cache)
     double bot_angle = (cache.current_position.theta).convert(radian);
     double a = -std::tan(bot_angle);
     double b = 1;
-    double c = std::tan(bot_angle) * (cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter));
+    double c = -a * (cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter));
 
     double lookahead_x = std::abs(a * lookahead.x_component.convert(meter) + b * lookahead.y_component.convert(meter) + c) / std::sqrt(SQ(a) + SQ(b));
     PRINT("LookX: " + std::to_string(lookahead_x));
     int side = sgnum(std::sin(bot_angle) * difference.x_component.convert(meter) - std::cos(bot_angle) * difference.y_component.convert(meter));
 
     double curvature = (2 * lookahead_x) / SQ(interpointDistance(cache.current_position, lookahead).convert(meter)); 
-    return curvature * -side;
+    PRINT("\nCurvature: " + std::to_string(curvature));
+
+    curvature = curvature * -side;
+    cache.curvature = cache.endWithinLookahead ? 0 : curvature;
 }
 
 bool checkDistance(TraversalCache& cache, QLength threshold = 6_in)
@@ -121,12 +132,26 @@ bool checkDistance(TraversalCache& cache, QLength threshold = 6_in)
     return distance <= threshold.convert(inch);
 }
 
-void calculateWheelSpeeds(TraversalCache &cache, double curvature)
+void calculateWheelSpeeds(TraversalCache &cache)
 {    
     QSpeed point_velocity = cache.closest_point.target_velocity;
+
+    if(point_velocity.convert(mps) == 0)
+    {
+        if(interpointDistance(cache.current_position, cache.path.end()) < 3_in)
+        {
+            //pass
+        }
+        else if(interpointDistance(cache.current_position, cache.closest_point) > 1_in)
+        {
+            point_velocity = std::min(cache.robot_properties.max_velocity, (3.0 / std::abs(cache.curvature)) * mps);
+        }
+    }
+
+
     QSpeed target_velocity = limiter.getLimited(point_velocity, cache.robot_properties.max_acceleration);
-    QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
-    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
+    QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
+    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
 
     QAngularSpeed left_wheels = (left_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
     QAngularSpeed right_wheels = (right_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;

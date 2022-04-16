@@ -8,18 +8,81 @@
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/Macrolang.hpp"
 #include "robokauz/Autonomous/OdomControllers.hpp"
+#include <regex>
+
+void sanitize_string(std::string& str)
+{
+    std::string::iterator iter = str.begin();
+    std::string::iterator end = str.end();
+    while (iter != end)
+    {
+        iter = std::find(iter, end, '\b');
+        if (iter == end) break;
+        if (iter == str.begin())
+            iter = str.erase(iter);
+        else
+            iter = str.erase(iter-1, iter+1);
+        end = str.end();
+    }
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+}
+
+void awaitCommand()
+{
+  while(true)
+  {
+    std::string input;
+    std::getline(std::cin, input);
+    sanitize_string(input);
+    if(!input.compare("overwatch auton"))
+    {
+      pros::Task autn(autonomousAsync);
+    }
+    pros::delay(2);
+  }
+}
+
 
 void initialize() 
 {
   overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   initializeDisplay();
+  pros::Task cmd(awaitCommand);
+  inertial_sensor.set_rotation(-90);
 }
 
 void autonomous()
 {
-  GenerationParameters g_params {0.2, 0.8, 0.001, 3};
+  GenerationParameters g_params {0.4, 0.6, 0.001, 3};
 
-  wayfarer.buildPath("Alpha", g_params)
+  CLIP_CLOSE
+
+  wayfarer.buildPath("WinPoint_TurnOut", g_params)
+    .withLookahead(10_in)
+    .withRobotProperties({0.3_mps, 0.1_mps2, 11.5_in, 4.125_in, drive_train})
+    .withOrigin()
+    .withPoint({0_ft, -0.9_ft})
+    .withPoint({1.5_ft, -0.9_ft})
+    //.withPoint({3_ft, 0_ft})
+    //.withPoint({3_ft, 1_ft})
+    //.withPoint({3_ft, 3_ft})
+    //.withPoint({2_ft, 3_ft})
+    .withDebugDump()
+    .generatePath();
+  
+  wayfarer.buildPath("WinPoint_Long", g_params)
+    .withLookahead(18_in)
+    .withPoint({3_ft, 1_ft})
+    .withPoint({3.5_ft, 5.25_ft})
+    .generatePath();
+
+  wayfarer.traverseStoredPath("WinPoint_TurnOut");
+  //pros::delay(5000);
+  //wayfarer.traverseStoredPath("WinPoint_Long");
+
+  //turnRelative(-70_deg);
+
+  /*wayfarer.buildPath("Alpha", g_params)
       .withLookahead(18_in)
       .withOrigin()
       .withPoint({1.04_ft, 1.47_ft})
@@ -29,12 +92,35 @@ void autonomous()
       .withDebugDump()
       .generatePath();
 
+  wayfarer.buildPath("Straight", g_params)
+    .withLookahead(6_in)
+    .withOrigin()
+    .withPoint({4_ft, 0_ft})
+    .makeReversed()
+    .generatePath();
+
   wayfarer.buildPath("Test", g_params)
       .withLookahead(24_in)
       .withOrigin()
-      .withPoint({2_ft, 0_ft})
-      .withPoint({4_ft, 2_ft})
+      .withPoint({3_ft, 0_ft})
+      .withPoint({6_ft, 4_ft})
+      .makeReversed()
       .withDebugDump()
       .generatePath();
+  
+  wayfarer.buildPath("TestReturn", g_params)
+    .withLookahead(24_in)
+    .withPoint({6_ft, 4_ft})
+    .withOrigin()
+    .generatePath();*/
+
+
+  //wayfarer.traverseStoredPath("Straight");
+  //wayfarer.traverseStoredPath("Straight_rev");
+  
+  /*wayfarer.traverseStoredPath("Test");
+  drive_train->turnToPoint({0_ft, 0_ft});
+  drive_train->waitUntilSettled();
+  wayfarer.traverseStoredPath("TestReturn");*/
 }
 

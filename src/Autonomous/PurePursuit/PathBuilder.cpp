@@ -78,15 +78,15 @@ PathBuilder PathBuilder::withPrealignment()
     return *this;
 }
 
-PathBuilder PathBuilder::withDebugDump()
-{
-    doDebugDump = true;
-    return *this;
-}
-
 PathBuilder PathBuilder::makeReversed()
 {
     computeReversed = true;
+    return *this;
+}
+
+PathBuilder PathBuilder::withDebugDump()
+{
+    doDebugDump = true;
     return *this;
 }
 
@@ -135,6 +135,17 @@ void PathBuilder::generatePath()
     Path computed_path = processPath(combined_path, robot_props, gen_params);
     computed_path.setName(path_name);
     calling_manager.insertPath(computed_path);
+
+    if(computeReversed)
+    {
+        RawPath reversed_path = combined_path;
+        std::reverse(reversed_path.points.begin(), reversed_path.points.end());
+
+        Path computed_reversed_path = processPath(reversed_path, robot_props, gen_params);
+        computed_reversed_path.setName(path_name + "_rev");
+        computed_reversed_path.setReversed(true);
+        calling_manager.insertPath(computed_reversed_path);
+    }
 
     if(doDebugDump) { dumpFullPath(computed_path); }
 }
