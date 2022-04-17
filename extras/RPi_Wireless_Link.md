@@ -15,7 +15,8 @@ Wireless uploading via the controller solves these issues, but it's *painfully* 
 
 Fortunately, there is a third way! Using a battery-powered Raspberry Pi (a cheap and popular microcomputer) and some networking black magic, you can "forward" the Brain's microUSB port to your development machine via Wifi. This setup nets the best of both worlds - the convenience of wireless **and** the speed and stability of wired.
 
-> ⚠️ **This setup is only possible if you are using a Linux distribution on your development machine.** 
+{: .warn }
+> **This setup requires you to use a Linux distribution on your development machine.** 
 > 
 > If you are using macOS (which is derived from BSD, making it a sort of distant sibling to Linux) you *might* be able to adapt this guide to it, but I make no promises. You'll need to find a version of `socat` that works with your macOS iteration.
 > 
@@ -24,7 +25,7 @@ Fortunately, there is a third way! Using a battery-powered Raspberry Pi (a cheap
 While this would obviously be very illegal at a competition, it's a massive boon to programming everywhere else, and it can be had for $50 or less. If you're interested, read on!
 
 ![An example RPi setup.](../media/rpi_example.jpg)
-*My original implementation, using a Pi 3B+ with a 5000mAh power bank. Yes, it is velcroed to a license plate.*
+*My original implementation, using a Pi 3B+ with a 5000mAh power bank.*
 
 ## Supplies
 
@@ -64,7 +65,8 @@ Once `rpi-imager` is done flashing your microSD, slot it into your Pi and power 
 ...]$ ssh pi_hostname.local
 ```
 
-> ℹ️ **It may take a while for your Pi to start accepting SSH connections.**
+{: .info }
+> **It may take a while for your Pi to start accepting SSH connections.**
 > 
 > Give it a minute or two at first, especially with a slower model like the Zero.
 > 
@@ -98,7 +100,8 @@ To test it, you can run this in your PROS project:
 
 If everything is working correctly, this will upload your program to the robot at warp speed. Congrats!
 
-> ⚠️ **The Pi losing its connection to the Brain can cause issues.**
+{: .warn }
+> **The Pi losing its connection to the Brain can cause issues.**
 > 
 > If the Pi is physically disconnected from the Brain, or if the Brain loses power, the wireless link will be dropped. Furthermore, a disconnection will often throw the Pi's serial port drivers out of wack, causing "inappropriate IOCTL" errors. 
 > 
