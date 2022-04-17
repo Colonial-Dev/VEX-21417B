@@ -31,7 +31,7 @@ While this would obviously be very illegal at a competition, it's a massive boon
 
 For this project, you'll need:
 - A Raspberry Pi. 
-  - I used a [Model 3B+](https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/) since that's what I already had, but if you can get your hands on one I would recommend the [Zero 2 W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/).
+  - I used a [Model 3B+](https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/) since that's what I already had, but if you can get your hands on one I would recommend the [Zero 2 W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/). Whatever you choose, just make sure it has a built-in Wifi chip.
   - A matching case is also a must, for ease of mounting and to prevent accidental damage.
 - A microSD card for the Pi's OS. Since the Pi will only be acting as a relay and won't be storing or running anything aside from a few short scripts, you can probably just use any old card you have lying around. The only requirement is that it needs to be at least 8 gigabytes.
 - A Li-ion battery pack.
@@ -73,12 +73,12 @@ Once `rpi-imager` is done flashing your microSD, slot it into your Pi and power 
 > If you still can't connect after waiting - and you're certain you configured the network information correctly - it's possible that your Wifi router is configured in such a way that your development machine is prevented from resolving the Pi's local IP address from its hostname. In this scenario, you have a few options:
 > 
 > 1. Find the Pi's local IP address using your router's configuration interface. 
-> 2. Use a tool like `nmap` to identify all the machines on your local network, then identify the Pi from there. [Here](https://www.howtogeek.com/423709/how-to-see-all-devices-on-your-network-with-nmap-on-linux/) is a quick guide using `nmap.` Note that the scan may take a while - you can press `Enter` to see its progress. When it's done, look for a device manufactured by the Raspberry Pi Foundation.
+> 2. Use a tool like `nmap` to identify all the machines on your local network, then identify the Pi from there. [Here](https://www.howtogeek.com/423709/how-to-see-all-devices-on-your-network-with-nmap-on-linux/) is a quick guide using `nmap`. Note that the scan may take a while - you can press `Enter` to see its progress. When it's done, look for a device manufactured by the Raspberry Pi Foundation.
 > 3. Connect both the Pi and your development machine to a phone hotspot. Most phones will let you see the names and local IPs of every device connected - this is often the best solution, especially if you don't control the local Wifi network and/or it's extremely locked down. (School networks, for example, are notorious for blocking the kind of LAN connection we're trying to make.) 
 
 If everything goes well, you should get a prompt asking for the password associated with the Pi's default user. Go ahead and login, then download [this](../resources/link_toolkit.zip) archive and extract it somewhere on your development machine.
 
-You should see two shell script files - `link_start.sh` and `link_forward.sh`. Open the former in your text editor of choice, and replace both instances of `PI_HOSTNAME` with the actual hostname you set in `rpi-imager.` Save the file and move it to the root of your PROS project directory.
+You should see two shell script files - `link_start.sh` and `link_forward.sh`. Open the former in your text editor of choice, and replace both instances of `PI_HOSTNAME` with the actual hostname you set in `rpi-imager`. Save the file and move it to the root of your PROS project directory.
 
 Go back to your SSH session with the Pi. Open a new text file in nano...
 
@@ -86,7 +86,7 @@ Go back to your SSH session with the Pi. Open a new text file in nano...
 ...]$ nano link_forward.sh
 ```
 
-...and copy-paste in the contents of `link_forward.sh`. Save the file, then run `chmod +x` on it so you can run it as an executable.
+...and copy-paste in the contents of `link_forward.sh`. Save the file, then do `chmod +x` on it so you can run it as an executable.
 
 We're almost ready! Shutdown the Pi and mount it to your robot in a secure location - on the back of your Brain is probably best, if you can get it to fit. 
 
