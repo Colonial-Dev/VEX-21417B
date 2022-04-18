@@ -23,7 +23,31 @@ $callouts: (
     }
 }
 
-blockquote.note {
+blockquote.info {
+    margin-left: 0;
+
+    > p:first-child {
+        margin-top: 0;
+    }
+
+    > p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+blockquote.warn {
+    margin-left: 0;
+
+    > p:first-child {
+        margin-top: 0;
+    }
+
+    > p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+blockquote.danger {
     margin-left: 0;
 
     > p:first-child {
