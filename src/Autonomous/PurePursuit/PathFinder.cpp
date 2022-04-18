@@ -13,7 +13,7 @@ std::vector<squiggles::Pose> PathFinder::transformToCartesian(std::vector<Waypoi
     for(int i = 0; i < waypoints.size(); i++)
     {
         Waypoint waypoint = waypoints.at(i);
-        squiggles::Pose cartesian_point = {waypoint.y_pos.convert(meter), waypoint.x_pos.convert(meter), waypoint.heading.convert(radian)};
+        squiggles::Pose cartesian_point = {waypoint.y_pos.convert(meter), waypoint.x_pos.convert(meter), (90_deg - waypoint.heading).convert(radian)};
         pose_points.push_back(cartesian_point);
     }
 
@@ -36,7 +36,7 @@ std::vector<PathPoint> PathFinder::stripForExport(std::vector<squiggles::Profile
 
         stripped_point.x_pos = full_point.vector.pose.y * meter;
         stripped_point.y_pos = full_point.vector.pose.x * meter;
-        stripped_point.heading = full_point.vector.pose.yaw * radian;
+        stripped_point.heading = (full_point.vector.pose.yaw * radian) + 90_deg;
         stripped_point.left_velocity = full_point.wheel_velocities.at(0) * mps;
         stripped_point.right_velocity = full_point.wheel_velocities.at(1) * mps;
 
