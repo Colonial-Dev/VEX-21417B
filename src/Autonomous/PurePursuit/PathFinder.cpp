@@ -56,7 +56,10 @@ generator(squiggles::SplineGenerator (constraints, std::make_shared<squiggles::T
 Path PathFinder::generatePath(std::string path_name, std::vector<Waypoint> waypoints)
 {
     Path new_path;
+    std::uint32_t timestamp = pros::millis();
     std::vector<PathPoint> points = stripForExport(generateSplinePath(transformToCartesian(waypoints)));
+    std::uint32_t elapsed = pros::millis() - timestamp;
+    PRINT("Finished generating path " + path_name + ", took " + std::to_string(elapsed) + "microseconds.");
 
     new_path.points = points;
     new_path.setName(path_name);
