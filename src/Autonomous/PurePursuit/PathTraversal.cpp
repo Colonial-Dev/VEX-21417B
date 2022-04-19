@@ -16,7 +16,7 @@ void updateClosestPoint(TraversalCache& cache)
     QLength curr_closest_distance (DBL_MAX * meter);
     int curr_closest_index = cache.closest_index;
 
-    for(int i = 0; i < cache.path.size(); i++)
+    for(int i = curr_closest_index; i < cache.path.size(); i++)
     {
         QLength distance = interpointDistance(cache.current_position, cache.path.at(i));
         if(distance.convert(meter) < curr_closest_distance.convert(meter))
@@ -83,6 +83,8 @@ void updateLookaheadPoint(TraversalCache& cache)
             Vector d = end - start;
             Vector d_scaled = d * t_value;          
             Vector final_point = start + d_scaled;
+
+            //TODO - apply bounds checking and multiple-solution optimization
 
             Vector lookahead {final_point.x_component, final_point.y_component};
             cache.lookahead_point = lookahead;
