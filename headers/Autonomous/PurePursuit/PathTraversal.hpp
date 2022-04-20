@@ -63,8 +63,6 @@ double findIntersect(Vector& start, Vector& end, Vector& pos, double lookahead);
  */
 void updateLookaheadPoint(TraversalCache& cache);
 
-void projectLookaheadPoint(TraversalCache& cache);
-
 /**
  * @brief Calculate the curvature from the robot's current position and angle to the lookahead point.
  * @param cache A reference to the TraversalCache structure to update.

@@ -21,10 +21,10 @@ void PathTraverser::traversePath()
     std::uint32_t dt_timestamp = pros::millis();
     while(true)
     {
+        PRINT("------------ STEP! ------------");
         updatePosition(cache);
         updateClosestPoint(cache);
         updateLookaheadPoint(cache);
-        projectLookaheadPoint(cache);
 
         cache.isOnPath = interpointDistance(cache.current_position, cache.closest_point) <= cache.path.lookahead_distance;
         cache.endWithinLookahead = interpointDistance(cache.closest_point, cache.path.end()) < 6_in &&

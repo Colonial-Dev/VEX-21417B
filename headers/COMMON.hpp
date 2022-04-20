@@ -9,3 +9,19 @@ template <typename T> int sgnum(T val)
 }
 
 std::string precise_string(double value, const int n = 2);
+
+/**
+ * @brief Constrains a given angle to [0, 360) degrees.
+ * 
+ * @param angle The angle to constrain.
+ * @return A constrained copy of the given angle.
+ */
+QAngle constrainAngle360(QAngle angle);
+
+/**
+ * @brief Constrains a given angle to [-180, 180) degrees.
+ * 
+ * @param angle The angle to constrain.
+ * @return A constrained copy of the given angle.
+ */
+QAngle constrainAngle180(QAngle angle);

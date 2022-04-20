@@ -6,14 +6,6 @@
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
 /**
- * @brief Constrains a given angle to [0, 360) degrees.
- * 
- * @param angle The angle to constrain.
- * @return A constrained copy of the given angle.
- */
-QAngle constrainAngle(QAngle angle);
-
-/**
  * @brief Gets the constrained version of the robot's current rotation.
  */
 QAngle getRobotHeading();

@@ -9,6 +9,7 @@ void updatePosition(TraversalCache& cache)
 {
     cache.current_position = imu_odometer.getPosition();//cache.robot_properties.odom_controller->getState();
     //cache.current_position.theta = QAngle (inertial_sensor.get_rotation() * degree);
+    PRINT("Position // X: " + std::to_string(cache.current_position.x.convert(foot)) + " Y: " + std::to_string(cache.current_position.y.convert(foot)));
 }
 
 void updateClosestPoint(TraversalCache& cache)
@@ -16,7 +17,7 @@ void updateClosestPoint(TraversalCache& cache)
     QLength curr_closest_distance (DBL_MAX * meter);
     int curr_closest_index = cache.closest_index;
 
-    for(int i = curr_closest_index; i < cache.path.size(); i++)
+    for(int i = curr_closest_index; i < cache.lookahead_index + 2; i++)
     {
         QLength distance = interpointDistance(cache.current_position, cache.path.at(i));
         if(distance.convert(meter) < curr_closest_distance.convert(meter))
@@ -53,14 +54,14 @@ double findIntersect(Vector& start, Vector& end, Vector& pos, double lookahead)
         double t1  = (-b - discriminant) / (2 * a);
         double t2 = (-b + discriminant) / (2 * a);
 
-        if(t1 >= 0 && t1 <= 1)
-        {
-            return t1;
-        }
-
         if(t2 >= 0 && t2 <= 1)
         {
             return t2;
+        }
+
+        if(t1 >= 0 && t1 <= 1)
+        {
+            return t1;
         }
 
         return -1.0; //No intersection
@@ -69,6 +70,9 @@ double findIntersect(Vector& start, Vector& end, Vector& pos, double lookahead)
 
 void updateLookaheadPoint(TraversalCache& cache)
 {
+    int previous_intersection_index = 0;
+    double previous_t_value = -1;
+
     for(int i = cache.lookahead_index; i < cache.path.size() - 1; i++)
     {
         Vector start (cache.path.at(i));
@@ -78,32 +82,34 @@ void updateLookaheadPoint(TraversalCache& cache)
         double fractional_index = t_value + i;
 
         if(t_value < 0 || fractional_index <= cache.lookahead_index) { continue; }
-        else
+        else if(i > cache.lookahead_index || t_value > previous_t_value)
         {   
-            Vector d = end - start;
-            Vector d_scaled = d * t_value;          
-            Vector final_point = start + d_scaled;
-
-            //TODO - apply bounds checking and multiple-solution optimization
-
-            Vector lookahead {final_point.x_component, final_point.y_component};
-            cache.lookahead_point = lookahead;
             cache.lookahead_index = i;
-            break;
+            previous_t_value = t_value;
+
+            if(previous_intersection_index > 0)
+            {
+                break;  
+            }
+
+            previous_intersection_index = i;
+
+            if(previous_intersection_index > 0 && interpointDistance(cache.path.at(i), cache.path.at(previous_intersection_index)) >= cache.path.lookahead_distance * 2)
+            {
+                break;
+            }
         }
     }
+
+    Vector start = cache.path.at(cache.lookahead_index);
+    Vector end = cache.path.at(cache.lookahead_index + 1);
+    Vector d = end - start;
+    Vector final_point = start + (d * previous_t_value);
+    cache.lookahead_point = final_point;
 
     PRINT("\nLPX: " + std::to_string(cache.lookahead_point.x_component.convert(foot)));
     PRINT("LPY: " + std::to_string(cache.lookahead_point.y_component.convert(foot)));
     PRINT("LPI: " + std::to_string(cache.lookahead_index + 1));
-}
-
-void projectLookaheadPoint(TraversalCache& cache)
-{
-    Vector ray = cache.lookahead_point - cache.current_position;
-    ray = ray.normalize() * cache.path.lookahead_distance.convert(meter);
-    ray = ray + cache.current_position;
-    cache.lookahead_point = ray;
 }
 
 void calculateCurvature(TraversalCache& cache)
@@ -111,20 +117,20 @@ void calculateCurvature(TraversalCache& cache)
     Vector difference = cache.lookahead_point - cache.current_position;
     Vector lookahead = cache.lookahead_point;
 
-    double bot_angle = (cache.current_position.theta).convert(radian);
-    double a = -std::tan(bot_angle);
-    double b = 1;
-    double c = -a * (cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter));
-
-    double lookahead_x = std::abs(a * lookahead.x_component.convert(meter) + b * lookahead.y_component.convert(meter) + c) / std::sqrt(SQ(a) + SQ(b));
-    PRINT("LookX: " + std::to_string(lookahead_x));
+    QAngle constrained_angle = constrainAngle180(90_deg - cache.current_position.theta);
+    double bot_angle = constrained_angle.convert(radian);
     int side = sgnum(std::sin(bot_angle) * difference.x_component.convert(meter) - std::cos(bot_angle) * difference.y_component.convert(meter));
 
-    double curvature = (2 * lookahead_x) / SQ(interpointDistance(cache.current_position, lookahead).convert(meter)); 
-    PRINT("\nCurvature: " + std::to_string(curvature));
+    double a = -std::tan(bot_angle);
+    double b = 1;
+    double c = std::tan(bot_angle) * (cache.current_position.x.convert(meter) - cache.current_position.y.convert(meter));
 
-    curvature = curvature * -side;
-    cache.curvature = cache.endWithinLookahead ? 0 : curvature;
+    double lookahead_x = std::abs(a * lookahead.x_component.convert(meter) + lookahead.y_component.convert(meter) + c) / std::sqrt(SQ(a) + SQ(b));
+
+    double curvature = (2 * lookahead_x) / SQ(interpointDistance(cache.current_position, lookahead).convert(meter)); 
+    curvature = side * ((2 * lookahead_x) / SQ(interpointDistance(cache.current_position, cache.lookahead_point).convert(meter)));
+    PRINT("Curvature: " + std::to_string(curvature));
+    cache.curvature = curvature;
 }
 
 bool checkDistance(TraversalCache& cache, QLength threshold = 6_in)

@@ -15,16 +15,20 @@
 //Would be cool-slash-nice to have:
 //Drive to point in arc
 
-QAngle constrainAngle(QAngle angle)
+QAngle constrainAngle360(QAngle angle)
 {
-    printf("\nOriginal angle: ");
-    printf(std::to_string(angle.convert(degree)).c_str());
     double x = angle.convert(degree);
     x = std::fmod(x, 360);
     if (x < 0) { x += 360; }
-    printf("\nConstrained angle :");
-    printf(std::to_string(x).c_str());
     return QAngle (x * degree);
+}
+
+QAngle constrainAngle180(QAngle angle)
+{
+    double x = angle.convert(degree);
+    x = std::fmod(x + 180, 360);
+    if(x < 0) { x += 360; }
+    return (x - 180) * degree;
 }
 
 QAngle getRobotHeading()
@@ -77,7 +81,7 @@ void turnRelative(QAngle target_angle)
 void turnAbsolute(QAngle total_angle)
 {
     QAngle absolute_angle = QAngle ((getRobotHeading().convert(degree) + total_angle.convert(degree)) * degree);
-    absolute_angle = constrainAngle(absolute_angle);
+    absolute_angle = constrainAngle360(absolute_angle);
     turnRelative(absolute_angle);
 }
 
@@ -89,7 +93,7 @@ void turnToPoint(Point point)
     double output = std::atan2(y_component, x_component) * 180 / pi;
     output = std::fmod((output + 360), 360);
     QAngle target_angle = QAngle(output * degree);
-    target_angle = constrainAngle(target_angle);
+    target_angle = constrainAngle360(target_angle);
     turnRelative(target_angle);
 }
 
