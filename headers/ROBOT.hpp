@@ -4,6 +4,7 @@
 #include "robokauz/Other/BotManager.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathManagement.hpp"
+#include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"
 
 //Robot state enums
 enum ConveyorStatus
@@ -57,6 +58,7 @@ extern EncoderGroup encoders;
 extern IMUOdometer imu_odometer;
 
 extern BotManager overwatch;
+extern RateLimiter limiter;
 
 extern const RobotProperties robot_properties;
 extern PathManager wayfarer;

@@ -135,17 +135,20 @@ bool checkDistance(TraversalCache& cache, QLength threshold = 6_in)
 }
 
 void calculateWheelSpeeds(TraversalCache &cache)
-{    
-    QSpeed left_velocity = (cache.closest_point.left_velocity.convert(mps) * (2.0 + cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
-    QSpeed right_velocity = (cache.closest_point.right_velocity.convert(mps) * (2.0 - cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
+{   
+    QSpeed point_velocity = cache.closest_point.velocity; 
+    QSpeed target_velocity = limiter.getLimited(point_velocity, cache.robot_properties.max_acceleration);
+
+    QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
+    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - cache.curvature * cache.robot_properties.track_width.convert(meter)) / 2.0) * mps;
 
     QAngularSpeed left_wheels = (left_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
     QAngularSpeed right_wheels = (right_velocity / (1_pi * cache.robot_properties.wheel_diam)) * 360_deg;
     left_wheels = QAngularSpeed (std::clamp(left_wheels.convert(rpm), -200.0, 200.0) * rpm);
     right_wheels = QAngularSpeed (std::clamp(right_wheels.convert(rpm), -200.0, 200.0) * rpm);
 
-    PRINT("\nLpV: " + std::to_string(left_velocity.convert(mps)));
-    PRINT("\nRpV: " + std::to_string(right_velocity.convert(mps)));
+    PRINT("\npV: " + std::to_string(point_velocity.convert(mps)));
+    PRINT("tV: " + std::to_string(target_velocity.convert(mps)));
     PRINT("CVels: " + std::to_string(left_velocity.convert(mps)) + " " + std::to_string(right_velocity.convert(mps)));
     PRINT("WVels: " + std::to_string(left_wheels.convert(rpm)) + " " + std::to_string(right_wheels.convert(rpm)));
 

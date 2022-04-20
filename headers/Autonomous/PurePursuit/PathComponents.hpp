@@ -47,21 +47,10 @@ struct RobotProperties
 struct GenerationParameters
 {
     /**
-     * @brief Controls path smoothness - the larger, the smoother. Values of 0.75-0.98 work best in most situations.
-     */
-    double smooth_weight;
-    /**
-     * @brief Can be tweaked, but a good default is (1 - smooth_weight)/
-     */
-    double data_weight;
-    /**
-     * @brief Best held constant at 0.001.
-     */
-    double tolerance;
-    /**
      * @brief Limits how fast the robot will take turns. The higher, the faster. Values between 1-5 work best in most situations.
      */
     double initial_velocity_constant;
+    QLength lookahead_distance;
 };
 
 class Vector;
@@ -70,7 +59,6 @@ struct RawPoint
 {
     QLength x_pos;
     QLength y_pos;
-    QLength lookahead_distance;
 
     RawPoint(Vector vector);
     RawPoint(Point point);
@@ -80,8 +68,8 @@ struct PathPoint
 {
     QLength x_pos;
     QLength y_pos;
-    QAngle heading;
-    
-    QSpeed left_velocity;
-    QSpeed right_velocity;
+    QSpeed velocity;
+
+    QLength distance;
+    double curvature;
 };

@@ -36,10 +36,6 @@ std::vector<PathPoint> PathFinder::stripForExport(std::vector<squiggles::Profile
 
         stripped_point.x_pos = full_point.vector.pose.y * meter;
         stripped_point.y_pos = full_point.vector.pose.x * meter;
-        stripped_point.heading = (full_point.vector.pose.yaw * radian) + 90_deg;
-        stripped_point.left_velocity = full_point.wheel_velocities.at(0) * mps;
-        stripped_point.right_velocity = full_point.wheel_velocities.at(1) * mps;
-
         stripped_path.push_back(stripped_point);
     }
 

@@ -91,9 +91,9 @@ std::string PathManager::getPrettyStatus()
     return "[#ff0000 ERROR]";
 }
 
-PathBuilder PathManager::buildPath(std::string name, GenerationParameters g_params, QLength lookahead)
+PathBuilder PathManager::buildPath(std::string name, GenerationParameters g_params)
 {
-    return PathBuilder(name, g_params, robot_props, lookahead, *this);
+    return PathBuilder(name, g_params, robot_props, *this);
 }
 
 void PathManager::insertPath(Path path)

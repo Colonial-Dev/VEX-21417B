@@ -14,8 +14,6 @@ class PathBuilder
 
         RobotProperties robot_props;
 
-        QLength lookahead_distance = 12_in;
-
         std::vector<Waypoint> path_waypoints;
 
         PathManager& calling_manager;
@@ -26,9 +24,11 @@ class PathBuilder
 
         bool doDebugDump = false;
 
+        Path calculatePath();
+
     public:
 
-        PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, QLength lookahead, PathManager& caller);
+        PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, PathManager& caller);
 
         PathBuilder withRobotProperties(RobotProperties r_props);
 

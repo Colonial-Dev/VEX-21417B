@@ -91,7 +91,7 @@ class PathManager
          */
         std::string getPrettyStatus();
 
-        PathBuilder buildPath(std::string name, GenerationParameters g_params, QLength lookahead);
+        PathBuilder buildPath(std::string name, GenerationParameters g_params);
 
         void insertPath(Path path);
 

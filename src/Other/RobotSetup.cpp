@@ -3,6 +3,8 @@
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
+#include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"
+
 
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
@@ -49,6 +51,7 @@ EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
 IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
 
 BotManager overwatch;
+RateLimiter limiter;
 
 const RobotProperties robot_properties = {1.45_mps, 0.7_mps2, 11.5_in, 4.125_in, drive_train};
 PathManager wayfarer(robot_properties);
