@@ -20,8 +20,9 @@ pros::Motor left_front (9);
 //Initialize manipulator motors/pneumatics
 pros::Motor arm_motor (5);
 pros::Motor conveyor_motor (8);
-pros::ADIDigitalOut back_piston ( {{11 , 'E'}});
+pros::ADIDigitalOut back_piston (11 , 'E');
 pros::ADIDigitalOut clamp_piston ('G');
+pros::ADIDigitalOut lock_piston (11, 'F');
 
 //Initialize sensors
 pros::IMU inertial_sensor (14);
@@ -53,5 +54,5 @@ IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
 BotManager overwatch;
 RateLimiter limiter;
 
-const RobotProperties robot_properties = {1.45_mps, 0.7_mps2, 11.5_in, 4.125_in, drive_train};
+const RobotProperties robot_properties = {0.25_mps, 1.0973_mps, 0.7_mps2, 11.5_in, 4.125_in, drive_train};
 PathManager wayfarer(robot_properties);

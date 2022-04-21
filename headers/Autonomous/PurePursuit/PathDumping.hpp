@@ -1,12 +1,6 @@
 #pragma once
 #include "robokauz/PROS.hpp"
-#include "PathObjects.hpp"
-
-/**
- * @brief Dumps a RawPath (i.e. not fully generated/in progress) object to std::cout. 
- * @param path The RawPath object to dump.
- */
-void dumpRawPath(RawPath path);
+#include "PathComponents.hpp"
 
 /**
  * @brief Dumps a Path (i.e. fully generated/complete) object to std::cout.

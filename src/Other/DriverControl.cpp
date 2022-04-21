@@ -39,8 +39,8 @@ void frontClampControl()
 {
   	while(true)
 	{
-		if(master.get_digital_new_press(DIGITAL_B)) { clamp_piston.set_value(true); }
-		else if(master.get_digital_new_press(DIGITAL_Y)) { clamp_piston.set_value(false); }
+		if(master.get_digital_new_press(DIGITAL_B)) { clamp_piston.set_value(true); lock_piston.set_value(true); }
+		else if(master.get_digital_new_press(DIGITAL_Y)) { clamp_piston.set_value(false); lock_piston.set_value(false); }
 		WAIT_FOR_AUTH
 		pros::delay(2);
   	}

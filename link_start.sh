@@ -14,8 +14,8 @@ nohup socat PTY,raw,echo=0,link=/dev/vex1 tcp:cubesat.local:27781 > /dev/null 2>
 disown -a
 echo -e "${GREEN}Socat pipes opened.${NC}"
 
-echo -e "${YELLOW}Waiting 5s to allow TCP link to be established...${NC}"
-sleep 5
+#echo -e "${YELLOW}Waiting 5s to allow TCP link to be established...${NC}"
+#sleep 5
 chmod o+rw /dev/vex0
 chmod o+rw /dev/vex1
 echo -e "${GREEN}Done - pipes are now read/write accessible!${NC}"

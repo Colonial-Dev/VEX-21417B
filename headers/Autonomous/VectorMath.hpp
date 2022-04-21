@@ -61,12 +61,6 @@ class Vector
         Vector(QLength magnitude, QAngle direction);
 
         /**
-         * @brief Constructs a new Vector object from the (X,Y) position of a RawPoint.
-         * @param point A RawPoint to convert into a Vector.
-         */
-        Vector(RawPoint point);
-
-        /**
          * @brief Constructs a new Vector object from the (X,Y) position of a PathPoint.
          * @param point A PathPoint to convert into a Vector.
          */

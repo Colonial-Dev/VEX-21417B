@@ -1,4 +1,5 @@
 #pragma once
+#include "robokauz/Autonomous/VectorMath.hpp"
 
 #define PRINT(x) std::cout << x << std::endl
 #define SQ(x) std::pow(x, 2)
@@ -25,3 +26,9 @@ QAngle constrainAngle360(QAngle angle);
  * @return A constrained copy of the given angle.
  */
 QAngle constrainAngle180(QAngle angle);
+
+QAngle rollAngle180(QAngle angle);
+
+QAngle angleBetweenPoints(Vector start, Vector target);
+
+QAngle angleToPoint(Vector start, Vector target, QAngle heading);

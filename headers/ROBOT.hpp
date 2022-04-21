@@ -3,7 +3,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/Other/BotManager.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
-#include "robokauz/Autonomous/PurePursuit/PathManagement.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathManager.hpp"
 #include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"
 
 //Robot state enums
@@ -43,6 +43,7 @@ extern pros::Motor conveyor_motor;
 extern pros::ADIDigitalOut back_piston;
 extern pros::ADIDigitalOut clamp_piston;
 extern pros::ADIDigitalOut top_piston;
+extern pros::ADIDigitalOut lock_piston;
 
 extern pros::IMU inertial_sensor;
 extern pros::ADIEncoder left_encoder;

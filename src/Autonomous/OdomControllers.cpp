@@ -15,22 +15,6 @@
 //Would be cool-slash-nice to have:
 //Drive to point in arc
 
-QAngle constrainAngle360(QAngle angle)
-{
-    double x = angle.convert(degree);
-    x = std::fmod(x, 360);
-    if (x < 0) { x += 360; }
-    return QAngle (x * degree);
-}
-
-QAngle constrainAngle180(QAngle angle)
-{
-    double x = angle.convert(degree);
-    x = std::fmod(x + 180, 360);
-    if(x < 0) { x += 360; }
-    return (x - 180) * degree;
-}
-
 QAngle getRobotHeading()
 {
     return (inertial_sensor.get_rotation()) * degree;

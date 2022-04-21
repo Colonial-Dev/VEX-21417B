@@ -4,6 +4,13 @@
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
+struct Waypoint
+{
+    QLength x_pos;
+    QLength y_pos;
+    QAngle heading;
+};
+
 class PathBuilder
 {
     private:
@@ -24,6 +31,16 @@ class PathBuilder
 
         bool doDebugDump = false;
 
+        std::vector<squiggles::Pose> transformToCartesian(std::vector<Waypoint> waypoints);
+
+        std::vector<squiggles::ProfilePoint> generateSplinePath(std::vector<squiggles::Pose> waypoints);
+
+        std::vector<PathPoint> stripForExport(std::vector<squiggles::ProfilePoint> path);
+
+        void calculateCurvatures(Path& path);
+
+        void calculateVelocities(Path& path);
+
         Path calculatePath();
 
     public:
@@ -37,6 +54,8 @@ class PathBuilder
         PathBuilder withPoints(std::vector<Waypoint> points);
 
         PathBuilder withOrigin();
+
+        PathBuilder withRotatedOrigin(QAngle rotation);
 
         PathBuilder withCurrentPosition(IMUOdometer& odometer);
 

@@ -6,6 +6,7 @@
  */
 struct RobotProperties
 {   
+    QSpeed min_velocity;
     /**
      * @brief The maximum velocity reachable by the robot.
      * @note Can be lowered to cap the robot's speed.
@@ -53,17 +54,6 @@ struct GenerationParameters
     QLength lookahead_distance;
 };
 
-class Vector;
-
-struct RawPoint
-{
-    QLength x_pos;
-    QLength y_pos;
-
-    RawPoint(Vector vector);
-    RawPoint(Point point);
-};
-
 struct PathPoint
 {
     QLength x_pos;
@@ -72,4 +62,32 @@ struct PathPoint
 
     QLength distance;
     double curvature;
+};
+
+/**
+ * @brief Represents a full (i.e. fully generated/complete) path.
+ */
+class Path
+{
+    public:
+
+        std::string name;
+
+        std::vector<PathPoint> points;
+
+        QLength lookahead_distance;
+
+        double k_constant;
+
+        bool reversed = false;
+        
+        int size();
+
+        PathPoint& at(int index);
+
+        PathPoint& start();
+
+        PathPoint& end();
+
+        void add(PathPoint point);
 };

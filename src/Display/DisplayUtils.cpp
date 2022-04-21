@@ -4,14 +4,6 @@
 #include "robokauz/Display/DisplayGlobals.hpp"
 #include "robokauz/Display/DisplayUtils.hpp"
 
-std::string precise_string(double value, const int n)
-{
-    std::ostringstream out;
-    out.precision(n);
-    out << std::fixed << value;
-    return out.str();
-}
-
 void configureTheming()
 {
     theme->btnm.bg->body.border.color = LV_COLOR_GRAY;

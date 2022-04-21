@@ -36,6 +36,7 @@ void awaitCommand()
     sanitize_string(input);
     if(!input.compare("overwatch auton"))
     {
+      PRINT("Launching!");
       pros::Task autn(autonomousAsync);
     }
     pros::delay(2);
@@ -48,77 +49,35 @@ void initialize()
   overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   initializeDisplay();
   pros::Task cmd(awaitCommand);
-  inertial_sensor.set_rotation(-90);
+  //inertial_sensor.set_rotation(-90);
+  //pros::delay(1000);
+  //PRINT(rollAngle180(270_deg).convert(radian));
+  //PRINT(constrainAngle180(270_deg).convert(radian));
 }
 
 void autonomous()
 {
-  GenerationParameters g_params {3, 12_in};
-
-  CLIP_CLOSE
-
-  wayfarer.buildPath("WinPoint_TurnOut", g_params)
-    .withRobotProperties({0.3_mps, 0.1_mps2, 11.5_in, 4.125_in, drive_train})
+  GenerationParameters g_params {15.0, 12_in};
+  
+  wayfarer.buildPath("Skills_TurnOut", g_params)
     .withPoint({0_ft, 0_ft, -90_deg})
-    .withPoint({0_ft, -0.9_ft, -45_deg})
-    .withPoint({1.5_ft, -0.9_ft, 0_deg})
-    //.withPoint({3_ft, 0_ft})
-    //.withPoint({3_ft, 1_ft})
-    //.withPoint({3_ft, 3_ft})
-    //.withPoint({2_ft, 3_ft})
+    .withPoint({2_ft, 4_ft, 90_deg})
+    .withPoint({2_ft, 8_ft, 90_deg})
+    //.withDebugDump()
+    .generatePath();
+  
+  wayfarer.buildPath("STurn", {10, 14_in})
+    .withPoint({0_ft, 0_ft, 0_deg})
+    .withPoint({6_ft, 0_ft, 0_deg})
     .withDebugDump()
     .generatePath();
   
-  wayfarer.buildPath("WinPoint_Long", g_params)
-    .withPoint({3_ft, 1_ft, 90_deg})
-    .withPoint({3.5_ft, 5.25_ft, 90_deg})
-    .generatePath();
-
-  wayfarer.traverseStoredPath("WinPoint_TurnOut");
-  //pros::delay(5000);
-  //wayfarer.traverseStoredPath("WinPoint_Long");
-
-  //turnRelative(-70_deg);
-
-  /*wayfarer.buildPath("Alpha", g_params)
-      .withLookahead(18_in)
-      .withOrigin()
-      .withPoint({1.04_ft, 1.47_ft})
-      .withLookahead(40_in)
-      .withPoint({1.1_ft, 4.3_ft})
-      .withPoint({0.86_ft, 4.2_ft})
-      .withDebugDump()
-      .generatePath();
-
-  wayfarer.buildPath("Straight", g_params)
-    .withLookahead(6_in)
-    .withOrigin()
-    .withPoint({4_ft, 0_ft})
-    .makeReversed()
-    .generatePath();
-
-  wayfarer.buildPath("Test", g_params)
-      .withLookahead(24_in)
-      .withOrigin()
-      .withPoint({3_ft, 0_ft})
-      .withPoint({6_ft, 4_ft})
-      .makeReversed()
-      .withDebugDump()
-      .generatePath();
-  
-  wayfarer.buildPath("TestReturn", g_params)
-    .withLookahead(24_in)
-    .withPoint({6_ft, 4_ft})
-    .withOrigin()
-    .generatePath();*/
-
-
-  //wayfarer.traverseStoredPath("Straight");
-  //wayfarer.traverseStoredPath("Straight_rev");
-  
-  /*wayfarer.traverseStoredPath("Test");
-  drive_train->turnToPoint({0_ft, 0_ft});
-  drive_train->waitUntilSettled();
-  wayfarer.traverseStoredPath("TestReturn");*/
+  //wayfarer.synchronousTraverse("STurn");
+  auto traverser = wayfarer.getTraverser("STurn");
+  //traverser.simulateStep({0_ft, 0_ft, -45_deg});
+  //traverser.simulateStep({1.16_ft, 0.08_ft, 10_deg});
+  traverser.simulateStep({0_ft, 0_ft, -90_deg});
+  //traverser.simulateStep({4.047851_ft, 3.622648_ft, 125.583423_deg});
+  //traverser.simulateStep({4.052967_ft, 3.616032_ft, 127.718597_deg});
 }
 
