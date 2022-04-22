@@ -2,6 +2,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
+#include "robokauz/Autonomous/VectorMath.hpp"
 
 PathBuilder::PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, PathManager& caller) : calling_manager(caller)
 {
@@ -10,18 +11,18 @@ PathBuilder::PathBuilder(std::string name, GenerationParameters g_params, RobotP
     robot_props = r_props;
 }
 
-std::vector<squiggles::Pose> PathBuilder::transformToCartesian(std::vector<Waypoint> waypoints)
+std::vector<squiggles::Pose> PathBuilder::transformToCartesian()
 {
     std::vector<squiggles::Pose> pose_points;
 
-    for(int i = 0; i < waypoints.size(); i++)
+    for(int i = 0; i < path_waypoints.size(); i++)
     {
         //CRUCIALLY IMPORTANT - Squiggles reacts poorly to negative angles and angles greater than 360 degrees,
         //so we need to constrain and convert angles to their equivalents within [0, 360). 
         //For example, -90 deg becomes 270 deg, and 540 deg becomes 180 deg.
-        waypoints.at(i).heading = constrainAngle360(waypoints.at(i).heading);
+        path_waypoints.at(i).heading = constrainAngle360(path_waypoints.at(i).heading);
 
-        Waypoint waypoint = waypoints.at(i);
+        Waypoint waypoint = path_waypoints.at(i);
         squiggles::Pose cartesian_point = {waypoint.y_pos.convert(meter), waypoint.x_pos.convert(meter), (90_deg - waypoint.heading).convert(radian)};
         pose_points.push_back(cartesian_point);
     }
@@ -33,7 +34,7 @@ std::vector<squiggles::ProfilePoint> PathBuilder::generateSplinePath(std::vector
 {
     squiggles::Constraints constraints(robot_props.max_velocity.convert(mps), robot_props.max_acceleration.convert(mps2), robot_props.max_acceleration.convert(mps2) * 2);    
     squiggles::SplineGenerator generator(constraints, std::make_shared<squiggles::TankModel>(robot_props.track_width.convert(meter), constraints));
-    return generator.generate(waypoints);
+    return generator.generate(waypoints, generation_mode);
 }
 
 std::vector<PathPoint> PathBuilder::stripForExport(std::vector<squiggles::ProfilePoint> path)
@@ -51,6 +52,35 @@ std::vector<PathPoint> PathBuilder::stripForExport(std::vector<squiggles::Profil
     }
 
     return stripped_path;
+}
+
+std::vector<PathPoint> PathBuilder::injectPoints()
+{
+    std::vector<PathPoint> padded_path;
+
+    for(int i = 0; i < path_waypoints.size() - 1; i++)
+    {
+        Waypoint start_point = path_waypoints.at(i);
+        Waypoint end_point = path_waypoints.at(i+1);
+
+        Vector start(start_point.x_pos, start_point.y_pos);
+        Vector end(end_point.x_pos, end_point.y_pos);
+        Vector segment = end - start;
+
+        double injectionCount = std::ceil(segment.magnitude().convert(meter) / injection_spacing.convert(meter));
+        segment = segment.normalize() * injection_spacing.convert(meter);
+        
+        for(int j = 0; j < injectionCount; j++)
+        {
+            Vector injectionVector = start + (segment * j);
+            Vector injectionPoint = injectionVector;
+            padded_path.push_back({injectionPoint.x_component, injectionPoint.y_component});
+        }
+    }
+
+    Waypoint end_waypoint = path_waypoints.at(path_waypoints.size() - 1);
+    padded_path.push_back({end_waypoint.x_pos, end_waypoint.y_pos});
+    return padded_path;
 }
 
 void PathBuilder::calculateCurvatures(Path& path)
@@ -96,14 +126,22 @@ Path PathBuilder::calculatePath()
 {
     std::uint32_t timestamp = pros::micros();
     Path computed_path;
-    std::vector<PathPoint> points = stripForExport(generateSplinePath(transformToCartesian(path_waypoints)));
+    std::vector<PathPoint> points;
 
+    if(generation_mode == Spline || generation_mode == FastSpline)
+    {
+        points = stripForExport(generateSplinePath(transformToCartesian()));
+    }
+    else if(generation_mode == Rough)
+    {
+        points = injectPoints();
+    }
 
     computed_path.points = points;
     computed_path.name = path_name;
     computed_path.lookahead_distance = gen_params.lookahead_distance;
     computed_path.k_constant = gen_params.initial_velocity_constant;
-    
+    computed_path.prealign = has_prealignment;
     calculateCurvatures(computed_path);
     calculateVelocities(computed_path);
 
@@ -115,6 +153,12 @@ Path PathBuilder::calculatePath()
 PathBuilder PathBuilder::withRobotProperties(RobotProperties r_props)
 {
     robot_props = r_props;
+    return *this;
+}
+
+PathBuilder PathBuilder::setGenerationMode(int mode)
+{
+    generation_mode = mode;
     return *this;
 }
 
@@ -149,19 +193,19 @@ PathBuilder PathBuilder::withCurrentPosition(IMUOdometer& odometer)
 
 PathBuilder PathBuilder::withPrealignment()
 {
-    hasPrealignment = true;
+    has_prealignment = true;
     return *this;
 }
 
 PathBuilder PathBuilder::makeReversed()
 {
-    computeReversed = true;
+    compute_reversed = true;
     return *this;
 }
 
 PathBuilder PathBuilder::withDebugDump()
 {
-    doDebugDump = true;
+    do_debug_dump = true;
     return *this;
 }
 
@@ -170,17 +214,18 @@ void PathBuilder::generatePath()
     Path computed_path = calculatePath();
     calling_manager.insertPath(computed_path);
 
-    /*if(computeReversed)
+    if(compute_reversed)
     {
-        RawPath reversed_path = combined_path;
-        std::reverse(reversed_path.points.begin(), reversed_path.points.end());
+        std::vector<Waypoint> reversed_path = path_waypoints;
+        std::reverse(reversed_path.begin(), reversed_path.end());
+        path_waypoints = reversed_path;
 
-        Path computed_reversed_path = processPath(reversed_path, robot_props, gen_params);
-        computed_reversed_path.setName(path_name + "_rev");
-        computed_reversed_path.setReversed(true);
+        Path computed_reversed_path = calculatePath();
+        computed_reversed_path.name = path_name + "_rev";
+        computed_reversed_path.reversed = true;
         calling_manager.insertPath(computed_reversed_path);
-    }*/
+    }
 
-    if(doDebugDump) { dumpFullPath(computed_path); }
+    if(do_debug_dump) { dumpFullPath(computed_path); }
 }
 

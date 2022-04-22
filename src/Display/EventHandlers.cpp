@@ -17,6 +17,7 @@ void statusUpdateTask(void*)
     statusReadout += " #ff0000 ODO# " + overwatch.getPrettyOdomState() + "\n";
     statusReadout += " #0000ff IMU# " + imu_odometer.getPrettyPosition() + "\n";
     statusReadout += " ENCODERS " + overwatch.getPrettyEncoders() + "\n";
+    statusReadout += " POTENTIOMETER [" + precise_string(arm_controller.getLiftAngle().convert(degree)) + "]\n";
     
     statusPrint(statusReadout);
 }

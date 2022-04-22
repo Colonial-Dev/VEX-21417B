@@ -11,6 +11,13 @@ struct Waypoint
     QAngle heading;
 };
 
+enum GenerationMode
+{
+    Spline,
+    FastSpline,
+    Rough
+};
+
 class PathBuilder
 {
     private:
@@ -25,17 +32,23 @@ class PathBuilder
 
         PathManager& calling_manager;
 
-        bool hasPrealignment = false;
+        int generation_mode = FastSpline;
 
-        bool computeReversed = false;
+        bool has_prealignment = false;
 
-        bool doDebugDump = false;
+        bool compute_reversed = false;
 
-        std::vector<squiggles::Pose> transformToCartesian(std::vector<Waypoint> waypoints);
+        bool do_debug_dump = false;
+
+        const QLength injection_spacing = 3_in;
+
+        std::vector<squiggles::Pose> transformToCartesian();
 
         std::vector<squiggles::ProfilePoint> generateSplinePath(std::vector<squiggles::Pose> waypoints);
 
         std::vector<PathPoint> stripForExport(std::vector<squiggles::ProfilePoint> path);
+
+        std::vector<PathPoint> injectPoints();
 
         void calculateCurvatures(Path& path);
 
@@ -48,6 +61,8 @@ class PathBuilder
         PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, PathManager& caller);
 
         PathBuilder withRobotProperties(RobotProperties r_props);
+
+        PathBuilder setGenerationMode(int mode);
 
         PathBuilder withPoint(Waypoint point);
 

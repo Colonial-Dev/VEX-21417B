@@ -13,15 +13,25 @@ void PathTraverser::updatePosition()
 {
     points.current_position = imu_odometer.getPosition();
     PRINT("COORDINATES // X: " + std::to_string(points.current_position.x.convert(foot)) + " Y: " + std::to_string(points.current_position.y.convert(foot)));
-    PRINT("HEADING // RAW: " + std::to_string(points.current_position.theta.convert(degree)) + " CONSTRAINED: " + std::to_string(constrainAngle180(90_deg - points.current_position.theta).convert(degree))); 
+    PRINT("HEADING // RAW: " + std::to_string(points.current_position.theta.convert(degree))); 
 }
 
 void PathTraverser::findClosestPoint()
 {
     QLength curr_closest_distance (DBL_MAX * meter);
     int curr_closest_index = points.closest_index;
+    int ceil_index;
 
-    for(int i = curr_closest_index; i < path.size() - 1; i++)//i < points.lookahead_index + 2; i++)
+    if(interpointDistance(points.current_position, path.end()) <= path.lookahead_distance) 
+    {
+        ceil_index = path.size();
+    }
+    else
+    {
+        ceil_index = points.lookahead_index + 2;
+    }
+
+    for(int i = curr_closest_index; i < std::min(path.size() - 1, ceil_index); i++)
     {
         QLength distance = interpointDistance(points.current_position, path.at(i));
         if(distance.convert(meter) < curr_closest_distance.convert(meter))
@@ -73,9 +83,16 @@ double PathTraverser::findIntersect(Vector start, Vector end, Vector pos, QLengt
 }
 
 void PathTraverser::calculateLookahead()
-{
+{   
+
     int previous_intersection_index = 0;
     double previous_t_value = 0;
+
+    if(points.lookahead_index == 0 && interpointDistance(points.current_position, path.end()) < path.lookahead_distance) 
+    {
+      points.lookahead_index = path.size() - 2;
+      previous_t_value = 1;
+    }
 
     for(int i = points.lookahead_index; i < path.size() - 1; i++)
     {
@@ -127,15 +144,22 @@ void PathTraverser::projectLookahead()
 
 void PathTraverser::calculateCurvature()
 {
-    Vector difference = Vector(points.current_position) - points.lookahead_point;
+    /*Vector difference = Vector(points.current_position) - points.lookahead_point;
 
-    double robot_angle = constrainAngle360(points.current_position.theta).convert(radian);
-    QLength lookahead_x = -(std::cos(robot_angle) * (difference.y_component).convert(meter) - std::sin(robot_angle) * (difference.x_component).convert(meter)) * meter;
+    double robot_angle = constrainAngle180(90_deg - points.current_position.theta).convert(radian);
+    QLength lookahead_x = (std::cos(robot_angle) * (difference.y_component).convert(meter) - std::sin(robot_angle) * (difference.x_component).convert(meter)) * meter;
 
-    double curvature = (2 * lookahead_x).convert(meter) / SQ(interpointDistance(points.current_position, points.lookahead_point).convert(meter)); 
-    PRINT("Heading: " + std::to_string(robot_angle));
-    PRINT("Curvature: " + std::to_string(curvature));
-    outputs.curvature = conditions.end_within_lookahead ? 0 : curvature;
+    double curvature = (2 * lookahead_x).convert(meter) / SQ(interpointDistance(points.current_position, points.lookahead_point).convert(meter));*/
+    double heading = constrainAngle180(points.current_position.theta).convert(radian);
+    //heading = angleToPoint(points.current_position, points.lookahead_point, points.current_position.theta).convert(radian);
+    int side = sgnum(std::sin(heading)*(points.lookahead_point.x_component.convert(meter) - points.current_position.x.convert(meter)) - std::cos(heading)*(points.lookahead_point.y_component.convert(meter) - points.current_position.y.convert(meter)));
+    double a = -std::tan(heading);
+    double c = std::tan(heading)*points.current_position.x.convert(meter) - points.current_position.y.convert(meter);
+    double x = std::abs(a * points.lookahead_point.x_component.convert(meter) + points.lookahead_point.y_component.convert(meter) + c) / std::sqrt(SQ(a) + 1);
+    double curvature = side * ((2*x) / SQ(interpointDistance(points.current_position, points.lookahead_point).convert(meter)));
+    outputs.curvature = conditions.end_within_lookahead ? 0 : -curvature;
+    PRINT("Heading: " + std::to_string(heading));
+    PRINT("Curvature: " + std::to_string(outputs.curvature));
 }
 
 void PathTraverser::calculateWheelSpeeds()
@@ -157,11 +181,11 @@ void PathTraverser::calculateWheelSpeeds()
 
     target_velocity = limiter.getLimited(target_velocity, robot_properties.max_acceleration);
 
-    QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + outputs.curvature * robot_properties.track_width.convert(meter)) / 2.0) * mps;
-    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - outputs.curvature * robot_properties.track_width.convert(meter)) / 2.0) * mps;
+    QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + robot_properties.track_width.convert(meter) * outputs.curvature) / 2.0) * mps;
+    QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - robot_properties.track_width.convert(meter) * outputs.curvature) / 2.0) * mps;
 
-    QAngularSpeed left_wheels = (left_velocity / (1_pi * robot_properties.wheel_diam)) * 360_deg;
-    QAngularSpeed right_wheels = (right_velocity / (1_pi * robot_properties.wheel_diam)) * 360_deg;
+    QAngularSpeed left_wheels = (left_velocity / (M_PI * robot_properties.wheel_diam)) * 360_deg;
+    QAngularSpeed right_wheels = (right_velocity / (M_PI * robot_properties.wheel_diam)) * 360_deg;
 
     PRINT("pV: " + std::to_string(point_velocity.convert(mps)));
     PRINT("tV: " + std::to_string(target_velocity.convert(mps)));
@@ -182,6 +206,8 @@ void PathTraverser::updateConditions()
     conditions.distance_to_end = interpointDistance(points.current_position, path.end()).abs();
     conditions.is_finished = conditions.is_past_end && conditions.end_within_lookahead;
     
+    PRINT("On path? " + std::to_string(conditions.is_on_path));
+    PRINT("EWL? " + std::to_string(conditions.end_within_lookahead));
     PRINT("Angle/Distance to end: " + std::to_string(angle_to_end.convert(degree)) + " // " + std::to_string(conditions.distance_to_end.convert(inch)));
 }
 
@@ -227,6 +253,7 @@ void PathTraverser::traversalLoop()
 {
     reset();
     conditions.is_running = true;
+    //TODO if prealignment is enabled, pre-compute the first lookahead point in the path and turn to it using PID.
     std::uint32_t delay_timestamp = pros::millis();
     while(true)
     {

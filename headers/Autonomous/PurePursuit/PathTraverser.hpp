@@ -42,6 +42,7 @@ class PathTraverser
     private:
 
         const RobotProperties robot_properties;
+        RateLimiter limiter;
         Path path;
 
         TraversalPoints points;

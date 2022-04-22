@@ -58,10 +58,8 @@ struct PathPoint
 {
     QLength x_pos;
     QLength y_pos;
-    QSpeed velocity;
-
-    QLength distance;
-    double curvature;
+    QSpeed velocity = 0_mps;
+    double curvature = 0;
 };
 
 /**
@@ -80,6 +78,8 @@ class Path
         double k_constant;
 
         bool reversed = false;
+
+        bool prealign = false;
         
         int size();
 
