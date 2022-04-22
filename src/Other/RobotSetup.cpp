@@ -52,7 +52,7 @@ EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
 IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
 
 BotManager overwatch;
-RateLimiter limiter;
+LiftController arm_controller(arm_motor, potentiometer);
 
-const RobotProperties robot_properties = {0.25_mps, 1.0973_mps, 0.7_mps2, 11.5_in, 4.125_in, drive_train};
+const RobotProperties robot_properties = {0.25_mps, 0.5_mps, 0.4_mps2, 11.5_in, 4.125_in, drive_train};
 PathManager wayfarer(robot_properties);

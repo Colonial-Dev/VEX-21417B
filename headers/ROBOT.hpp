@@ -3,6 +3,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/Other/BotManager.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
+#include "robokauz/Autonomous/LiftController.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathManager.hpp"
 #include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"
 
@@ -59,7 +60,7 @@ extern EncoderGroup encoders;
 extern IMUOdometer imu_odometer;
 
 extern BotManager overwatch;
-extern RateLimiter limiter;
+extern LiftController arm_controller;
 
 extern const RobotProperties robot_properties;
 extern PathManager wayfarer;
