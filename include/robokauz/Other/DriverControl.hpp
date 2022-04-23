@@ -1,7 +1,6 @@
 #pragma once
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#define WAIT_FOR_AUTH pros::Task::notify_take(true, TIMEOUT_MAX); pros::Task::current().notify_ext(1, NOTIFY_ACTION_OWRITE, NULL);
 
 //Axis 3 is translation, axis 1 is rotation
 void splitTransmission();
@@ -20,3 +19,5 @@ void topClampControl();
 
 //R1 forward, R2 reverse
 void conveyorControl();
+
+void initializeOpcontrol();

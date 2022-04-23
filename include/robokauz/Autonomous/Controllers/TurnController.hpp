@@ -1,5 +1,5 @@
 #pragma once
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/Autonomous/VectorMath.hpp"
@@ -31,9 +31,3 @@ void turnAbsolute(QAngle total_angle);
  * @param point The target point.
  */
 void turnToPoint(Point point);
-
-/**
- * @brief Turn to face and drive to a given coordinate in the robot's odometry frame.
- * @param point The target point.
- */
-void driveToPoint(Point point);

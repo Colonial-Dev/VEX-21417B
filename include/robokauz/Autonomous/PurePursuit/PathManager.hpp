@@ -1,5 +1,5 @@
 #pragma once
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include <map>
@@ -11,6 +11,8 @@ class PathManager
         RobotProperties robot_props;
 
         std::map<std::string, Path> stored_paths;
+
+        //TODO incorporate current traverser instance into manager?
 
     public:
 

@@ -1,11 +1,11 @@
 #pragma once
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
+#include "robokauz/CONTROLLERS.hpp"
+#include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Other/BotManager.hpp"
+#include "robokauz/Other/TaskGate.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
-#include "robokauz/Autonomous/LiftController.hpp"
-#include "robokauz/Autonomous/PurePursuit/PathManager.hpp"
-#include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"
 
 //Robot state enums
 enum ConveyorStatus
@@ -25,9 +25,10 @@ enum AutonSide
 
 enum AutonStrat
 {
-  SimpleRush, //Go straight forwards, grab the mobile goal, and return.
-  DoubleRush, //Go straight forwards, grab the mobile goal, turn and grab the colored goal, and finally return.
-  StackRush, //Grab the colored goal as a counterweight, then pick up the middle mobile goal and return.
+  FullWinPoint, //Full win point auton (left side only?)
+  HalfWinPoint, //Half win point (side specific)
+  GoalRush, //Grab a small + large neutral
+  StackRush //Grab and stack a small + large neutral
 };
 
 extern pros::Controller master;
@@ -60,6 +61,7 @@ extern EncoderGroup encoders;
 extern IMUOdometer imu_odometer;
 
 extern BotManager overwatch;
+extern TaskGate driver_control_gate;
 extern LiftController arm_controller;
 
 extern const RobotProperties robot_properties;

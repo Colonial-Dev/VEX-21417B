@@ -1,5 +1,5 @@
 #pragma once
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 
 namespace Manager
@@ -23,11 +23,6 @@ namespace Manager
 class BotManager
 {
     private:
-
-        /**
-         * @brief A vector of all the Tasks responsible for running driver control.
-         */
-        std::vector<pros::Task> driverTasks;
 
         /**
          * @brief Gets the color-coded string version of a motor temperature value.
@@ -83,23 +78,6 @@ class BotManager
          * @param brake_mode A pros::motor_brake_mode_e_t value.
          */
         void setBrakeMode(pros::motor_brake_mode_e_t brake_mode);
-
-        /**
-         * @brief Register a PROS task with the manager.
-         * @param task The task to register.
-         */
-        void registerDriverTask(pros::task_t task);
-
-        /**
-         * @brief Suspends driver control.
-         * @note This is useful for preventing interference/race conditions while testing autons.
-         */
-        void suspendDriverControl();
-
-        /**
-         * @brief Resumes driver control.
-         */
-        void resumeDriverControl();
         
         /**
          * @brief Simulates a program restart; all sensors and odometry implementations are zeroed out and/or recalibrated.
