@@ -1,13 +1,13 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/DISPLAY.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
+#include "robokauz/CONTROLLERS.hpp"
 
 #include "robokauz/Other/DriverControl.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/Macrolang.hpp"
-#include "robokauz/Autonomous/OdomControllers.hpp"
 #include <regex>
 
 void sanitize_string(std::string& str)
@@ -48,8 +48,8 @@ void initialize()
 {
   overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   initializeDisplay();
+  initializeOpcontrol();
   pros::Task cmd(awaitCommand);
-  //inertial_sensor.set_rotation(-90);
 }
 
 void autonomous()
@@ -96,8 +96,8 @@ void autonomous()
   
   //wayfarer.synchronousTraverse("Lines");
   auto traverser = wayfarer.getTraverser("Lines");
-  traverser.simulateStep({0_ft, 0_ft, 0_deg});
-  traverser.simulateStep({2_ft, 2_ft, 45_deg});
+  //traverser.simulateStep({0_ft, 0_ft, 0_deg});
+  //traverser.simulateStep({2_ft, 2_ft, 45_deg});
   traverser.simulateStep({1.141246_ft, 2.645605_ft, 45.602719_deg});
   //traverser.simulateStep({3_ft, 0_ft, 90_deg});
 }

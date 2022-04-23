@@ -1,4 +1,4 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/Other/DriverControl.hpp"
@@ -16,8 +16,7 @@ void splitTransmission()
 		left_middle.move(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X));
 		left_back.move(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X));
 		
-		WAIT_FOR_AUTH
-		pros::delay(2);
+		driver_control_gate.enterGate();
 	}
 }
 
@@ -29,8 +28,7 @@ void mainLiftControl()
 		if(master.get_digital(DIGITAL_L1)) { arm_motor.move_velocity(200); }
 		else if(master.get_digital(DIGITAL_L2)) { arm_motor.move_velocity(-200); }
 		else { arm_motor.move_velocity(0); }
-		WAIT_FOR_AUTH
-		pros::delay(2);
+		driver_control_gate.enterGate();
 	}
 }
 
@@ -41,8 +39,7 @@ void frontClampControl()
 	{
 		if(master.get_digital_new_press(DIGITAL_B)) { clamp_piston.set_value(true); lock_piston.set_value(true); }
 		else if(master.get_digital_new_press(DIGITAL_Y)) { clamp_piston.set_value(false); lock_piston.set_value(false); }
-		WAIT_FOR_AUTH
-		pros::delay(2);
+		driver_control_gate.enterGate();
   	}
 }
 
@@ -53,8 +50,7 @@ void rearClampControl()
 	{
 		if(master.get_digital_new_press(DIGITAL_DOWN)) { back_piston.set_value(true); }
 		else if(master.get_digital_new_press(DIGITAL_RIGHT)) { back_piston.set_value(false); }
-		WAIT_FOR_AUTH
-		pros::delay(2);
+		driver_control_gate.enterGate();
 	}
 }
 
@@ -80,23 +76,16 @@ void conveyorControl()
 		else if(conveyorStatus == Forward) { conveyor_motor.move_velocity(-600); }
 		else if(conveyorStatus == Reverse) { conveyor_motor.move_velocity(600); }
 		
-		WAIT_FOR_AUTH
-		pros::delay(2);
+		driver_control_gate.enterGate();
 	}
 }
 
 
-void opcontrol() 
+void initializeOpcontrol() 
 {
 	pros::Task transmission(splitTransmission);
 	pros::Task frontLift(mainLiftControl);
 	pros::Task frontClamp(frontClampControl);
 	pros::Task rearClamp(rearClampControl);
 	pros::Task conveyor(conveyorControl);
-
-	overwatch.registerDriverTask((pros::task_t)transmission);
-	overwatch.registerDriverTask((pros::task_t)frontLift);
-	overwatch.registerDriverTask((pros::task_t)frontClamp);
-	overwatch.registerDriverTask((pros::task_t)rearClamp);
-	overwatch.registerDriverTask((pros::task_t)conveyor);
 }
