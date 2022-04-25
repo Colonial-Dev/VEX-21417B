@@ -61,6 +61,12 @@ class Vector
         Vector(QLength magnitude, QAngle direction);
 
         /**
+         * @brief Constructs a new Vector object from the (X,Y) position of a SplinePoint.
+         * @param point A SplinePoint to convert into a Vector.
+         */
+        Vector(SplinePoint point);
+
+        /**
          * @brief Constructs a new Vector object from the (X,Y) position of a PathPoint.
          * @param point A PathPoint to convert into a Vector.
          */

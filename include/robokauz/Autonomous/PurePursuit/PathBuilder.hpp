@@ -4,17 +4,10 @@
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
-struct Waypoint
-{
-    QLength x_pos;
-    QLength y_pos;
-    QAngle heading;
-};
-
 enum GenerationMode
 {
     Spline,
-    FastSpline,
+    ConstrainedSpline,
     Rough
 };
 
@@ -32,7 +25,7 @@ class PathBuilder
 
         PathManager& calling_manager;
 
-        int generation_mode = FastSpline;
+        int generation_mode = Spline;
 
         bool has_prealignment = false;
 
@@ -44,9 +37,9 @@ class PathBuilder
 
         std::vector<squiggles::Pose> transformToCartesian();
 
-        std::vector<squiggles::ProfilePoint> generateSplinePath(std::vector<squiggles::Pose> waypoints);
+        std::vector<squiggles::ProfilePoint> generateConstrainedSplinePath(std::vector<squiggles::Pose> waypoints);
 
-        std::vector<PathPoint> stripForExport(std::vector<squiggles::ProfilePoint> path);
+        std::vector<PathPoint> stripConstrainedSplineForExport(std::vector<squiggles::ProfilePoint> path);
 
         std::vector<PathPoint> injectPoints();
 

@@ -1,4 +1,4 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
@@ -30,14 +30,14 @@ std::vector<squiggles::Pose> PathBuilder::transformToCartesian()
     return pose_points;
 }
 
-std::vector<squiggles::ProfilePoint> PathBuilder::generateSplinePath(std::vector<squiggles::Pose> waypoints)
+std::vector<squiggles::ProfilePoint> PathBuilder::generateConstrainedSplinePath(std::vector<squiggles::Pose> waypoints)
 {
     squiggles::Constraints constraints(robot_props.max_velocity.convert(mps), robot_props.max_acceleration.convert(mps2), robot_props.max_acceleration.convert(mps2) * 2);    
     squiggles::SplineGenerator generator(constraints, std::make_shared<squiggles::TankModel>(robot_props.track_width.convert(meter), constraints));
-    return generator.generate(waypoints, generation_mode);
+    return generator.generate(waypoints, true);
 }
 
-std::vector<PathPoint> PathBuilder::stripForExport(std::vector<squiggles::ProfilePoint> path)
+std::vector<PathPoint> PathBuilder::stripConstrainedSplineForExport(std::vector<squiggles::ProfilePoint> path)
 {
     std::vector<PathPoint> stripped_path;
 
@@ -128,13 +128,22 @@ Path PathBuilder::calculatePath()
     Path computed_path;
     std::vector<PathPoint> points;
 
-    if(generation_mode == Spline || generation_mode == FastSpline)
+    switch(generation_mode)
     {
-        points = stripForExport(generateSplinePath(transformToCartesian()));
-    }
-    else if(generation_mode == Rough)
-    {
-        points = injectPoints();
+        case Spline:
+        {
+            QuinticPathGenerator generator(path_waypoints, gen_params.spline_resolution, gen_params.smoothing_constant);
+            points = generator.getPath();
+        }
+        case ConstrainedSpline:
+        {
+            //STACK EM HIGH AND SELL EM CHEAP
+            points = stripConstrainedSplineForExport(generateConstrainedSplinePath(transformToCartesian()));
+        }
+        case Rough:
+        {
+            points = injectPoints();
+        }
     }
 
     computed_path.points = points;
@@ -226,6 +235,6 @@ void PathBuilder::generatePath()
         calling_manager.insertPath(computed_reversed_path);
     }
 
-    if(do_debug_dump) { dumpFullPath(computed_path); }
+    if(do_debug_dump) { calling_manager.dumpPath(path_name); }
 }
 

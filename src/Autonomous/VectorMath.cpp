@@ -1,4 +1,4 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
 #include "robokauz/Autonomous/VectorMath.hpp"
@@ -22,6 +22,12 @@ Vector::Vector(QLength magnitude, QAngle direction)
     
     x_component = (magnitude.convert(meter) * std::cos(direction.convert(radian))) * meter;
     y_component = (magnitude.convert(meter) * std::sin(direction.convert(radian))) * meter;
+}
+
+Vector::Vector(SplinePoint point)
+{
+    x_component = point.x_pos;
+    y_component = point.y_pos;
 }
 
 Vector::Vector(PathPoint point)
