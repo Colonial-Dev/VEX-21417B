@@ -1,8 +1,22 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/ROBOT.hpp"
 #include <cfloat>
+
+QSpeed RateLimiter::getLimited(QSpeed input, QAcceleration limit)
+{
+    double time_change = pros::millis() - last_called;
+    last_called = pros::millis();
+    QSpeed max_velocity  = (last_output.convert(mps) + (time_change / 1000) * limit.convert(mps2)) * mps;
+
+    QSpeed output;
+    if(input > max_velocity) { output = max_velocity; }
+    else{ output = input; }
+
+    last_output = output;
+    return output;
+}
 
 PathTraverser::PathTraverser(Path path_to_traverse, const RobotProperties robot) : robot_properties(robot), path(path_to_traverse)
 {
@@ -31,7 +45,7 @@ void PathTraverser::findClosestPoint()
         ceil_index = points.lookahead_index + 2;
     }
 
-    for(int i = curr_closest_index; i < std::min(path.size() - 1, ceil_index); i++)
+    for(int i = curr_closest_index; i < path.size() - 1; i++)//std::min(path.size() - 1, ceil_index); i++)
     {
         QLength distance = interpointDistance(points.current_position, path.at(i));
         if(distance.convert(meter) < curr_closest_distance.convert(meter))
@@ -94,7 +108,7 @@ void PathTraverser::calculateLookahead()
       previous_t_value = 1;
     }
 
-    for(int i = points.lookahead_index; i < path.size() - 1; i++)
+    for(int i = std::max(points.lookahead_index, points.closest_index); i < path.size() - 1; i++)
     {
         Vector start (path.at(i));
         Vector end (path.at(i+1));
@@ -127,7 +141,7 @@ void PathTraverser::calculateLookahead()
     Vector d = end - start;
     Vector final_point = start + (d * previous_t_value);
     points.lookahead_point = final_point;
-    projectLookahead();
+    //projectLookahead();
 
     PRINT("LP: (" + std::to_string(points.lookahead_point.x_component.convert(foot)) + ", " + std::to_string(points.lookahead_point.y_component.convert(foot)) + ")");
     PRINT("LPI: " + std::to_string(points.lookahead_index + 1));
@@ -144,21 +158,11 @@ void PathTraverser::projectLookahead()
 
 void PathTraverser::calculateCurvature()
 {
-    /*Vector difference = Vector(points.current_position) - points.lookahead_point;
-
-    double robot_angle = constrainAngle180(90_deg - points.current_position.theta).convert(radian);
-    QLength lookahead_x = (std::cos(robot_angle) * (difference.y_component).convert(meter) - std::sin(robot_angle) * (difference.x_component).convert(meter)) * meter;
-
-    double curvature = (2 * lookahead_x).convert(meter) / SQ(interpointDistance(points.current_position, points.lookahead_point).convert(meter));*/
-    double heading = constrainAngle180(points.current_position.theta).convert(radian);
-    //heading = angleToPoint(points.current_position, points.lookahead_point, points.current_position.theta).convert(radian);
-    int side = sgnum(std::sin(heading)*(points.lookahead_point.x_component.convert(meter) - points.current_position.x.convert(meter)) - std::cos(heading)*(points.lookahead_point.y_component.convert(meter) - points.current_position.y.convert(meter)));
-    double a = -std::tan(heading);
-    double c = std::tan(heading)*points.current_position.x.convert(meter) - points.current_position.y.convert(meter);
-    double x = std::abs(a * points.lookahead_point.x_component.convert(meter) + points.lookahead_point.y_component.convert(meter) + c) / std::sqrt(SQ(a) + 1);
-    double curvature = side * ((2*x) / SQ(interpointDistance(points.current_position, points.lookahead_point).convert(meter)));
+    Vector difference = points.lookahead_point - points.current_position;
+    double alpha = std::atan2(difference.y_component.convert(meter), difference.x_component.convert(meter));
+    double beta = points.current_position.theta.convert(radian) - alpha;
+    double curvature = (2 * std::sin(beta)) / (path.lookahead_distance.convert(meter));
     outputs.curvature = conditions.end_within_lookahead ? 0 : -curvature;
-    PRINT("Heading: " + std::to_string(heading));
     PRINT("Curvature: " + std::to_string(outputs.curvature));
 }
 
@@ -179,7 +183,7 @@ void PathTraverser::calculateWheelSpeeds()
 
     target_velocity = std::max(target_velocity, robot_properties.min_velocity);
 
-    target_velocity = limiter.getLimited(target_velocity, robot_properties.max_acceleration);
+    //target_velocity = limiter.getLimited(target_velocity, robot_properties.max_acceleration);
 
     QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + robot_properties.track_width.convert(meter) * outputs.curvature) / 2.0) * mps;
     QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - robot_properties.track_width.convert(meter) * outputs.curvature) / 2.0) * mps;
@@ -187,10 +191,10 @@ void PathTraverser::calculateWheelSpeeds()
     QAngularSpeed left_wheels = (left_velocity / (M_PI * robot_properties.wheel_diam)) * 360_deg;
     QAngularSpeed right_wheels = (right_velocity / (M_PI * robot_properties.wheel_diam)) * 360_deg;
 
-    PRINT("pV: " + std::to_string(point_velocity.convert(mps)));
-    PRINT("tV: " + std::to_string(target_velocity.convert(mps)));
-    PRINT("CVels: " + std::to_string(left_velocity.convert(mps)) + " " + std::to_string(right_velocity.convert(mps)));
-    PRINT("WVels: " + std::to_string(left_wheels.convert(rpm)) + " " + std::to_string(right_wheels.convert(rpm)));
+    PRINT("Point velocity (MPS): " + std::to_string(point_velocity.convert(mps)));
+    PRINT("Target velocity (MPS): " + std::to_string(target_velocity.convert(mps)));
+    PRINT("Linear velocities (MPS): " + std::to_string(left_velocity.convert(mps)) + " " + std::to_string(right_velocity.convert(mps)));
+    PRINT("Angular velocities (RPM): " + std::to_string(left_wheels.convert(rpm)) + " " + std::to_string(right_wheels.convert(rpm)));
 
     outputs.target_speeds = WheelSpeeds {left_wheels, right_wheels};  
 }
@@ -217,9 +221,9 @@ void PathTraverser::calculateAll()
     updatePosition();
     findClosestPoint();
     calculateLookahead();
+    updateConditions();
     calculateCurvature();
     calculateWheelSpeeds();
-    updateConditions();
 }
 
 void PathTraverser::simulateAll(OdomState hypothetical_position)
@@ -228,10 +232,10 @@ void PathTraverser::simulateAll(OdomState hypothetical_position)
     points.current_position = hypothetical_position;
     findClosestPoint();
     calculateLookahead();
+    updateConditions();
     calculateCurvature();
     //We don't bother with wheel speeds in simulation,
     //because for the outputs to be accurate they depend on past data + the rate limiter.
-    updateConditions();
 }
 
 bool PathTraverser::integrateCalculations()
@@ -297,6 +301,6 @@ void PathTraverser::waitUntilSettled()
 void PathTraverser::simulateStep(OdomState hypothetical_position)
 {
     if(conditions.is_running) { return; }
-    reset();
+    //reset();
     simulateAll(hypothetical_position);
 }

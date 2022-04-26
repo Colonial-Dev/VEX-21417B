@@ -36,7 +36,7 @@ void awaitCommand()
     sanitize_string(input);
     if(!input.compare("overwatch auton"))
     {
-      PRINT("Launching!");
+      PRINT("Launching!\n");
       pros::Task autn(autonomousAsync);
     }
     pros::delay(2);
@@ -71,7 +71,7 @@ void autonomous()
     "Test"
   );*/
 
-  wayfarer.buildPath("Lines", {1, 12_in})
+  wayfarer.buildPath("Lines", {5, 12_in})
     .setGenerationMode(Rough)
     .withOrigin()
     .withPoint({4_ft, 4_ft, 0_deg})
@@ -84,11 +84,17 @@ void autonomous()
     .withPoint({3_ft, 3_ft, 0_deg})
     .withPoint({3_ft, 6_ft, 0_deg})
     .withPoint({6_ft, 6_ft, 0_deg})
-    //.withDebugDump()
     .generatePath();
 
-  wayfarer.buildPath("Curves", {2, 12_in})
+  wayfarer.buildPath("Quintic", {2, 12_in})
     .setGenerationMode(Spline)
+    .withPoint({1_ft, 1_ft, 1.57079632679_rad})
+    .withPoint({4_ft, 4_ft, 1.57079632679_rad})
+    .withPoint({6_ft, 2_ft, 3.14159265359_rad})
+    .generatePath();
+  
+  wayfarer.buildPath("Curves", {2, 12_in})
+    .setGenerationMode(ConstrainedSpline)
     .withOrigin()
     .withPoint({4_ft, 4_ft, 90_deg})
     .withDebugDump()
@@ -96,9 +102,8 @@ void autonomous()
   
   //wayfarer.synchronousTraverse("Lines");
   auto traverser = wayfarer.getTraverser("Lines");
-  //traverser.simulateStep({0_ft, 0_ft, 0_deg});
-  //traverser.simulateStep({2_ft, 2_ft, 45_deg});
-  traverser.simulateStep({1.141246_ft, 2.645605_ft, 45.602719_deg});
-  //traverser.simulateStep({3_ft, 0_ft, 90_deg});
+  traverser.simulateStep({2_ft, 2_ft, 135_deg});
+  traverser.simulateStep({1_ft, 2_ft, 135_deg});
+  traverser.simulateStep({2.245792_ft, 1.140134_ft, 131.347786_deg});
 }
 

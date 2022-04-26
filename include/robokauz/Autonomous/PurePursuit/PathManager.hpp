@@ -3,6 +3,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include <map>
+#include <optional>
 
 class PathManager
 {
@@ -12,7 +13,7 @@ class PathManager
 
         std::map<std::string, Path> stored_paths;
 
-        //TODO incorporate current traverser instance into manager?
+        std::optional<PathTraverser> current_traverser;
 
     public:
 
@@ -22,17 +23,15 @@ class PathManager
 
         void insertPath(Path path);
 
-        //Generates a temporary straight-line path from the robot's current position to a given point, then traverses it.
-        void pathfindLinear();
-
-        //Generates a temporary straight-line path from the robot's current position to a point X distance forwards, then traverses it.
-        void pathfindDistance();
+        void deletePath(std::string path_name);
 
         void synchronousTraverse(std::string path_name);
 
-        PathTraverser getTraverser(std::string path_name);
+        void asynchronousTraverse(std::string path_name);
 
-        Path getPath(std::string path_name);
+        void waitUntilSettled();
+
+        PathTraverser getTraverser(std::string path_name);
 
         void dumpPath(std::string path_name);
 };

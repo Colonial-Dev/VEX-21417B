@@ -134,15 +134,18 @@ Path PathBuilder::calculatePath()
         {
             QuinticPathGenerator generator(path_waypoints, gen_params.spline_resolution, gen_params.smoothing_constant);
             points = generator.getPath();
+            break;
         }
         case ConstrainedSpline:
         {
             //STACK EM HIGH AND SELL EM CHEAP
             points = stripConstrainedSplineForExport(generateConstrainedSplinePath(transformToCartesian()));
+            break;
         }
         case Rough:
         {
             points = injectPoints();
+            break;
         }
     }
 

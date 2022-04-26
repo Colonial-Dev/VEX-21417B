@@ -1,7 +1,9 @@
 #pragma once
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/PURE_PURSUIT.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathBuilder.hpp"
+#include "robokauz/Autonomous/PurePursuit/PathTraverser.hpp"
 
 class RateLimiter
 {
