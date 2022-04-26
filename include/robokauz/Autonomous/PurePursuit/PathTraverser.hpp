@@ -98,6 +98,8 @@ class PathTraverser
 
         void traversePathAsync();
 
+        bool isSettled();
+
         void waitUntilSettled();
 
         void simulateStep(OdomState hypothetical_position);

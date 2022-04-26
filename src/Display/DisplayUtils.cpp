@@ -1,6 +1,7 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "pros/apix.h"
+#include "display/lv_fonts/lv_font_builtin.h"
 #include "robokauz/Display/DisplayGlobals.hpp"
 #include "robokauz/Display/DisplayUtils.hpp"
 
@@ -13,22 +14,26 @@ void configureTheming()
     theme->btnm.btn.rel->body.radius = 0;
     theme->btnm.btn.rel->body.border.color = LV_COLOR_GRAY;
     theme->btnm.btn.rel->body.border.width = 1;
+
     theme->page.bg->body.radius = 0;
     theme->page.bg->body.main_color = LV_COLOR_BLACK;
     theme->page.bg->body.grad_color = LV_COLOR_BLACK;
     theme->page.bg->body.padding.hor = 0;
     theme->page.bg->body.padding.ver = 0;
+
     theme->cont->body.border.width=1;
     theme->cont->body.padding.inner=0;
+
     theme->btn.pr->body.radius=0;
     theme->btn.rel->body.radius=0;
     theme->btn.rel->body.border.color = LV_COLOR_GRAY;
+
     lv_theme_set_current(theme); 
 }
 
 void configureStyling()
 {
-    confirm_style.text.font = &lv_font_dejavu_20;
+    confirm_style.text.font = &lv_font_dejavu_40;
     status_style.text.font = &lv_font_monospace_8;
 }
 

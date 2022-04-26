@@ -75,6 +75,7 @@ void autonomous()
     .setGenerationMode(Rough)
     .withOrigin()
     .withPoint({4_ft, 4_ft, 0_deg})
+    .withDebugDump()
     .generatePath();
   
   wayfarer.buildPath("Corners", {1, 12_in})
@@ -91,6 +92,14 @@ void autonomous()
     .withPoint({1_ft, 1_ft, 1.57079632679_rad})
     .withPoint({4_ft, 4_ft, 1.57079632679_rad})
     .withPoint({6_ft, 2_ft, 3.14159265359_rad})
+    .generatePath();
+
+  wayfarer.buildPath("QuinticExample", {2, 12_in, 30, 1.0})
+    .setGenerationMode(Spline)
+    .withOrigin()
+    .withPoint({4_ft, 0_ft, 45_deg})
+    .withPoint({4_ft, 4_ft, 90_deg})
+    .withDebugDump()
     .generatePath();
   
   wayfarer.buildPath("Curves", {2, 12_in})

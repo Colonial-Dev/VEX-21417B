@@ -4,15 +4,10 @@
 struct RobotProperties
 {   
     QSpeed min_velocity;
-
     QSpeed max_velocity;
-
     QAcceleration max_acceleration;
-
     QLength track_width;
-
     QLength wheel_diam;
-
     std::shared_ptr<OdomChassisController> odom_controller;
 };
 
@@ -28,7 +23,7 @@ struct Waypoint
 {
     QLength x_pos;
     QLength y_pos;
-    QAngle heading;
+    QAngle heading = 0_deg;
 };
 
 struct SplinePoint

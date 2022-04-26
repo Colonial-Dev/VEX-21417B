@@ -1,4 +1,4 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "pros/apix.h"
@@ -13,13 +13,76 @@ void statusUpdateTask(void*)
 
     statusReadout += "\n LINK " + overwatch.getPrettyConnectionMode() + " | MODE " + overwatch.getPrettyOperatingMode() + "\n";
     statusReadout += " BATTERY " + overwatch.getPrettyBattery() + "\n";
-    statusReadout += " TEMPS " + overwatch.getPrettyTemperatures() + "\n";
-    statusReadout += " #ff0000 ODO# " + overwatch.getPrettyOdomState() + "\n";
+    statusReadout += " TEMPS " + overwatch.getPrettyTemperatures() + "\n\n";
     statusReadout += " #0000ff IMU# " + imu_odometer.getPrettyPosition() + "\n";
     statusReadout += " ENCODERS " + overwatch.getPrettyEncoders() + "\n";
     statusReadout += " POTENTIOMETER [" + precise_string(arm_controller.getLiftAngle().convert(degree)) + "]\n";
+    statusReadout += " PURE PURSUIT " + wayfarer.getPrettyStatus() + "\n";
     
     statusPrint(statusReadout);
+}
+
+void routineUpdateTask(void*)
+{
+    std::string routineReadout;
+
+    routineReadout += "#00FFFF Auton Ready!#\n";
+
+    switch(targetAutonSide)
+    {
+        case Left:
+        {
+            routineReadout += "#0000FF L#-";
+            break;
+        }
+        case Right:
+        {
+            routineReadout += "#FF0000 R#-";
+            break;
+        }
+        case Skills:
+        {
+            routineReadout += "#FFFF00 Skills#";
+            break;
+        }
+        case None:
+        {
+            routineReadout += "#808080 None#";
+            break;
+        }
+    }
+
+    if(targetAutonSide != Left && targetAutonSide != Right)
+    {
+        lv_label_set_text(ready_label, routineReadout.c_str());
+        return;
+    }
+
+    switch(targetAutonStrategy)
+    {
+        case FullWinPoint:
+        {
+            routineReadout += "WP Full";
+            break;
+        }
+        case HalfWinPoint:
+        {
+            routineReadout += "WP Half";
+            break;
+        }
+        case GoalRush:
+        {
+            routineReadout += "Goal Rush";
+            break;
+        }
+        case StackRush:
+        {
+            routineReadout += "Stack Rush";
+            break;
+        }
+    }
+    
+    lv_label_set_text(ready_label, routineReadout.c_str());
 }
 
 void switchSelectorStage(int targetStage)
@@ -77,28 +140,24 @@ lv_res_t handleSideSelect(lv_obj_t * obj, const char *txt)
         case Right:
         {
             targetAutonSide = Right;
-            targetAutonSideLabel = "#FF0000 R#-";
             switchSelectorStage(Strategy);
             break;
         }
         case Left:
         {
             targetAutonSide = Left;
-            targetAutonSideLabel = "#0000FF L#-";
             switchSelectorStage(Strategy);
             break;
         }
         case Skills:
         {
             targetAutonSide = Skills;
-            targetAutonSideLabel = "#00FFFF Skills#";
             switchSelectorStage(Complete);
             break;
         }
         case None:
         {
             targetAutonSide = None;
-            targetAutonSideLabel = "#808080 None#";
             switchSelectorStage(Complete);
             break;
         }
@@ -109,6 +168,35 @@ lv_res_t handleSideSelect(lv_obj_t * obj, const char *txt)
 
 lv_res_t handleStratSelect(lv_obj_t * obj, const char *txt)
 {
+    int activated = lv_btnm_get_pressed(obj);
+    switch(activated)
+    {
+        case FullWinPoint:
+        {
+            targetAutonStrategy = FullWinPoint;
+            switchSelectorStage(Complete);
+            break;
+        }
+        case HalfWinPoint:
+        {
+            targetAutonStrategy = HalfWinPoint;
+            switchSelectorStage(Complete);
+            break;
+        }
+        case GoalRush:
+        {
+            targetAutonStrategy = GoalRush;
+            switchSelectorStage(Complete);
+            break;
+        }
+        case StackRush:
+        {
+            targetAutonStrategy = StackRush;
+            switchSelectorStage(Complete);
+            break;
+        }
+    }
+
     return LV_RES_OK;
 }
 
@@ -144,14 +232,14 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
     {
         case Unlock:
         {
-            overwatch.suspendDriverControl();
+            driver_control_gate.closeGate();
             overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);    
             lv_btnm_set_map(mode_controls, controls_map_unlocked);
             break;
         }
         case Lock:
         {
-            overwatch.resumeDriverControl();
+            driver_control_gate.openGate();
             lv_btnm_set_map(mode_controls, controls_map_locked); 
             overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);   
             break;

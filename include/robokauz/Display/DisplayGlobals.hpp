@@ -34,8 +34,6 @@ enum ModeControls
 //Global state variables
 extern int targetAutonSide;
 extern int targetAutonStrategy;
-extern std::string targetAutonSideLabel;
-extern std::string targetAutonStrategyLabel;
 
 //Global LVGL objects/data
 static const char * switcher_map[] = {"Status", "Controls", ""}; 
@@ -52,8 +50,10 @@ static const char * controls_map_locked[] = {"#00ff00 Unlock#", "\261#808080 Loc
 
 static const char * side_map[] = {"#0000FF Left#", "#FF0000 Right#", "\n", 
                                   "#FFFF00 Skills#", "#808080 None#", ""}; 
-static const char * strat_map[] = {"Alpha", "Beta", "\n", 
-                                   "Gamma", "Delta", ""}; 
+static const char * strat_map[] = {"Win Point (Full)", "\n",
+                                   "Win Point (Half)", "\n", 
+                                   "Rush (Goal)", "\n",
+                                   "Rush (Stack)", ""}; 
 
 extern lv_theme_t * theme;
 extern lv_style_t status_style;
@@ -73,6 +73,8 @@ extern LVOBJ right_panel;
 extern LVOBJ side_page;
 extern LVOBJ strat_page;
 extern LVOBJ ready_page;
+extern LVOBJ ready_label;
+extern LVOBJ ready_container;
 extern LVOBJ waiting_label;
 extern LVOBJ side_buttons;
 extern LVOBJ strat_buttons;

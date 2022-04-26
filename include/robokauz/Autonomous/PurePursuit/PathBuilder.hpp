@@ -33,7 +33,7 @@ class PathBuilder
 
         bool do_debug_dump = false;
 
-        const QLength injection_spacing = 3_in;
+        const QLength injection_spacing = 1.5_in;
 
         std::vector<squiggles::Pose> transformToCartesian();
 

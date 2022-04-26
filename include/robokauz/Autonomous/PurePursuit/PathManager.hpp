@@ -5,6 +5,15 @@
 #include <map>
 #include <optional>
 
+namespace PurePursuitStatus
+{
+    enum PurePursuitStatus
+    {
+        Idle,
+        Traversing
+    };
+}
+
 class PathManager
 {
     private:
@@ -14,10 +23,14 @@ class PathManager
         std::map<std::string, Path> stored_paths;
 
         std::optional<PathTraverser> current_traverser;
-
+        
     public:
 
         PathManager(RobotProperties properties);
+
+        int getStatus();
+
+        std::string getPrettyStatus();
 
         PathBuilder buildPath(std::string name, GenerationParameters g_params);
 

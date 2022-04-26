@@ -1,4 +1,4 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "pros/apix.h"
 #include "robokauz/Display/DisplayGlobals.hpp"
@@ -6,9 +6,7 @@
 
 //Global state variables
 int targetAutonSide = Right;
-int targetAutonStrategy = DoubleRush;
-std::string targetAutonSideLabel = "";
-std::string targetAutonStrategyLabel = "";
+int targetAutonStrategy = FullWinPoint;
 
 lv_theme_t * theme =  lv_theme_alien_init(180, NULL);
 lv_style_t status_style;
@@ -28,6 +26,8 @@ LVOBJ right_panel;
 LVOBJ side_page;
 LVOBJ strat_page;
 LVOBJ ready_page;
+LVOBJ ready_label;
+LVOBJ ready_container;
 LVOBJ waiting_label;
 LVOBJ side_buttons;
 LVOBJ strat_buttons;

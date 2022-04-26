@@ -1,15 +1,15 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
-#include "robokauz/Autonomous/PurePursuit/RateLimiter.hpp"
-
+#include "robokauz/Other/TaskGates.hpp"
 
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
 
 //Initialize drivetrain motors
+//TODO specify gearsets?
 pros::Motor right_back (12, true);
 pros::Motor right_middle (15);
 pros::Motor right_front (16, true);
@@ -52,6 +52,7 @@ EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
 IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
 
 BotManager overwatch;
+TaskGate driver_control_gate;
 LiftController arm_controller(arm_motor, potentiometer);
 
 const RobotProperties robot_properties = {0.25_mps, 0.5_mps, 0.4_mps2, 11.5_in, 4.125_in, drive_train};

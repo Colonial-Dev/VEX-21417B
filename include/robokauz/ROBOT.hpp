@@ -4,7 +4,7 @@
 #include "robokauz/CONTROLLERS.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Other/BotManager.hpp"
-#include "robokauz/Other/TaskGate.hpp"
+#include "robokauz/Other/TaskGates.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
 //Robot state enums

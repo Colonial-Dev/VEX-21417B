@@ -289,6 +289,11 @@ void PathTraverser::traversePathAsync()
     pros::Task traverseLoop([this] { traversalLoop(); }, TASK_PRIORITY_DEFAULT + 1);
 }
 
+bool PathTraverser::isSettled()
+{
+    return conditions.is_running;
+}
+
 void PathTraverser::waitUntilSettled()
 {
     std::uint32_t delay_timestamp = pros::millis();

@@ -1,5 +1,5 @@
 //Note: Rendering area is 480x239 pixels
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "pros/apix.h"
 #include "robokauz/Display/EventHandlers.hpp"
@@ -37,7 +37,13 @@ void initializeDisplay()
     selector_cancel = createButton(strat_page, "#FF0000 Cancel#", 240, 25, LV_ALIGN_IN_BOTTOM_MID, 0, 24, *handleSelectionCancel);
 
     ready_page = createPage(right_panel, 240, 239, LV_ALIGN_IN_TOP_LEFT, 0, 0, true);
+    ready_container = createContainer(ready_page, 240, 214, LV_ALIGN_IN_RIGHT_MID, -120, 0, LV_LAYOUT_CENTER);
+    ready_label = createLabel(ready_container, "Error", LV_LABEL_ALIGN_CENTER, LV_ALIGN_CENTER, -25, 0);
+    lv_obj_set_style(ready_label, &confirm_style);
+    lv_obj_set_size(ready_label, 240, 214);
+    selector_finalized = createButton(ready_page, "#FF0000 Cancel#", 240, 25, LV_ALIGN_IN_BOTTOM_MID, 0, 24, *handleSelectionCancel);
 
     static uint32_t user_data = 10;
-    lv_task_t * status_update_task = lv_task_create(statusUpdateTask, 50, LV_TASK_PRIO_MID, &user_data);
+    lv_task_t * status_update_task = lv_task_create(statusUpdateTask, 10, LV_TASK_PRIO_MID, &user_data);
+    lv_task_t * routine_update_task = lv_task_create(routineUpdateTask, 10, LV_TASK_PRIO_MID, &user_data);
 }

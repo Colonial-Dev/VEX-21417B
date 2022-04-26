@@ -29,6 +29,12 @@ class BotManager
          */
         std::string getTemperatureColored(double temp);
 
+        std::string getBatteryColored(int level);
+
+        std::string getVoltageColored(double level);
+
+        std::string getCurrentColored(double level);
+
     public:
 
         /**

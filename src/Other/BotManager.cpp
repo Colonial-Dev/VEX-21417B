@@ -1,4 +1,4 @@
-#include "robokauz/PROS.hpp"
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/Other/BotManager.hpp"
@@ -66,6 +66,7 @@ std::string BotManager::getTemperatureColored(double temp)
 {
     if(temp < 40.0) { return "#00ff00 " + precise_string(temp) + "#"; }
     else if(temp < 55.0) { return "#ffff00 " + precise_string(temp) + "#"; }
+    else if(temp == INFINITY) { return "#ff0000 ERR#"; }
     else { return "#ff0000 " + precise_string(temp) + "#"; }
 }
 
@@ -100,12 +101,33 @@ std::string BotManager::getPrettyOdomState()
            "]";
 }
 
+std::string BotManager::getBatteryColored(int level)
+{
+    if(level > 50.0) { return "#00ff00 " + std::to_string(level) + "#"; }
+    else if(level > 25.0) { return "#ffff00 " + std::to_string(level) + "#"; }
+    else{ return "#ff0000 " + std::to_string(level) + "#"; }
+}
+
+std::string BotManager::getVoltageColored(double level)
+{
+    if(level > 12000.0) { return "#00ff00 " + precise_string(level / 1000.0, 3) + "#"; }
+    else{ return "#ff0000 " + precise_string(level / 1000.0, 3) + "#"; }
+}
+
+std::string BotManager::getCurrentColored(double level)
+{
+    if(level > 2000.0) { return "#ff0000 " + precise_string(level / 1000.0, 2) + "#"; }
+    else if (level > 1000.0) { return "#ffff00 " + precise_string(level / 1000.0, 2) + "#"; }
+    else { return "#00ff00 " + precise_string(level / 1000.0, 2) + "#"; }
+}
+
 std::string BotManager::getPrettyBattery()
 {
     return "[" + 
-           std::to_string(int (pros::battery::get_capacity())) +
-           "% | " + precise_string(pros::battery::get_voltage() / 1000.0, 3) 
-           + "V]";
+           getBatteryColored(pros::battery::get_capacity()) +
+           "% | " + getVoltageColored(pros::battery::get_voltage())
+           + "V | " + getCurrentColored(pros::battery::get_current())
+           + "A]";
 }
 
 std::string BotManager::getPrettyEncoders()
@@ -130,31 +152,6 @@ void BotManager::setBrakeMode(pros::motor_brake_mode_e_t brake_mode)
     conveyor_motor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 }
 
-
-void BotManager::registerDriverTask(pros::task_t task)
-{
-    driverTasks.emplace_back(task);
-    driverTasks.back().notify();
-}
-
-void BotManager::suspendDriverControl()
-{
-    for(int i = 0; i < driverTasks.size(); i++)
-    {
-        driverTasks.at(i).notify_ext(0, NOTIFY_ACTION_OWRITE, NULL);
-    }
-    overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-}
-
-void BotManager::resumeDriverControl()
-{
-    for(int i = 0; i < driverTasks.size(); i++)
-    {
-        driverTasks.at(i).notify();
-    }
-    overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);   
-}
-
 //Resets all relative sensor values to default, simulating a restart of the program.
 void BotManager::reinitialize()
 {
@@ -169,7 +166,7 @@ void BotManager::reinitialize()
 
 void autonomousAsync()
 {
-    overwatch.suspendDriverControl();
+    driver_control_gate.closeGate();
     overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD); //Necessary to prevent skidding 
     
     pros::delay(50);
@@ -182,5 +179,5 @@ void autonomousAsync()
 
     autonomous();
 
-    overwatch.resumeDriverControl();
+    driver_control_gate.openGate();
 }

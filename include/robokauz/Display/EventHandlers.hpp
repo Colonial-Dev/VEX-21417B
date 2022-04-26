@@ -9,6 +9,7 @@ std::string precise_string(double value, const int n);
 
 void statusUpdateTask(void*);
 
+void routineUpdateTask(void*);
 
 void switchSelectorStage(int targetStage);
 

@@ -8,6 +8,29 @@ PathManager::PathManager(RobotProperties properties)
     robot_props = properties;
 }
 
+int PathManager::getStatus()
+{
+    if(!current_traverser.has_value()) { return PurePursuitStatus::Idle; }
+    else if(!current_traverser.value().isSettled()) { return PurePursuitStatus::Traversing; }
+    else{ return PurePursuitStatus::Idle; }
+}
+
+std::string PathManager::getPrettyStatus()
+{
+    switch(getStatus())
+    {
+        case PurePursuitStatus::Idle:
+        {
+            return "[#00ff00 IDLE#]";
+        }
+        case PurePursuitStatus::Traversing:
+        {
+            return "[#ffff00 TRAVERSING#]";
+        }
+    }
+    return "[#ff0000 ERROR]";
+}
+
 PathBuilder PathManager::buildPath(std::string name, GenerationParameters g_params)
 {
     return PathBuilder(name, g_params, robot_props, *this);
@@ -26,8 +49,8 @@ void PathManager::deletePath(std::string path_name)
 void PathManager::synchronousTraverse(std::string path_name)
 {
     PathTraverser traverser = getTraverser(path_name);
-    traverser.traversePath();
     current_traverser.emplace(traverser);
+    current_traverser.value().traversePath();
 }
 
 void PathManager::asynchronousTraverse(std::string path_name)
