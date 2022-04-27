@@ -20,9 +20,9 @@ pros::Motor left_front (9);
 //Initialize manipulator motors/pneumatics
 pros::Motor arm_motor (5);
 pros::Motor conveyor_motor (8);
-pros::ADIDigitalOut back_piston (11 , 'E');
+pros::ADIDigitalOut back_piston ({{11 , 'A'}});
 pros::ADIDigitalOut clamp_piston ('G');
-pros::ADIDigitalOut lock_piston (11, 'F');
+pros::ADIDigitalOut lock_piston ({{11, 'F'}});
 
 //Initialize sensors
 pros::IMU inertial_sensor (14);
@@ -55,5 +55,6 @@ BotManager overwatch;
 TaskGate driver_control_gate;
 LiftController arm_controller(arm_motor, potentiometer);
 
-const RobotProperties robot_properties = {0.25_mps, 0.5_mps, 0.4_mps2, 11.5_in, 4.125_in, drive_train};
+//0.25 mps minimum, ~1.4-5 mps maximum, ~2.5 (?) mps2 maximum, 11.5-12 in drive train, 4.125 wheel diameter
+const RobotProperties robot_properties = {0.25_mps, 1.25_mps, 2.5_mps2, 12.0_in, 4.125_in, drive_train};
 PathManager wayfarer(robot_properties);

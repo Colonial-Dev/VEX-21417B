@@ -9,9 +9,9 @@
 
 #define TURN(x)
 
-#define CONVEYOR_OFF
-#define CONVEYOR_ON
-#define CONVEYOR_REVERSE
+#define CONVEYOR_OFF conveyor_motor.move_velocity(0);
+#define CONVEYOR_ON conveyor_motor.move_velocity(-600);
+#define CONVEYOR_REVERSE conveyor_motor.move_velocity(600);
 
 #define LIFT_FLOOR
 #define LIFT_HOVER

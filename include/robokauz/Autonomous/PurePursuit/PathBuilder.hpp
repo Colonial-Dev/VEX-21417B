@@ -55,7 +55,7 @@ class PathBuilder
 
         PathBuilder withRobotProperties(RobotProperties r_props);
 
-        PathBuilder setGenerationMode(int mode);
+        PathBuilder withGenerationMode(int mode);
 
         PathBuilder withPoint(Waypoint point);
 

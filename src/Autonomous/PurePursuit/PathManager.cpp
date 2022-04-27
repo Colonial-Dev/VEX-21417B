@@ -11,8 +11,8 @@ PathManager::PathManager(RobotProperties properties)
 int PathManager::getStatus()
 {
     if(!current_traverser.has_value()) { return PurePursuitStatus::Idle; }
-    else if(!current_traverser.value().isSettled()) { return PurePursuitStatus::Traversing; }
-    else{ return PurePursuitStatus::Idle; }
+    else if(!current_traverser.value().isSettled()) { return PurePursuitStatus::Idle; }
+    else{ return PurePursuitStatus::Traversing; }
 }
 
 std::string PathManager::getPrettyStatus()

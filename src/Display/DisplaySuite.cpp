@@ -44,6 +44,6 @@ void initializeDisplay()
     selector_finalized = createButton(ready_page, "#FF0000 Cancel#", 240, 25, LV_ALIGN_IN_BOTTOM_MID, 0, 24, *handleSelectionCancel);
 
     static uint32_t user_data = 10;
-    lv_task_t * status_update_task = lv_task_create(statusUpdateTask, 10, LV_TASK_PRIO_MID, &user_data);
-    lv_task_t * routine_update_task = lv_task_create(routineUpdateTask, 10, LV_TASK_PRIO_MID, &user_data);
+    lv_task_t * status_update_task = lv_task_create(statusUpdateTask, 50, LV_TASK_PRIO_MID, &user_data);
+    lv_task_t * routine_update_task = lv_task_create(routineUpdateTask, 50, LV_TASK_PRIO_MID, &user_data);
 }

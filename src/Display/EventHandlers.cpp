@@ -18,7 +18,6 @@ void statusUpdateTask(void*)
     statusReadout += " ENCODERS " + overwatch.getPrettyEncoders() + "\n";
     statusReadout += " POTENTIOMETER [" + precise_string(arm_controller.getLiftAngle().convert(degree)) + "]\n";
     statusReadout += " PURE PURSUIT " + wayfarer.getPrettyStatus() + "\n";
-    
     statusPrint(statusReadout);
 }
 

@@ -37,5 +37,5 @@ QAngle angleBetweenPoints(Vector start, Vector target)
 
 QAngle angleToPoint(Vector start, Vector target, QAngle heading)
 {
-    return rollAngle180(angleBetweenPoints(target, start) - heading);
+    return rollAngle180(angleBetweenPoints(start, target) - heading);
 }

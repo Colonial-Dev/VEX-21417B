@@ -168,7 +168,7 @@ PathBuilder PathBuilder::withRobotProperties(RobotProperties r_props)
     return *this;
 }
 
-PathBuilder PathBuilder::setGenerationMode(int mode)
+PathBuilder PathBuilder::withGenerationMode(int mode)
 {
     generation_mode = mode;
     return *this;

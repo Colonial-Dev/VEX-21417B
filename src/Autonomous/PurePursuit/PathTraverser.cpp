@@ -45,7 +45,8 @@ void PathTraverser::findClosestPoint()
         ceil_index = points.lookahead_index + 2;
     }
 
-    for(int i = curr_closest_index; i < path.size() - 1; i++)//std::min(path.size() - 1, ceil_index); i++)
+    //for(int i = curr_closest_index; i < path.size() - 1; i++)
+    for(int i = curr_closest_index; i < std::min(path.size() - 1, ceil_index); i++)
     {
         QLength distance = interpointDistance(points.current_position, path.at(i));
         if(distance.convert(meter) < curr_closest_distance.convert(meter))
@@ -119,8 +120,20 @@ void PathTraverser::calculateLookahead()
         if(t_value < 0 || fractional_index <= points.lookahead_index) { continue; }
         else if(i > points.lookahead_index || t_value > previous_t_value)
         {   
+            int cache = points.lookahead_index;
             points.lookahead_index = i;
             previous_t_value = t_value;
+
+            Vector start = path.at(points.lookahead_index);
+            Vector end = path.at(points.lookahead_index + 1);
+            Vector d = end - start;
+            Vector final_point = start + (d * previous_t_value);
+
+            if(interpointDistance(final_point, end) > interpointDistance(points.current_position, end))
+            {
+                points.lookahead_index = cache;
+                continue;
+            }
 
             if(previous_intersection_index > 0)
             {
@@ -135,13 +148,15 @@ void PathTraverser::calculateLookahead()
             }
         }
     }
-
+    
+    //points.lookahead_index = std::clamp(points.lookahead_index, 0, path.size() - 1);
     Vector start = path.at(points.lookahead_index);
     Vector end = path.at(points.lookahead_index + 1);
     Vector d = end - start;
     Vector final_point = start + (d * previous_t_value);
     points.lookahead_point = final_point;
-    //projectLookahead();
+    //points.lookahead_index = std::clamp(std::ceil(previous_t_value + points.lookahead_index), 0.0, path.size() - 2.0);
+    projectLookahead();
 
     PRINT("LP: (" + std::to_string(points.lookahead_point.x_component.convert(foot)) + ", " + std::to_string(points.lookahead_point.y_component.convert(foot)) + ")");
     PRINT("LPI: " + std::to_string(points.lookahead_index + 1));
@@ -160,7 +175,7 @@ void PathTraverser::calculateCurvature()
 {
     Vector difference = points.lookahead_point - points.current_position;
     double alpha = std::atan2(difference.y_component.convert(meter), difference.x_component.convert(meter));
-    double beta = points.current_position.theta.convert(radian) - alpha;
+    double beta = constrainAngle180(points.current_position.theta).convert(radian) - alpha;
     double curvature = (2 * std::sin(beta)) / (path.lookahead_distance.convert(meter));
     outputs.curvature = conditions.end_within_lookahead ? 0 : -curvature;
     PRINT("Curvature: " + std::to_string(outputs.curvature));
@@ -183,7 +198,7 @@ void PathTraverser::calculateWheelSpeeds()
 
     target_velocity = std::max(target_velocity, robot_properties.min_velocity);
 
-    //target_velocity = limiter.getLimited(target_velocity, robot_properties.max_acceleration);
+    target_velocity = limiter.getLimited(target_velocity, robot_properties.max_acceleration);
 
     QSpeed left_velocity = (target_velocity.convert(mps) * (2.0 + robot_properties.track_width.convert(meter) * outputs.curvature) / 2.0) * mps;
     QSpeed right_velocity = (target_velocity.convert(mps) * (2.0 - robot_properties.track_width.convert(meter) * outputs.curvature) / 2.0) * mps;
@@ -202,13 +217,15 @@ void PathTraverser::calculateWheelSpeeds()
 void PathTraverser::updateConditions()
 {
     conditions.is_on_path = interpointDistance(points.current_position, points.closest_point) <= path.lookahead_distance;
-    conditions.end_within_lookahead = interpointDistance(points.closest_point, path.end()) < path.lookahead_distance &&
-                                interpointDistance(points.current_position, path.end()) < path.lookahead_distance;
 
-    QAngle angle_to_end = angleToPoint(path.end(), points.current_position, rollAngle180(points.current_position.theta)).abs();
+    QAngle angle_to_end = angleToPoint(path.end(), points.current_position, points.current_position.theta).abs();
+    conditions.end_within_lookahead = interpointDistance(points.closest_point, path.end()) < path.lookahead_distance &&
+                            interpointDistance(points.current_position, path.end()) < path.lookahead_distance;
+                            //(angle_to_end < 15_deg && angle_to_end > -15_deg);
+    
     conditions.is_past_end = angle_to_end > (M_PI / 2) * radian;
     conditions.distance_to_end = interpointDistance(points.current_position, path.end()).abs();
-    conditions.is_finished = conditions.is_past_end && conditions.end_within_lookahead;
+    conditions.is_finished = conditions.is_past_end && conditions.end_within_lookahead; //&& points.closest_index == path.size() - 1;
     
     PRINT("On path? " + std::to_string(conditions.is_on_path));
     PRINT("EWL? " + std::to_string(conditions.end_within_lookahead));
@@ -306,6 +323,6 @@ void PathTraverser::waitUntilSettled()
 void PathTraverser::simulateStep(OdomState hypothetical_position)
 {
     if(conditions.is_running) { return; }
-    //reset();
+    reset();
     simulateAll(hypothetical_position);
 }

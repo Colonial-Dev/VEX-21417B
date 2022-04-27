@@ -15,8 +15,8 @@ struct GenerationParameters
 {
     double initial_velocity_constant; //Higher = faster
     QLength lookahead_distance;
-    int spline_resolution;
-    double smoothing_constant;
+    int spline_resolution = 30;
+    double smoothing_constant = 1.0;
 };
 
 struct Waypoint

@@ -54,65 +54,57 @@ void initialize()
 
 void autonomous()
 {
-  GenerationParameters g_params {15.0, 12_in};
-  
-  /*wayfarer.buildPath("Skills_TurnOut", g_params)
-    .withPoint({0_ft, 0_ft, -90_deg})
-    .withPoint({2_ft, 4_ft, 90_deg})
-    .withPoint({2_ft, 8_ft, 90_deg})
-    //.withDebugDump()
-    .generatePath();*/
-
-  /*
-    path_finder->generatePath({
-    {1.216_m, 0.608_m, 270_deg},
-    {1.824_m, 1.815_m, 180_deg},
-    {1.824_m, 3.040_m, 180_deg}},
-    "Test"
-  );*/
-
-  wayfarer.buildPath("Lines", {5, 12_in})
-    .setGenerationMode(Rough)
+  wayfarer.buildPath("LineTest", {2.0, 18_in})
+    .withGenerationMode(Rough)
     .withOrigin()
-    .withPoint({4_ft, 4_ft, 0_deg})
+    .withPoint({6_ft, 6_ft})
+    .generatePath();
+
+  wayfarer.buildPath("CurveTest", {2.0, 20_in})
+    .withGenerationMode(ConstrainedSpline)
+    .withOrigin()
+    .withPoint({6_ft, 6_ft, 90_deg})
+    .generatePath();
+
+  wayfarer.buildPath("Skills_1", {1.7, 18_in, 30, 1.0})
+    .withGenerationMode(Spline)
+    .withOrigin()
+    .withPoint({1.0_ft, 1.3_ft})
+    .withPoint({0.5_ft, 5.5_ft})
     .withDebugDump()
     .generatePath();
   
-  wayfarer.buildPath("Corners", {1, 12_in})
-    .setGenerationMode(Rough)
-    .withPoint({0_ft, 0_ft, 0_deg})
-    .withPoint({3_ft, 0_ft, 0_deg})
-    .withPoint({3_ft, 3_ft, 0_deg})
-    .withPoint({3_ft, 6_ft, 0_deg})
-    .withPoint({6_ft, 6_ft, 0_deg})
-    .generatePath();
-
-  wayfarer.buildPath("Quintic", {2, 12_in})
-    .setGenerationMode(Spline)
-    .withPoint({1_ft, 1_ft, 1.57079632679_rad})
-    .withPoint({4_ft, 4_ft, 1.57079632679_rad})
-    .withPoint({6_ft, 2_ft, 3.14159265359_rad})
-    .generatePath();
-
-  wayfarer.buildPath("QuinticExample", {2, 12_in, 30, 1.0})
-    .setGenerationMode(Spline)
-    .withOrigin()
-    .withPoint({4_ft, 0_ft, 45_deg})
-    .withPoint({4_ft, 4_ft, 90_deg})
+  wayfarer.buildPath("Skills_2", {1.5, 16_in, 30, 0.6})
+    .withGenerationMode(Spline)
+    .withPoint({0.5_ft, 5.5_ft})
+    .withPoint({-1_ft, 6_ft})
+    .withPoint({-2.25_ft, 9.65_ft})
     .withDebugDump()
     .generatePath();
   
-  wayfarer.buildPath("Curves", {2, 12_in})
-    .setGenerationMode(ConstrainedSpline)
-    .withOrigin()
-    .withPoint({4_ft, 4_ft, 90_deg})
-    .withDebugDump()
-    .generatePath();
+  CLIP_CLOSE
+  arm_controller.setTargetAsync(0_deg);
+  wayfarer.synchronousTraverse("Skills_1");
+  CLAMP_CLOSE
+  pros::delay(500);
+  arm_controller.setTargetAsync(138_deg);
+  CONVEYOR_ON
+  wayfarer.synchronousTraverse("Skills_2");
+  turnRelative(90_deg);
+  CONVEYOR_OFF
+  arm_controller.setTarget(70_deg);
+  CLAMP_OPEN
   
-  //wayfarer.synchronousTraverse("Lines");
-  auto traverser = wayfarer.getTraverser("Lines");
-  traverser.simulateStep({2_ft, 2_ft, 135_deg});
-  traverser.simulateStep({1_ft, 2_ft, 135_deg});
-  traverser.simulateStep({2.245792_ft, 1.140134_ft, 131.347786_deg});
+  /*arm_controller.setTarget(0_deg);
+  CLIP_CLOSE
+  wayfarer.synchronousTraverse("Skills_1");
+  CLAMP_CLOSE
+  pros::delay(500);
+  arm_controller.setTarget(138_deg);
+  CONVEYOR_ON
+  wayfarer.synchronousTraverse("Skills_2");
+  CONVEYOR_OFF
+  arm_controller.setTarget(120_deg);
+  CLAMP_OPEN*/
 }
 

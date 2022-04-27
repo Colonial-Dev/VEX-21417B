@@ -29,7 +29,7 @@ void LiftController::bangLoop()
         {
             error = getError();
             lift_motor.move_voltage(12000 * sgnum(error.convert(degree)));
-            if(error.abs() > 1_deg) { is_settled = true; lift_motor.move_voltage(0); }
+            if(error.abs() < 1_deg) { is_settled = true; lift_motor.move_voltage(0); }
         }
         pros::delay(10);
     }
