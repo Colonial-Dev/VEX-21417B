@@ -228,9 +228,9 @@ void PathBuilder::generatePath()
 
     if(compute_reversed)
     {
-        std::vector<Waypoint> reversed_path = path_waypoints;
-        std::reverse(reversed_path.begin(), reversed_path.end());
-        path_waypoints = reversed_path;
+        //std::vector<Waypoint> reversed_path = path_waypoints;
+        //std::reverse(reversed_path.begin(), reversed_path.end());
+        //path_waypoints = reversed_path;
 
         Path computed_reversed_path = calculatePath();
         computed_reversed_path.name = path_name + "_rev";

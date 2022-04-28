@@ -139,7 +139,7 @@ std::string BotManager::getPrettyEncoders()
             "]";
 }
 
-void BotManager::setBrakeMode(pros::motor_brake_mode_e_t brake_mode)
+void BotManager::setDriveBrakeMode(pros::motor_brake_mode_e_t brake_mode)
 {
     right_back.set_brake_mode(brake_mode);
     right_middle.set_brake_mode(brake_mode);
@@ -147,9 +147,12 @@ void BotManager::setBrakeMode(pros::motor_brake_mode_e_t brake_mode)
     left_back.set_brake_mode(brake_mode);
     left_middle.set_brake_mode(brake_mode);
     left_front.set_brake_mode(brake_mode);
+}
 
+void BotManager::setManipulatorBrakeMode(pros::motor_brake_mode_e_t brake_mode)
+{
     arm_motor.set_brake_mode(brake_mode);
-    conveyor_motor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    conveyor_motor.set_brake_mode(brake_mode);
 }
 
 //Resets all relative sensor values to default, simulating a restart of the program.
@@ -167,7 +170,7 @@ void BotManager::reinitialize()
 void autonomousAsync()
 {
     driver_control_gate.closeGate();
-    overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD); //Necessary to prevent skidding 
+    overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD); //Necessary to prevent skidding 
     
     pros::delay(50);
     master.rumble("-");

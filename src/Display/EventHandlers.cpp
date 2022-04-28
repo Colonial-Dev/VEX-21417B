@@ -232,15 +232,17 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
         case Unlock:
         {
             driver_control_gate.closeGate();
-            overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);    
             lv_btnm_set_map(mode_controls, controls_map_unlocked);
+            overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+            overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_COAST); 
             break;
         }
         case Lock:
         {
             driver_control_gate.openGate();
             lv_btnm_set_map(mode_controls, controls_map_locked); 
-            overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);   
+            overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+            overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);      
             break;
         }
         case Autonomous:

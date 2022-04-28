@@ -1,6 +1,7 @@
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
+#include "robokauz/ROBOT.hpp"
 #include <map>
 
 PathManager::PathManager(RobotProperties properties)
@@ -38,7 +39,7 @@ PathBuilder PathManager::buildPath(std::string name, GenerationParameters g_para
 
 void PathManager::insertPath(Path path)
 {
-    stored_paths.insert(std::pair<std::string, Path>(path.name, path));
+    stored_paths.insert_or_assign(path.name, path);
 }
 
 void PathManager::deletePath(std::string path_name)
@@ -58,6 +59,54 @@ void PathManager::asynchronousTraverse(std::string path_name)
     PathTraverser traverser = getTraverser(path_name);
     traverser.traversePathAsync();
     current_traverser.emplace(traverser);
+}
+
+void PathManager::traverseLinear(Point point, bool backwards)
+{   
+    buildPath("TRANSIENT_PATH", {1, 5_in, 30, 1.0})
+        .withGenerationMode(Spline)
+        .withRobotProperties({0.25_mps, 1.25_mps, 1.5_mps2, 12.0_in, 4.125_in, drive_train})
+        .withCurrentPosition(imu_odometer)
+        .withPoint({point.x, point.y})
+        .makeReversed()
+        .generatePath();
+    
+    if(backwards) { synchronousTraverse("TRANSIENT_PATH_rev"); }
+    else { synchronousTraverse("TRANSIENT_PATH"); }
+}
+
+void PathManager::traverseLinearAsync(Point point, bool backwards)
+{
+    buildPath("TRANSIENT_PATH", {1, 5_in, 30, 1.0})
+        .withGenerationMode(Spline)
+        .withRobotProperties({0.25_mps, 1.25_mps, 1.5_mps2, 12.0_in, 4.125_in, drive_train})
+        .withCurrentPosition(imu_odometer)
+        .withPoint({point.x, point.y})
+        .makeReversed()
+        .generatePath();
+    
+    if(backwards) { asynchronousTraverse("TRANSIENT_PATH_rev"); }
+    else { asynchronousTraverse("TRANSIENT_PATH"); }
+}
+
+void PathManager::traverseDistance(QLength distance)
+{
+    Vector position = imu_odometer.getPosition();
+    QAngle heading = constrainAngle360(imu_odometer.getPosition().theta);
+    heading = (distance < 0_m) ? 180_deg + heading : heading;
+    Vector difference = {distance, heading};
+    Vector target = position + difference;
+    traverseLinear({target.x_component, target.y_component}, (distance < 0_m));
+}
+
+void PathManager::traverseDistanceAsync(QLength distance)
+{
+    Vector position = imu_odometer.getPosition();
+    QAngle heading = constrainAngle360(imu_odometer.getPosition().theta);
+    heading = (distance < 0_m) ? 180_deg + heading : heading;
+    Vector difference = {distance, heading};
+    Vector target = position + difference;
+    traverseLinearAsync({target.x_component, target.y_component}, (distance < 0_m));
 }
 
 void PathManager::waitUntilSettled()

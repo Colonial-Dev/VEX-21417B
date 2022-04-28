@@ -80,10 +80,16 @@ class BotManager
         std::string getPrettyEncoders();
 
         /**
-         * @brief Sets the brake mode of the drive train and manipulators.
+         * @brief Sets the brake mode of the drive train.
          * @param brake_mode A pros::motor_brake_mode_e_t value.
          */
-        void setBrakeMode(pros::motor_brake_mode_e_t brake_mode);
+        void setDriveBrakeMode(pros::motor_brake_mode_e_t brake_mode);
+
+        /**
+         * @brief Sets the brake mode of the manipulators.
+         * @param brake_mode A pros::motor_brake_mode_e_t value.
+         */
+        void setManipulatorBrakeMode(pros::motor_brake_mode_e_t brake_mode);
         
         /**
          * @brief Simulates a program restart; all sensors and odometry implementations are zeroed out and/or recalibrated.

@@ -46,7 +46,9 @@ void awaitCommand()
 
 void initialize() 
 {
-  overwatch.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  PRINT("21417B Competition Suite - v4.0 Worldsbound\n(C) 2021-2022 SomewhereOutInSpace/James Haywood");
+  overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   initializeDisplay();
   initializeOpcontrol();
   pros::Task cmd(awaitCommand);
@@ -54,57 +56,103 @@ void initialize()
 
 void autonomous()
 {
-  wayfarer.buildPath("LineTest", {2.0, 18_in})
-    .withGenerationMode(Rough)
-    .withOrigin()
-    .withPoint({6_ft, 6_ft})
-    .generatePath();
-
-  wayfarer.buildPath("CurveTest", {2.0, 20_in})
-    .withGenerationMode(ConstrainedSpline)
-    .withOrigin()
-    .withPoint({6_ft, 6_ft, 90_deg})
-    .generatePath();
+ // overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 
   wayfarer.buildPath("Skills_1", {1.7, 18_in, 30, 1.0})
     .withGenerationMode(Spline)
     .withOrigin()
-    .withPoint({1.0_ft, 1.3_ft})
-    .withPoint({0.5_ft, 5.5_ft})
+    .withPoint({1.3_ft, -1.0_ft})
+    .withPoint({5.5_ft, -0.5_ft})
     .withDebugDump()
     .generatePath();
   
   wayfarer.buildPath("Skills_2", {1.5, 16_in, 30, 0.6})
     .withGenerationMode(Spline)
-    .withPoint({0.5_ft, 5.5_ft})
-    .withPoint({-1_ft, 6_ft})
-    .withPoint({-2.25_ft, 9.65_ft})
+    .withPoint({5.5_ft, -0.5_ft})
+    .withPoint({6_ft, 1_ft})
+    .withPoint({9.65_ft, 2.2_ft})
     .withDebugDump()
     .generatePath();
   
+  wayfarer.buildPath("Skills_3", {1.5, 16_in, 30, 0.5})
+    .withGenerationMode(Spline)
+    .withPoint({8.5_ft, -2_ft})
+    .withPoint({8.5_ft, 1.5_ft})
+    .withPoint({5.25_ft, 3.5_ft})
+    .generatePath();
+
+  wayfarer.buildPath("Skills_4", {1.5, 16_in, 30, 0.5})
+    .withGenerationMode(Spline)
+    .withPoint({5.25_ft, 3.5_ft})
+    .withPoint({1.5_ft, 2.25_ft})
+    .generatePath();
+  
+  lock_piston.set_value(true);
+  SETROT(-90_deg)
   CLIP_CLOSE
   arm_controller.setTargetAsync(0_deg);
+  overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_COAST);
   wayfarer.synchronousTraverse("Skills_1");
   CLAMP_CLOSE
-  pros::delay(500);
+  pros::delay(250);
+  overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   arm_controller.setTargetAsync(138_deg);
   CONVEYOR_ON
   wayfarer.synchronousTraverse("Skills_2");
-  turnRelative(90_deg);
+
   CONVEYOR_OFF
-  arm_controller.setTarget(70_deg);
+  arm_controller.setTarget(67_deg);
   CLAMP_OPEN
-  
-  /*arm_controller.setTarget(0_deg);
-  CLIP_CLOSE
-  wayfarer.synchronousTraverse("Skills_1");
+  pros::delay(250);
+
+  arm_controller.setTargetAsync(90_deg);
+  wayfarer.traverseDistance(-1.25_ft);
+  turnRelative(90_deg);
+  pros::delay(350);
+  CLIP_OPEN
+  pros::delay(250);
+
+  arm_controller.setTargetAsync(0_deg);
+  wayfarer.traverseDistance(1_ft);
+  turnRelative(-90_deg);
+  wayfarer.traverseDistance(1.5_ft);
   CLAMP_CLOSE
+  pros::delay(250);
+
+  arm_controller.setTargetAsync(20_deg);
+  //wayfarer.traverseDistance(-1_ft);
   pros::delay(500);
-  arm_controller.setTarget(138_deg);
-  CONVEYOR_ON
-  wayfarer.synchronousTraverse("Skills_2");
-  CONVEYOR_OFF
-  arm_controller.setTarget(120_deg);
-  CLAMP_OPEN*/
+  turnRelative(0_deg);
+  pros::delay(250);
+  arm_controller.setTarget(100_deg);
+  wayfarer.traverseDistance(1.6_ft);
+  arm_controller.setTarget(67_deg);
+
+  CLAMP_OPEN
+  pros::delay(250);
+  arm_controller.setTargetAsync(100_deg);
+  wayfarer.traverseDistance(-1_ft);
+  turnRelative(100_deg);
+  pros::delay(250);
+
+  arm_controller.setTargetAsync(0_deg);
+  overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+  wayfarer.traverseLinear({8.35_ft, -2.2_ft}, true);
+  CLIP_CLOSE
+  pros::delay(250);
+  overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+
+  wayfarer.synchronousTraverse("Skills_3");
+  CLAMP_CLOSE
+  pros::delay(250);
+  arm_controller.setTarget(20_deg);
+  turnRelative(180_deg);
+  arm_controller.setTarget(140_deg);
+  pros::delay(250);
+  wayfarer.synchronousTraverse("Skills_4");
+  //wayfarer.traverseLinear({2_ft, 2.5_ft}, false);
+  arm_controller.setTarget(67_deg);
+  CLAMP_OPEN
+  pros::delay(250);
 }
 

@@ -223,7 +223,7 @@ void PathTraverser::updateConditions()
                             interpointDistance(points.current_position, path.end()) < path.lookahead_distance;
                             //(angle_to_end < 15_deg && angle_to_end > -15_deg);
     
-    conditions.is_past_end = angle_to_end > (M_PI / 2) * radian;
+    conditions.is_past_end = path.reversed ? angle_to_end < (M_PI / 2) * radian : angle_to_end > (M_PI / 2) * radian;
     conditions.distance_to_end = interpointDistance(points.current_position, path.end()).abs();
     conditions.is_finished = conditions.is_past_end && conditions.end_within_lookahead; //&& points.closest_index == path.size() - 1;
     

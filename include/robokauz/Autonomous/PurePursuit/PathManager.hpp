@@ -42,6 +42,14 @@ class PathManager
 
         void asynchronousTraverse(std::string path_name);
 
+        void traverseLinear(Point point, bool backwards = false);
+
+        void traverseLinearAsync(Point point, bool backwards = false);
+
+        void traverseDistance(QLength distance);
+
+        void traverseDistanceAsync(QLength distance);
+
         void waitUntilSettled();
 
         PathTraverser getTraverser(std::string path_name);

@@ -20,7 +20,7 @@ pros::Motor left_front (9);
 //Initialize manipulator motors/pneumatics
 pros::Motor arm_motor (5);
 pros::Motor conveyor_motor (8);
-pros::ADIDigitalOut back_piston ({{11 , 'A'}});
+pros::ADIDigitalOut back_piston ({{11 , 'E'}});
 pros::ADIDigitalOut clamp_piston ('G');
 pros::ADIDigitalOut lock_piston ({{11, 'F'}});
 

@@ -25,10 +25,10 @@ enum AutonSide
 
 enum AutonStrat
 {
-  FullWinPoint, //Full win point auton (left side only?)
+  FullWinPoint, //Full win point auton (Not necessarily left side only)
   HalfWinPoint, //Half win point (side specific)
-  GoalRush, //Grab a small + large neutral
-  StackRush //Grab and stack a small + large neutral
+  GoalRush, //Grab a small + large neutral, dumping them somewhere safe (the corner?)
+  StackRush //Grab a small + large neutral, then stack both on the balance.
 };
 
 extern pros::Controller master;

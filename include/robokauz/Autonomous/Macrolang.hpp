@@ -9,6 +9,8 @@
 
 #define TURN(x)
 
+#define SETROT(x) inertial_sensor.set_rotation((x).convert(degree));
+
 #define CONVEYOR_OFF conveyor_motor.move_velocity(0);
 #define CONVEYOR_ON conveyor_motor.move_velocity(-600);
 #define CONVEYOR_REVERSE conveyor_motor.move_velocity(600);
