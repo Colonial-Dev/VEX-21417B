@@ -1,9 +1,13 @@
 #pragma once
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/ROBOT.hpp"
-#include "robokauz/Autonomous/VectorMath.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
+
+enum MotorMode
+{
+    Velocity,
+    Voltage
+};
 
 struct PIDConstants
 {
@@ -12,30 +16,14 @@ struct PIDConstants
     const double D_CONSTANT = 0.0;
 };
 
-struct ControllerTargets
+struct PIDOutputs
 {
-    QAngle angle = 0_deg;
-    QLength distance = 0_ft;
-    Vector point = {0_ft, 0_ft};
-};
-
-enum ControllerState
-{
-    Settled,
-    Turning,
-    Translating
-};
-
-enum MotorMode
-{
-    Velocity,
-    Voltage
-};
-
-enum TurnMode
-{
-    Absolute,
-    Relative
+    double error = 0;
+    double prev_error = 0;
+    double proportional = 0;
+    double integral = 0;
+    double derivative = 0;
+    double threshold_ct = 0;
 };
 
 class DriveController
@@ -43,32 +31,39 @@ class DriveController
     private:
 
         IMUOdometer& odometer;
+        const PIDConstants TURN_CONSTANTS;
+        PIDOutputs outputs;
+        QAngle target_angle = 0_deg;
+        bool turn_settled = true;
+
         std::vector<pros::Motor> left_motors;
         std::vector<pros::Motor> right_motors;
-        const PIDConstants TURN_CONSTANTS;
-        const PIDConstants TRANSLATION_CONSTANTS;
-        ControllerTargets controller_targets;
-        int controller_state = Settled;
 
         QAngle getRobotHeading();
 
-        QAngle getTurnError();
+        double getError();
+
+        void resetOutputs();
 
         void turnLoop();
 
     public:
 
-        DriveController(std::vector<pros::Motor> left, std::vector<pros::Motor> right, PIDConstants turning_constants, PIDConstants translation_constants);
+        DriveController(std::vector<int> left, std::vector<int> right, IMUOdometer& imu_odom, PIDConstants turning_constants);
 
-        void setLeftOutput(int output, int mode = Velocity);
+        void left(int output, int mode = Velocity);
 
-        void setRightOutput(int output, int mode = Velocity);
+        void right(int output, int mode = Velocity);
 
-        void setTankOutput(int left_output, int right_output, int mode = Velocity);
+        void tank(int left_output, int right_output, int mode = Velocity);
 
         void brake();
 
-        void turnAngle(QAngle target, int mode);
+        void turnAbsolute(QAngle target);
 
-        void turnToPoint(Point target);
+        void turnRelative(QAngle target);
+
+        void turnToPoint(Point point);
+
+        void waitUntilSettled();
 };

@@ -4,11 +4,10 @@
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 #include "robokauz/Autonomous/VectorMath.hpp"
 
-PathBuilder::PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, PathManager& caller) : calling_manager(caller)
+PathBuilder::PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, PathManager& caller) : calling_manager(caller), robot_props(r_props)
 {
     path_name = name;
     gen_params = g_params;
-    robot_props = r_props;
 }
 
 std::vector<squiggles::Pose> PathBuilder::transformToCartesian()
@@ -153,7 +152,6 @@ Path PathBuilder::calculatePath()
     computed_path.name = path_name;
     computed_path.lookahead_distance = gen_params.lookahead_distance;
     computed_path.k_constant = gen_params.initial_velocity_constant;
-    computed_path.prealign = has_prealignment;
     calculateCurvatures(computed_path);
     calculateVelocities(computed_path);
 
@@ -200,12 +198,6 @@ PathBuilder PathBuilder::withCurrentPosition(IMUOdometer& odometer)
 {   
     OdomState position = odometer.getPosition();
     withPoint({position.x, position.y, position.theta});
-    return *this;
-}
-
-PathBuilder PathBuilder::withPrealignment()
-{
-    has_prealignment = true;
     return *this;
 }
 

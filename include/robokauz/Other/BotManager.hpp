@@ -65,11 +65,6 @@ class BotManager
         std::string getPrettyTemperatures();
 
         /**
-         * @brief Gets the color-coded string representation of the robot's current OkapiLib odometry state.
-         */
-        std::string getPrettyOdomState();
-
-        /**
          * @brief Gets the string representation of the robot's current battery level and voltage.
          */
         std::string getPrettyBattery();

@@ -243,27 +243,15 @@ void PathTraverser::calculateAll()
     calculateWheelSpeeds();
 }
 
-void PathTraverser::simulateAll(OdomState hypothetical_position)
-{
-    PRINT("------------ SIM-STEP! ------------");
-    points.current_position = hypothetical_position;
-    findClosestPoint();
-    calculateLookahead();
-    updateConditions();
-    calculateCurvature();
-    //We don't bother with wheel speeds in simulation,
-    //because for the outputs to be accurate they depend on past data + the rate limiter.
-}
-
 bool PathTraverser::integrateCalculations()
 {
     if(!path.reversed)
     {
-        robot_properties.odom_controller->getModel()->tank(outputs.target_speeds.target_left.convert(rpm) / 200, outputs.target_speeds.target_right.convert(rpm) / 200);
+        robot_properties.controller->tank(outputs.target_speeds.target_left.convert(rpm), outputs.target_speeds.target_right.convert(rpm));
     }
     else
     {
-        robot_properties.odom_controller->getModel()->tank(-outputs.target_speeds.target_left.convert(rpm) / 200, -outputs.target_speeds.target_right.convert(rpm) / 200);
+        robot_properties.controller->tank(-outputs.target_speeds.target_left.convert(rpm), -outputs.target_speeds.target_right.convert(rpm));
     }
 
     if(conditions.is_finished) { return true; }
@@ -284,7 +272,7 @@ void PathTraverser::traversalLoop()
         pros::Task::delay_until(&delay_timestamp, 10);
     }
     conditions.is_running = false;
-    robot_properties.odom_controller->getModel()->driveVector(0, 0); 
+    robot_properties.controller->brake();
 }
 
 void PathTraverser::reset()
@@ -318,11 +306,4 @@ void PathTraverser::waitUntilSettled()
     {
         pros::Task::delay_until(&delay_timestamp, 10);
     }
-}
-
-void PathTraverser::simulateStep(OdomState hypothetical_position)
-{
-    if(conditions.is_running) { return; }
-    reset();
-    simulateAll(hypothetical_position);
 }

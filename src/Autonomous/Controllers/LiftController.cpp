@@ -1,7 +1,6 @@
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/ROBOT.hpp"
-#include "robokauz/CONTROLLERS.hpp"
+#include "robokauz/Autonomous/Controllers/LiftController.hpp"
 
 QAngle LiftController::getLiftAngle()
 {

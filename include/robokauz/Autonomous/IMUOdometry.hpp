@@ -1,7 +1,6 @@
 #pragma once
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/Autonomous/VectorMath.hpp"
 
 /**
  * @brief Holds references to the left, middle and right tracking wheel ADI encoders.

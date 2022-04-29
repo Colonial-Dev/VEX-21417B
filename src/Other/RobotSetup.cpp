@@ -3,7 +3,7 @@
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
-#include "robokauz/Other/TaskGates.hpp"
+#include "robokauz/Other/TaskGate.hpp"
 
 //Acquire the controller for global use
 pros::Controller master (CONTROLLER_MASTER);
@@ -34,27 +34,16 @@ pros::ADIAnalogIn potentiometer ('H');
 //Drivetrain gear ratio constant
 const double GEAR_RATIO = 60.0/84.0;
 
-std::shared_ptr<okapi::OdomChassisController> drive_train = okapi::ChassisControllerBuilder()
-  .withMotors({19, 6, 9}, {12, 15, 16})
-  .withSensors
-  (
-      ADIEncoder{'A', 'B', true}, //Left encoder
-      ADIEncoder{'C', 'D'},  //Right encoder
-      ADIEncoder{'E', 'F'}  //Middle encoder
-  )
-  .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4.125_in, 11.5_in}, okapi::imev5GreenTPR * GEAR_RATIO})
-  //Specify odometry dimensions and encoder type
-  .withOdometry({{2.875_in, 4.715_in, 3.5_in, 2.875_in}, quadEncoderTPR})
-  .buildOdometry(); //Build an odometry-enabled chassis
-
+LiftController arm_controller(arm_motor, potentiometer);
+std::shared_ptr<DriveController> drive_controller = 
+    std::make_shared<DriveController>(DriveController({-12, 15, -16}, {19, -6, 9}, imu_odometer, {1.3, 0.0000045, 8}));
 
 EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
 IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
 
 BotManager overwatch;
 TaskGate driver_control_gate;
-LiftController arm_controller(arm_motor, potentiometer);
 
 //0.25 mps minimum, ~1.4-5 mps maximum, ~2.5 (?) mps2 maximum, 11.5-12 in drive train, 4.125 wheel diameter
-const RobotProperties robot_properties = {0.25_mps, 1.25_mps, 2.5_mps2, 12.0_in, 4.125_in, drive_train};
+const RobotProperties robot_properties = {0.25_mps, 1.25_mps, 2.5_mps2, 12.0_in, 4.125_in, drive_controller};
 PathManager wayfarer(robot_properties);

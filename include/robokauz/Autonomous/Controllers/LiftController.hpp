@@ -1,7 +1,6 @@
 #pragma once
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/ROBOT.hpp"
 
 //1800 top limit, 4095 bottom limit
 //Transforming this to a more friendly reference frame, that's 0 for the top limit and 2295 for the bottom limit

@@ -1,6 +1,7 @@
 #pragma once
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
+#include "robokauz/Autonomous/VectorMath.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathBuilder.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathTraverser.hpp"
@@ -82,8 +83,6 @@ class PathTraverser
 
         void calculateAll();
 
-        void simulateAll(OdomState hypothetical_position);
-
         bool integrateCalculations();
 
         void traversalLoop();
@@ -102,5 +101,4 @@ class PathTraverser
 
         void waitUntilSettled();
 
-        void simulateStep(OdomState hypothetical_position);
 };

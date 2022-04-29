@@ -72,7 +72,7 @@ std::string BotManager::getTemperatureColored(double temp)
 
 std::string BotManager::getPrettyTemperatures()
 {
-    double drive_train_temps = right_back.get_temperature() +
+    double drive_controller_temps = right_back.get_temperature() +
                                right_middle.get_temperature() +
                                right_front.get_temperature() +
                                left_back.get_temperature() +
@@ -82,23 +82,12 @@ std::string BotManager::getPrettyTemperatures()
     double manipulator_temps = arm_motor.get_temperature() +
                                conveyor_motor.get_temperature();
 
-    drive_train_temps /= 6;
+    drive_controller_temps /= 6;
     manipulator_temps /= 2;
 
-    std::string drive_train_avg = "DRV " + getTemperatureColored(drive_train_temps) + "C";
+    std::string drive_controller_avg = "DRV " + getTemperatureColored(drive_controller_temps) + "C";
     std::string manipulator_avg = "MAN " + getTemperatureColored(manipulator_temps) + "C";
-    return "[" + drive_train_avg + " | " + manipulator_avg + "]";
-}
-
-std::string BotManager::getPrettyOdomState()
-{
-    return "[" + 
-           precise_string(drive_train->getState().x.convert(foot)) + 
-           " | " + 
-           precise_string(drive_train->getState().y.convert(foot)) +
-           " | " + 
-           precise_string(drive_train->getState().theta.convert(degree), 3) + 
-           "]";
+    return "[" + drive_controller_avg + " | " + manipulator_avg + "]";
 }
 
 std::string BotManager::getBatteryColored(int level)
@@ -162,8 +151,6 @@ void BotManager::reinitialize()
     left_encoder.reset();
     middle_encoder.reset();
     right_encoder.reset();
-    drive_train->getOdometry()->step();
-    drive_train->setState({0_in, 0_in, 0_deg});
     imu_odometer.reset();
 }
 

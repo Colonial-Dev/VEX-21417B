@@ -1,5 +1,6 @@
 #pragma once
 #include "robokauz/PRELUDE.hpp"
+#include "robokauz/Autonomous/Controllers/DriveController.hpp"
 
 struct RobotProperties
 {   
@@ -8,7 +9,7 @@ struct RobotProperties
     QAcceleration max_acceleration;
     QLength track_width;
     QLength wheel_diam;
-    std::shared_ptr<OdomChassisController> odom_controller;
+    std::shared_ptr<DriveController> controller;
 };
 
 struct GenerationParameters
@@ -58,8 +59,6 @@ class Path
         double k_constant;
 
         bool reversed = false;
-
-        bool prealign = false;
         
         int size();
 

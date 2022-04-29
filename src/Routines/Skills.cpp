@@ -70,15 +70,15 @@ void AutonomousRoutines::skills()
     //Back out, turn to face right and drop the mogo from the back clip
     arm_controller.setTargetAsync(100_deg);
     wayfarer.traverseDistance(-1.25_ft);
-    turnRelative(90_deg);
-    DELAY(350_ms);
+    TURNREL(90_deg)
+    DELAY(350_ms)
     CLIP_OPEN
     DELAY(250_ms)
 
     //Lower the arm, drive directly away from the mogo then turn to face it
     arm_controller.setTargetAsync(0_deg);
     wayfarer.traverseDistance(1.25_ft);
-    turnRelative(-90_deg);
+    TURNREL(-90_deg)
 
     //Coast into the mogo and grab it
     SETBRK(COAST)
@@ -89,7 +89,7 @@ void AutonomousRoutines::skills()
 
     //Slightly lift the mogo, turn to face the balance
     arm_controller.setTargetAsync(10_deg);
-    turnRelative(0_deg);
+    TURNREL(0_deg)
     DELAY(250_ms)
 
     //Raise the arm to stacking height and drive to + drop it on the balance
@@ -102,7 +102,7 @@ void AutonomousRoutines::skills()
     //Back away from the balance and turn to face opposite the next alliance mogo
     arm_controller.setTargetAsync(100_deg);
     wayfarer.traverseDistance(-1_ft);
-    turnRelative(100_deg);
+    TURNREL(100_deg)
     DELAY(250_ms)
 
     //Start lowering the arm, and boost/coast into/clip the new mogo
@@ -120,7 +120,7 @@ void AutonomousRoutines::skills()
 
     //Slightly raise the arm and correct to face the balance
     arm_controller.setTarget(20_deg);
-    turnRelative(180_deg);
+    TURNREL(180_deg)
     DELAY(250_ms)
     
     //Raise the arm to stack height and path to the balance
@@ -138,7 +138,7 @@ void AutonomousRoutines::skills()
     arm_controller.setTarget(100_deg);
     wayfarer.traverseDistance(-0.7_ft);
     arm_controller.setTargetAsync(0_deg);
-    turnRelative(90_deg);
+    TURNREL(90_deg)
 
     //Unclip the mogo
     CLIP_OPEN
@@ -147,7 +147,7 @@ void AutonomousRoutines::skills()
 
     //Drive straight away from the mogo, then turn + coast into + clamp it
     wayfarer.traverseDistance(1_ft);
-    turnRelative(270_deg);
+    TURNREL(270_deg)
     SETBRK(COAST)
     wayfarer.traverseDistance(1.3_ft);
     CLAMP_CLOSE
@@ -159,7 +159,7 @@ void AutonomousRoutines::skills()
     wayfarer.traverseDistance(-1_ft);
 
     //Turn to face the balance and raise the arm to stacking height
-    turnRelative(180_deg);
+    TURNREL(180_deg)
     arm_controller.setTarget(110_deg);
 
     //Drive to the balance and stack the mogo
@@ -173,7 +173,7 @@ void AutonomousRoutines::skills()
     arm_controller.setTarget(120_deg);
     wayfarer.traverseDistance(-0.5_ft);
     arm_controller.setTargetAsync(0_deg);
-    turnRelative(280_deg);
+    TURNREL(280_deg)
 
     //Coast into + clip the new mogo
     SETBRK(COAST)
@@ -193,7 +193,7 @@ void AutonomousRoutines::skills()
 
     //Path to the far balance and stack the small neutral
     arm_controller.setTarget(120_deg);
-    turnRelative(290_deg);
+    TURNREL(290_deg)
     wayfarer.synchronousTraverse("Skills_6");
     arm_controller.setTarget(70_deg);
     CLAMP_OPEN
@@ -208,7 +208,7 @@ void AutonomousRoutines::skills()
     wayfarer.traverseDistance(-0.75_ft);
 
     //Turn to face right and unclip the mogo
-    turnRelative(90_deg);
+    TURNREL(90_deg)
     DELAY(350_ms);
     CLIP_OPEN
     DELAY(250_ms)
@@ -216,7 +216,7 @@ void AutonomousRoutines::skills()
     //Lower the arm, drive directly away from the mogo then turn to face it
     arm_controller.setTargetAsync(0_deg);
     wayfarer.traverseDistance(1.25_ft);
-    turnRelative(-90_deg);
+    TURNREL(-90_deg)
 
     //Coast into the mogo and grab it
     SETBRK(COAST)
@@ -227,7 +227,7 @@ void AutonomousRoutines::skills()
 
     //Slightly lift the mogo, turn to face the balance
     arm_controller.setTargetAsync(10_deg);
-    turnRelative(0_deg);
+    TURNREL(0_deg)
     DELAY(250_ms)
 
     //Raise the arm to stacking height and drive to + drop it on the balance
@@ -244,9 +244,9 @@ void AutonomousRoutines::skills()
     wayfarer.traverseDistance(-1.5_ft);
 
     //Turn to face right, move to the end of the balance, then turn to face the last mogo
-    turnRelative(90_deg);
+    TURNREL(90_deg)
     wayfarer.traverseDistance(3_ft);
-    turnRelative(0_deg);
+    TURNREL(0_deg)
 
     //Very carefully grab last mogo and back away with it
     wayfarer.traverseDistance(2_ft);
@@ -256,7 +256,7 @@ void AutonomousRoutines::skills()
     wayfarer.traverseDistance(-2_ft);
     
     //Turn to face the near balance, lift the mogo to stack height and GO GO GO
-    turnRelative(190_deg);
+    TURNREL(190_deg)
     arm_controller.setTargetAsync(120_deg);
     wayfarer.traverseLinear({1.25_ft, 2.25_ft}, false);
     arm_controller.setTarget(70_deg);

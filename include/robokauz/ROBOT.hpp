@@ -4,7 +4,7 @@
 #include "robokauz/CONTROLLERS.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Other/BotManager.hpp"
-#include "robokauz/Other/TaskGates.hpp"
+#include "robokauz/Other/TaskGate.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
 //Robot state enums
@@ -55,14 +55,14 @@ extern pros::ADIAnalogIn potentiometer;
 
 extern const double GEAR_RATIO;
 
-extern std::shared_ptr<okapi::OdomChassisController> drive_train;
+extern LiftController arm_controller;
+extern std::shared_ptr<DriveController> drive_controller;
 
 extern EncoderGroup encoders;
 extern IMUOdometer imu_odometer;
 
 extern BotManager overwatch;
 extern TaskGate driver_control_gate;
-extern LiftController arm_controller;
 
 extern const RobotProperties robot_properties;
 extern PathManager wayfarer;

@@ -1,4 +1,6 @@
+#include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
+#include "robokauz/Autonomous/VectorMath.hpp"
 
 std::string precise_string(double value, const int n)
 {

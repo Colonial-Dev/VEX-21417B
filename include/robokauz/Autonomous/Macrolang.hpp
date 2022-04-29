@@ -7,8 +7,9 @@
 
 #define DELAY(x) pros::delay((x).convert(millisecond));
 
-#define SETROT(x) inertial_sensor.set_rotation((x).convert(degree));
+#define TURNREL(x) drive_controller->turnRelative(x); drive_controller->waitUntilSettled();
 
+#define SETROT(x) inertial_sensor.set_rotation((x).convert(degree));
 #define HOLD pros::E_MOTOR_BRAKE_HOLD
 #define COAST pros::E_MOTOR_BRAKE_COAST
 #define BRAKE pros::E_MOTOR_BRAKE_BRAKE
