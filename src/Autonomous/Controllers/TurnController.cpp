@@ -65,8 +65,7 @@ void turnRelative(QAngle target_angle)
 
 void turnAbsolute(QAngle total_angle)
 {
-    QAngle absolute_angle = QAngle ((getRobotHeading().convert(degree) + total_angle.convert(degree)) * degree);
-    absolute_angle = constrainAngle360(absolute_angle);
+    QAngle absolute_angle = getRobotHeading() + total_angle;
     turnRelative(absolute_angle);
 }
 

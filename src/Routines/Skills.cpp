@@ -48,7 +48,7 @@ void AutonomousRoutines::skills()
     SETROT(-90_deg) //We start facing left
 
     
-    CLIP_CLOSE //Pick up mogo
+    CLIP_CLOSE //Clip mogo
     arm_controller.setTargetAsync(0_deg); //Start lowering arm to zero
 
     //Swerve out and coast into + grab small neutral
@@ -56,7 +56,6 @@ void AutonomousRoutines::skills()
     wayfarer.synchronousTraverse("Skills_1");
     CLAMP_CLOSE
     DELAY(250_ms)
-    SETBRK(HOLD)
 
     //Raise the arm to full height and path to the balance
     arm_controller.setTargetAsync(138_deg);
@@ -66,9 +65,10 @@ void AutonomousRoutines::skills()
     arm_controller.setTarget(70_deg);
     CLAMP_OPEN
     DELAY(250_ms)
+    SETBRK(HOLD)
 
     //Back out, turn to face right and drop the mogo from the back clip
-    arm_controller.setTargetAsync(90_deg);
+    arm_controller.setTargetAsync(100_deg);
     wayfarer.traverseDistance(-1.25_ft);
     turnRelative(90_deg);
     DELAY(350_ms);
@@ -199,7 +199,7 @@ void AutonomousRoutines::skills()
     CLAMP_OPEN
     DELAY(250_ms)
     
-    inertial_sensor.set_rotation(0); //Hacky way to tare the inertial back to a sane value
+    SETROT(0_deg) //Hacky way to tare the inertial back to a sane value
 
     //Back away from the balance
     wayfarer.traverseDistance(-0.5_ft);

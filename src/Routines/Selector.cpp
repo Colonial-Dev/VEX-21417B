@@ -15,7 +15,7 @@ void selectRoutine(int side, int strategy)
         }
     }
 
-    /*switch(side)
+    switch(side)
     {
         case Left:
         {
@@ -69,5 +69,5 @@ void selectRoutine(int side, int strategy)
                 }
             }
         }
-    }*/
+    }
 }

@@ -59,6 +59,7 @@ void autonomous()
 {
   overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  selectRoutine(Skills, 0);
+  targetAutonSide = Skills;
+  selectRoutine(targetAutonSide, targetAutonStrategy);
 }
 
