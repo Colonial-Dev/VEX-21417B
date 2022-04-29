@@ -69,12 +69,12 @@ void routineUpdateTask(void*)
             routineReadout += "WP Half";
             break;
         }
-        case GoalRush:
+        case SingleGoalRush:
         {
             routineReadout += "Goal Rush";
             break;
         }
-        case StackRush:
+        case DoubleGoalRush:
         {
             routineReadout += "Stack Rush";
             break;
@@ -182,15 +182,15 @@ lv_res_t handleStratSelect(lv_obj_t * obj, const char *txt)
             switchSelectorStage(Complete);
             break;
         }
-        case GoalRush:
+        case SingleGoalRush:
         {
-            targetAutonStrategy = GoalRush;
+            targetAutonStrategy = SingleGoalRush;
             switchSelectorStage(Complete);
             break;
         }
-        case StackRush:
+        case DoubleGoalRush:
         {
-            targetAutonStrategy = StackRush;
+            targetAutonStrategy = DoubleGoalRush;
             switchSelectorStage(Complete);
             break;
         }
@@ -234,7 +234,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
             driver_control_gate.closeGate();
             lv_btnm_set_map(mode_controls, controls_map_unlocked);
             overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-            overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_COAST); 
+            overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_COAST); 
             break;
         }
         case Lock:
@@ -242,7 +242,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
             driver_control_gate.openGate();
             lv_btnm_set_map(mode_controls, controls_map_locked); 
             overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-            overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);      
+            overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_HOLD);      
             break;
         }
         case Autonomous:

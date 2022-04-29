@@ -27,8 +27,8 @@ enum AutonStrat
 {
   FullWinPoint, //Full win point auton (Not necessarily left side only)
   HalfWinPoint, //Half win point (side specific)
-  GoalRush, //Grab a small + large neutral, dumping them somewhere safe (the corner?)
-  StackRush //Grab a small + large neutral, then stack both on the balance.
+  SingleGoalRush,
+  DoubleGoalRush 
 };
 
 extern pros::Controller master;

@@ -23,26 +23,27 @@ QAngle getRobotHeading()
 void turnRelative(QAngle target_angle)
 {
 	double error = target_angle.convert(degree) - getRobotHeading().convert(degree);
-    double threshold = 1.0;
+    double threshold_count = 0;
 	double integral;
 	double derivative;
 	double prevError;
-	double kp = 1.2;
-	double ki = 0.0025;
-	double kd = 7.5;
+	double kp = 1.3;
+	double ki = 0.0000045;
+	double kd = 8;
 
-    while(fabs(error) > threshold)
+    while(true)
     {  
         error = target_angle.convert(degree) - getRobotHeading().convert(degree);
-        integral = integral + error;
-
-		if(error == 0 || fabs(error) >= target_angle.convert(degree))
-        {
-			integral = 0;
-		}
-
+        integral = (std::fabs(error) <= 15.0) ? (integral + error) : integral;
+        integral = (error == 0 || sgnum(error) != sgnum(prevError)) ? 0 : integral;
 		derivative = error - prevError;
 		prevError = error;
+
+        if(std::fabs(error) < 4.0 && std::fabs(derivative) < 4.0) { threshold_count++; }
+        else { threshold_count = 0; }
+
+        if(threshold_count >= 10) { break; }
+
 		double p = error * kp;
 		double i = integral * ki;
 		double d = derivative * kd;
@@ -57,7 +58,7 @@ void turnRelative(QAngle target_angle)
         left_middle.move_velocity(vel);
         left_front.move_velocity(vel);
 
-		pros::delay(15);
+		pros::delay(10);
 	}
     drive_train->getModel()->driveVector(0, 0);
 }
