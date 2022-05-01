@@ -44,7 +44,6 @@ void awaitCommand()
   }
 }
 
-
 void initialize() 
 {
   PRINT("21417B Competition Suite - v4.0 Worldsbound\n(C) 2021-2022 SomewhereOutInSpace/James Haywood");
@@ -57,9 +56,13 @@ void initialize()
 
 void autonomous()
 {
+  driver_control_gate.closeGate();
   overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+
   targetAutonSide = Skills;
   selectRoutine(targetAutonSide, targetAutonStrategy);
+  
+  driver_control_gate.openGate();
 }
 

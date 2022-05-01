@@ -247,11 +247,11 @@ bool PathTraverser::integrateCalculations()
 {
     if(!path.reversed)
     {
-        robot_properties.controller->tank(outputs.target_speeds.target_left.convert(rpm), outputs.target_speeds.target_right.convert(rpm));
+        robot_properties.odom_controller->getModel()->tank(outputs.target_speeds.target_left.convert(rpm) / 200, outputs.target_speeds.target_right.convert(rpm) / 200);    
     }
     else
     {
-        robot_properties.controller->tank(-outputs.target_speeds.target_left.convert(rpm), -outputs.target_speeds.target_right.convert(rpm));
+        robot_properties.odom_controller->getModel()->tank(-outputs.target_speeds.target_left.convert(rpm) / 200, -outputs.target_speeds.target_right.convert(rpm) / 200);
     }
 
     if(conditions.is_finished) { return true; }
@@ -272,7 +272,7 @@ void PathTraverser::traversalLoop()
         pros::Task::delay_until(&delay_timestamp, 10);
     }
     conditions.is_running = false;
-    robot_properties.controller->brake();
+    robot_properties.odom_controller->getModel()->driveVector(0, 0); 
 }
 
 void PathTraverser::reset()

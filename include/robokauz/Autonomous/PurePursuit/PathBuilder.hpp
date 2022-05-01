@@ -27,6 +27,8 @@ class PathBuilder
 
         int generation_mode = Spline;
 
+        bool is_reversed = false;
+
         bool compute_reversed = false;
 
         bool do_debug_dump = false;
@@ -64,6 +66,8 @@ class PathBuilder
         PathBuilder withRotatedOrigin(QAngle rotation);
 
         PathBuilder withCurrentPosition(IMUOdometer& odometer);
+
+        PathBuilder isReversed(bool val = true);
 
         PathBuilder makeReversed();
 

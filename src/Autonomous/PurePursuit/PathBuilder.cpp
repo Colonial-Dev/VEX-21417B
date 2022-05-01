@@ -201,6 +201,12 @@ PathBuilder PathBuilder::withCurrentPosition(IMUOdometer& odometer)
     return *this;
 }
 
+PathBuilder PathBuilder::isReversed(bool val)
+{
+    is_reversed = val;
+    return *this;
+}
+
 PathBuilder PathBuilder::makeReversed()
 {
     compute_reversed = true;
@@ -216,13 +222,14 @@ PathBuilder PathBuilder::withDebugDump()
 void PathBuilder::generatePath()
 {
     Path computed_path = calculatePath();
+    computed_path.reversed = is_reversed;
     calling_manager.insertPath(computed_path);
 
     if(compute_reversed)
     {
-        //std::vector<Waypoint> reversed_path = path_waypoints;
-        //std::reverse(reversed_path.begin(), reversed_path.end());
-        //path_waypoints = reversed_path;
+        std::vector<Waypoint> reversed_path = path_waypoints;
+        std::reverse(reversed_path.begin(), reversed_path.end());
+        path_waypoints = reversed_path;
 
         Path computed_reversed_path = calculatePath();
         computed_reversed_path.name = path_name + "_rev";

@@ -68,11 +68,10 @@ void PathManager::traverseLinear(Point point, bool backwards)
         .withRobotProperties({0.25_mps, 1.25_mps, 1.5_mps2, 12.0_in, 4.125_in, drive_controller})
         .withCurrentPosition(imu_odometer)
         .withPoint({point.x, point.y})
-        .makeReversed()
+        .isReversed(backwards)
         .generatePath();
     
-    if(backwards) { synchronousTraverse("TRANSIENT_PATH_rev"); }
-    else { synchronousTraverse("TRANSIENT_PATH"); }
+    synchronousTraverse("TRANSIENT_PATH");
 }
 
 void PathManager::traverseLinearAsync(Point point, bool backwards)
@@ -82,11 +81,10 @@ void PathManager::traverseLinearAsync(Point point, bool backwards)
         .withRobotProperties({0.25_mps, 1.25_mps, 1.5_mps2, 12.0_in, 4.125_in, drive_controller})
         .withCurrentPosition(imu_odometer)
         .withPoint({point.x, point.y})
-        .makeReversed()
+        .isReversed(backwards)
         .generatePath();
     
-    if(backwards) { asynchronousTraverse("TRANSIENT_PATH_rev"); }
-    else { asynchronousTraverse("TRANSIENT_PATH"); }
+    asynchronousTraverse("TRANSIENT_PATH"); 
 }
 
 void PathManager::traverseDistance(QLength distance)

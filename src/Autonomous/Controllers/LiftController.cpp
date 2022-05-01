@@ -29,8 +29,8 @@ void LiftController::bangLoop()
         if(!is_settled)
         {
             error = getError();
-            if(sgnum(error.convert(degree)) != sgnum(starting_error.convert(degree))) { is_settled = true; lift_motor.move_voltage(0); }
-            else if(error.abs() < 2_deg) { is_settled = true; lift_motor.move_voltage(0); }
+            //if(sgnum(error.convert(degree)) != sgnum(starting_error.convert(degree))) { is_settled = true; lift_motor.move_voltage(0); }
+            if(error.abs() < 2_deg) { is_settled = true; lift_motor.move_voltage(0); }
             else { lift_motor.move_voltage(12000 * sgnum(error.convert(degree))); }
         }
         pros::delay(15);

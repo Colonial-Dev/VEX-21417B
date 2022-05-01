@@ -1,6 +1,6 @@
 #include "robokauz/ROUTINES.hpp"
 
-void AutonomousRoutines::leftSingleRush()
+void AutonomousRoutines::rightSingleRush()
 {
     //Zip out, grab small neutral, retreat
     wayfarer.buildPath("Round_RSR", DEFAULT_GEN_PARAMS)
@@ -18,11 +18,12 @@ void AutonomousRoutines::leftSingleRush()
     SETBRK(HOLD)
     arm_controller.setTargetAsync(20_deg);
     wayfarer.synchronousTraverse("Round_RSR_rev");
-    TURNREL(45_deg)
+    TURNRELGOAL(80_deg)
     CLAMP_OPEN
+    TURNREL(0_deg);
 }
 
-void AutonomousRoutines::rightSingleRush()
+void AutonomousRoutines::leftSingleRush()
 {
     //Zip out, grab small neutral, retreat
     wayfarer.buildPath("Round_LSR", DEFAULT_GEN_PARAMS)
@@ -40,6 +41,7 @@ void AutonomousRoutines::rightSingleRush()
     SETBRK(HOLD)
     arm_controller.setTargetAsync(20_deg);
     wayfarer.synchronousTraverse("Round_LSR_rev");
-    TURNREL(-45_deg)
+    TURNRELGOAL(-80_deg)
     CLAMP_OPEN
+    TURNREL(0_deg)
 }

@@ -35,8 +35,18 @@ pros::ADIAnalogIn potentiometer ('H');
 const double GEAR_RATIO = 60.0/84.0;
 
 LiftController arm_controller(arm_motor, potentiometer);
-std::shared_ptr<DriveController> drive_controller = 
-    std::make_shared<DriveController>(DriveController({-12, 15, -16}, {19, -6, 9}, imu_odometer, {1.3, 0.0000045, 8}));
+std::shared_ptr<okapi::OdomChassisController> drive_controller = okapi::ChassisControllerBuilder()
+  .withMotors({19, 6, 9}, {12, 15, 16})
+  .withSensors
+  (
+      ADIEncoder{'A', 'B', true}, //Left encoder
+      ADIEncoder{'C', 'D'},  //Right encoder
+      ADIEncoder{'E', 'F'}  //Middle encoder
+  )
+  .withDimensions({okapi::AbstractMotor::gearset::green, GEAR_RATIO}, {{4.125_in, 11.5_in}, okapi::imev5GreenTPR * GEAR_RATIO})
+  //Specify odometry dimensions and encoder type
+  .withOdometry({{2.875_in, 4.715_in, 3.5_in, 2.875_in}, quadEncoderTPR})
+  .buildOdometry(); //Build an odometry-enabled chassis
 
 EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
 IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);
