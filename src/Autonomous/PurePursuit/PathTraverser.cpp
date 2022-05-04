@@ -36,7 +36,7 @@ void PathTraverser::findClosestPoint()
     int curr_closest_index = points.closest_index;
     int ceil_index;
 
-    if(interpointDistance(points.current_position, path.end()) <= path.lookahead_distance) 
+    if(Vector2D::dist(points.current_position, path.end()) <= path.lookahead_distance) 
     {
         ceil_index = path.size();
     }
@@ -45,10 +45,9 @@ void PathTraverser::findClosestPoint()
         ceil_index = points.lookahead_index + 2;
     }
 
-    //for(int i = curr_closest_index; i < path.size() - 1; i++)
     for(int i = curr_closest_index; i < std::min(path.size() - 1, ceil_index); i++)
     {
-        QLength distance = interpointDistance(points.current_position, path.at(i));
+        QLength distance = Vector2D::dist(points.current_position, path.at(i));
         if(distance.convert(meter) < curr_closest_distance.convert(meter))
         {
             curr_closest_distance = distance;
@@ -63,10 +62,10 @@ void PathTraverser::findClosestPoint()
     PRINT("CPC: (" + std::to_string(points.closest_point.x_pos.convert(foot)) + ", " + std::to_string(points.closest_point.y_pos.convert(foot)) + ")");
 }
 
-double PathTraverser::findIntersect(Vector start, Vector end, Vector pos, QLength lookahead)
+double PathTraverser::findIntersect(Vector2D start, Vector2D end, Vector2D pos, QLength lookahead)
 {
-    Vector d = end - start;
-    Vector f = start - pos;
+    Vector2D d = end - start;
+    Vector2D f = start - pos;
 
     double a = d.dot(d);
     double b = 2 * f.dot(d);
@@ -103,7 +102,7 @@ void PathTraverser::calculateLookahead()
     int previous_intersection_index = 0;
     double previous_t_value = 0;
 
-    if(points.lookahead_index == 0 && interpointDistance(points.current_position, path.end()) < path.lookahead_distance) 
+    if(points.lookahead_index == 0 && Vector2D::dist(points.current_position, path.end()) < path.lookahead_distance) 
     {
       points.lookahead_index = path.size() - 2;
       previous_t_value = 1;
@@ -111,9 +110,9 @@ void PathTraverser::calculateLookahead()
 
     for(int i = std::max(points.lookahead_index, points.closest_index); i < path.size() - 1; i++)
     {
-        Vector start (path.at(i));
-        Vector end (path.at(i+1));
-        Vector pos (points.current_position);
+        Vector2D start (path.at(i));
+        Vector2D end (path.at(i+1));
+        Vector2D pos (points.current_position);
         double t_value = findIntersect(start, end, pos, path.lookahead_distance);
         double fractional_index = t_value + i;
 
@@ -124,12 +123,12 @@ void PathTraverser::calculateLookahead()
             points.lookahead_index = i;
             previous_t_value = t_value;
 
-            Vector start = path.at(points.lookahead_index);
-            Vector end = path.at(points.lookahead_index + 1);
-            Vector d = end - start;
-            Vector final_point = start + (d * previous_t_value);
+            Vector2D start = path.at(points.lookahead_index);
+            Vector2D end = path.at(points.lookahead_index + 1);
+            Vector2D d = end - start;
+            Vector2D final_point = start + (d * previous_t_value);
 
-            if(interpointDistance(final_point, end) > interpointDistance(points.current_position, end))
+            if(Vector2D::dist(final_point, end) > Vector2D::dist(points.current_position, end))
             {
                 points.lookahead_index = cache;
                 continue;
@@ -142,20 +141,18 @@ void PathTraverser::calculateLookahead()
 
             previous_intersection_index = i;
 
-            if(previous_intersection_index > 0 && interpointDistance(path.at(i), path.at(previous_intersection_index)) >= path.lookahead_distance * 2)
+            if(previous_intersection_index > 0 && Vector2D::dist(path.at(i), path.at(previous_intersection_index)) >= path.lookahead_distance * 2)
             {
                 break;
             }
         }
     }
     
-    //points.lookahead_index = std::clamp(points.lookahead_index, 0, path.size() - 1);
-    Vector start = path.at(points.lookahead_index);
-    Vector end = path.at(points.lookahead_index + 1);
-    Vector d = end - start;
-    Vector final_point = start + (d * previous_t_value);
+    Vector2D start = path.at(points.lookahead_index);
+    Vector2D end = path.at(points.lookahead_index + 1);
+    Vector2D d = end - start;
+    Vector2D final_point = start + (d * previous_t_value);
     points.lookahead_point = final_point;
-    //points.lookahead_index = std::clamp(std::ceil(previous_t_value + points.lookahead_index), 0.0, path.size() - 2.0);
     projectLookahead();
 
     PRINT("LP: (" + std::to_string(points.lookahead_point.x_component.convert(foot)) + ", " + std::to_string(points.lookahead_point.y_component.convert(foot)) + ")");
@@ -164,7 +161,7 @@ void PathTraverser::calculateLookahead()
 
 void PathTraverser::projectLookahead()
 {
-    Vector ray = points.lookahead_point - points.current_position;
+    Vector2D ray = points.lookahead_point - points.current_position;
     ray = ray.normalize();
     ray = ray * path.lookahead_distance.convert(meter);
     ray = ray + points.current_position;
@@ -173,7 +170,7 @@ void PathTraverser::projectLookahead()
 
 void PathTraverser::calculateCurvature()
 {
-    Vector difference = points.lookahead_point - points.current_position;
+    Vector2D difference = points.lookahead_point - points.current_position;
     double alpha = std::atan2(difference.y_component.convert(meter), difference.x_component.convert(meter));
     double beta = constrainAngle180(points.current_position.theta).convert(radian) - alpha;
     double curvature = (2 * std::sin(beta)) / (path.lookahead_distance.convert(meter));
@@ -216,16 +213,15 @@ void PathTraverser::calculateWheelSpeeds()
 
 void PathTraverser::updateConditions()
 {
-    conditions.is_on_path = interpointDistance(points.current_position, points.closest_point) <= path.lookahead_distance;
+    conditions.is_on_path = Vector2D::dist(points.current_position, points.closest_point) <= path.lookahead_distance;
 
     QAngle angle_to_end = angleToPoint(path.end(), points.current_position, points.current_position.theta).abs();
-    conditions.end_within_lookahead = interpointDistance(points.closest_point, path.end()) < path.lookahead_distance &&
-                            interpointDistance(points.current_position, path.end()) < path.lookahead_distance;
-                            //(angle_to_end < 15_deg && angle_to_end > -15_deg);
+    conditions.end_within_lookahead = Vector2D::dist(points.closest_point, path.end()) < path.lookahead_distance &&
+                            Vector2D::dist(points.current_position, path.end()) < path.lookahead_distance;
     
     conditions.is_past_end = path.reversed ? angle_to_end < (M_PI / 2) * radian : angle_to_end > (M_PI / 2) * radian;
-    conditions.distance_to_end = interpointDistance(points.current_position, path.end()).abs();
-    conditions.is_finished = conditions.is_past_end && conditions.end_within_lookahead; //&& points.closest_index == path.size() - 1;
+    conditions.distance_to_end = Vector2D::dist(points.current_position, path.end()).abs();
+    conditions.is_finished = conditions.is_past_end && conditions.end_within_lookahead;
     
     PRINT("On path? " + std::to_string(conditions.is_on_path));
     PRINT("EWL? " + std::to_string(conditions.end_within_lookahead));
@@ -262,7 +258,6 @@ void PathTraverser::traversalLoop()
 {
     reset();
     conditions.is_running = true;
-    //TODO if prealignment is enabled, pre-compute the first lookahead point in the path and turn to it using PID.
     std::uint32_t delay_timestamp = pros::millis();
     while(true)
     {

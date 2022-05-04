@@ -52,12 +52,13 @@ static const char * side_map[] = {"#0000FF Left#", "#FF0000 Right#", "\n",
                                   "#FFFF00 Skills#", "#808080 None#", ""}; 
 static const char * strat_map[] = {"Win Point (Full)", "\n",
                                    "Win Point (Half)", "\n", 
-                                   "Rush (Goal)", "\n",
-                                   "Rush (Stack)", ""}; 
+                                   "Single Rush", "\n",
+                                   "Double Rush", ""}; 
 
 extern lv_theme_t * theme;
 extern lv_style_t status_style;
 extern lv_style_t confirm_style;
+extern lv_style_t symbol_style;
 
 extern LVOBJ home_page;
  
@@ -73,6 +74,7 @@ extern LVOBJ right_panel;
 extern LVOBJ side_page;
 extern LVOBJ strat_page;
 extern LVOBJ ready_page;
+extern LVOBJ symbol_label;
 extern LVOBJ ready_label;
 extern LVOBJ ready_container;
 extern LVOBJ waiting_label;

@@ -1,6 +1,6 @@
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/Autonomous/VectorMath.hpp"
+#include "robokauz/Autonomous/Vector2D.hpp"
 
 std::string precise_string(double value, const int n)
 {
@@ -31,13 +31,13 @@ QAngle rollAngle180(QAngle angle)
     return (angle.convert(radian) - (2 * M_PI) * std::floor((angle.convert(radian) + M_PI) / (2* M_PI))) * radian;
 }
 
-QAngle angleBetweenPoints(Vector start, Vector target)
+QAngle angleBetweenPoints(Vector2D start, Vector2D target)
 {
     QAngle atan = std::atan2(target.y_component.convert(meter) - start.y_component.convert(meter), target.x_component.convert(meter) - start.x_component.convert(meter)) * radian;
     return rollAngle180(atan);
 }
 
-QAngle angleToPoint(Vector start, Vector target, QAngle heading)
+QAngle angleToPoint(Vector2D start, Vector2D target, QAngle heading)
 {
     return rollAngle180(angleBetweenPoints(start, target) - heading);
 }

@@ -22,11 +22,12 @@
 
 #define CLAMP_OPEN clamp_piston.set_value(false);
 #define CLAMP_CLOSE clamp_piston.set_value(true);
-#define CLAMP_TOGGLE clamp_piston.set_value(!clamp_piston.get_value());
 
 #define CLIP_OPEN back_piston.set_value(false);
 #define CLIP_CLOSE back_piston.set_value(true);
-#define CLIP_TOGGLE back_piston.set_value(!back_piston.get_value());
+
+#define LOCK_OPEN lock_piston.set_value(true);
+#define LOCK_CLOSE lock_piston.set_value(false);
 
 #define TRAVERSE_PATH(x)
 #define PATHFIND_LINEAR(x)

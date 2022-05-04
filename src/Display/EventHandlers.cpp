@@ -25,18 +25,18 @@ void routineUpdateTask(void*)
 {
     std::string routineReadout;
 
-    routineReadout += "#00FFFF Auton Ready!#\n";
+    routineReadout += "\n";
 
     switch(targetAutonSide)
     {
         case Left:
         {
-            routineReadout += "#0000FF L#-";
+            routineReadout += "#0000FF Left#\n";
             break;
         }
         case Right:
         {
-            routineReadout += "#FF0000 R#-";
+            routineReadout += "#FF0000 Right#\n";
             break;
         }
         case Skills:
@@ -71,12 +71,12 @@ void routineUpdateTask(void*)
         }
         case SingleGoalRush:
         {
-            routineReadout += "Goal Rush";
+            routineReadout += "Single Rush";
             break;
         }
         case DoubleGoalRush:
         {
-            routineReadout += "Stack Rush";
+            routineReadout += "Double Rush";
             break;
         }
     }
@@ -234,7 +234,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
             driver_control_gate.closeGate();
             lv_btnm_set_map(mode_controls, controls_map_unlocked);
             overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-            overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_COAST); 
+            overwatch.setManipulatorBrakeModes(pros::E_MOTOR_BRAKE_COAST); 
             break;
         }
         case Lock:
@@ -242,7 +242,7 @@ lv_res_t handleControls(lv_obj_t * obj, const char *txt)
             driver_control_gate.openGate();
             lv_btnm_set_map(mode_controls, controls_map_locked); 
             overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-            overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_HOLD);      
+            overwatch.setManipulatorBrakeModes(pros::E_MOTOR_BRAKE_HOLD);      
             break;
         }
         case Autonomous:

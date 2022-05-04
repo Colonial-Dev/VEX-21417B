@@ -4,13 +4,6 @@
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
-enum GenerationMode
-{
-    Spline,
-    ConstrainedSpline,
-    Rough
-};
-
 class PathBuilder
 {
     private:
@@ -25,23 +18,11 @@ class PathBuilder
 
         PathManager& calling_manager;
 
-        int generation_mode = Spline;
-
         bool is_reversed = false;
 
         bool compute_reversed = false;
 
         bool do_debug_dump = false;
-
-        const QLength injection_spacing = 1.5_in;
-
-        std::vector<squiggles::Pose> transformToCartesian();
-
-        std::vector<squiggles::ProfilePoint> generateConstrainedSplinePath(std::vector<squiggles::Pose> waypoints);
-
-        std::vector<PathPoint> stripConstrainedSplineForExport(std::vector<squiggles::ProfilePoint> path);
-
-        std::vector<PathPoint> injectPoints();
 
         void calculateCurvatures(Path& path);
 
@@ -55,15 +36,11 @@ class PathBuilder
 
         PathBuilder withRobotProperties(RobotProperties r_props);
 
-        PathBuilder withGenerationMode(int mode);
-
         PathBuilder withPoint(Waypoint point);
 
         PathBuilder withPoints(std::vector<Waypoint> points);
 
         PathBuilder withOrigin();
-
-        PathBuilder withRotatedOrigin(QAngle rotation);
 
         PathBuilder withCurrentPosition(IMUOdometer& odometer);
 

@@ -2,7 +2,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/PURE_PURSUIT.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
-#include "robokauz/Autonomous/VectorMath.hpp"
+#include "robokauz/Autonomous/Vector2D.hpp"
 
 PathBuilder::PathBuilder(std::string name, GenerationParameters g_params, RobotProperties r_props, PathManager& caller) : calling_manager(caller), robot_props(r_props)
 {
@@ -10,86 +10,14 @@ PathBuilder::PathBuilder(std::string name, GenerationParameters g_params, RobotP
     gen_params = g_params;
 }
 
-std::vector<squiggles::Pose> PathBuilder::transformToCartesian()
-{
-    std::vector<squiggles::Pose> pose_points;
-
-    for(int i = 0; i < path_waypoints.size(); i++)
-    {
-        //CRUCIALLY IMPORTANT - Squiggles reacts poorly to negative angles and angles greater than 360 degrees,
-        //so we need to constrain and convert angles to their equivalents within [0, 360). 
-        //For example, -90 deg becomes 270 deg, and 540 deg becomes 180 deg.
-        path_waypoints.at(i).heading = constrainAngle360(path_waypoints.at(i).heading);
-
-        Waypoint waypoint = path_waypoints.at(i);
-        squiggles::Pose cartesian_point = {waypoint.y_pos.convert(meter), waypoint.x_pos.convert(meter), (90_deg - waypoint.heading).convert(radian)};
-        pose_points.push_back(cartesian_point);
-    }
-
-    return pose_points;
-}
-
-std::vector<squiggles::ProfilePoint> PathBuilder::generateConstrainedSplinePath(std::vector<squiggles::Pose> waypoints)
-{
-    squiggles::Constraints constraints(robot_props.max_velocity.convert(mps), robot_props.max_acceleration.convert(mps2), robot_props.max_acceleration.convert(mps2) * 2);    
-    squiggles::SplineGenerator generator(constraints, std::make_shared<squiggles::TankModel>(robot_props.track_width.convert(meter), constraints));
-    return generator.generate(waypoints, true);
-}
-
-std::vector<PathPoint> PathBuilder::stripConstrainedSplineForExport(std::vector<squiggles::ProfilePoint> path)
-{
-    std::vector<PathPoint> stripped_path;
-
-    for(int i = 0; i < path.size(); i++)
-    {
-        squiggles::ProfilePoint full_point = path.at(i);
-        PathPoint stripped_point;
-
-        stripped_point.x_pos = full_point.vector.pose.y * meter;
-        stripped_point.y_pos = full_point.vector.pose.x * meter;
-        stripped_path.push_back(stripped_point);
-    }
-
-    return stripped_path;
-}
-
-std::vector<PathPoint> PathBuilder::injectPoints()
-{
-    std::vector<PathPoint> padded_path;
-
-    for(int i = 0; i < path_waypoints.size() - 1; i++)
-    {
-        Waypoint start_point = path_waypoints.at(i);
-        Waypoint end_point = path_waypoints.at(i+1);
-
-        Vector start(start_point.x_pos, start_point.y_pos);
-        Vector end(end_point.x_pos, end_point.y_pos);
-        Vector segment = end - start;
-
-        double injectionCount = std::ceil(segment.magnitude().convert(meter) / injection_spacing.convert(meter));
-        segment = segment.normalize() * injection_spacing.convert(meter);
-        
-        for(int j = 0; j < injectionCount; j++)
-        {
-            Vector injectionVector = start + (segment * j);
-            Vector injectionPoint = injectionVector;
-            padded_path.push_back({injectionPoint.x_component, injectionPoint.y_component});
-        }
-    }
-
-    Waypoint end_waypoint = path_waypoints.at(path_waypoints.size() - 1);
-    padded_path.push_back({end_waypoint.x_pos, end_waypoint.y_pos});
-    return padded_path;
-}
-
 void PathBuilder::calculateCurvatures(Path& path)
 {
     path.at(0).curvature = 0;
     for(int i = 1; i < path.size() - 1; i++)
     {
-        double distance_alpha = interpointDistance(path.at(i), path.at(i-1)).convert(meter);
-        double distance_beta = interpointDistance(path.at(i), path.at(i+1)).convert(meter);
-        double distance_gamma = interpointDistance(path.at(i+1), path.at(i-1)).convert(meter);
+        double distance_alpha = Vector2D::dist(path.at(i), path.at(i-1)).convert(meter);
+        double distance_beta = Vector2D::dist(path.at(i), path.at(i+1)).convert(meter);
+        double distance_gamma = Vector2D::dist(path.at(i+1), path.at(i-1)).convert(meter);
         
         double side_product = distance_alpha * distance_beta * distance_gamma;
         double semi_perimeter = (distance_alpha + distance_beta + distance_gamma) / 2.0;
@@ -112,7 +40,7 @@ void PathBuilder::calculateVelocities(Path& path)
         PathPoint prev_point = path.at(i-1);
 
         QSpeed desired_velocity = std::min(robot_props.max_velocity.convert(mps), (gen_params.initial_velocity_constant / current_point.curvature)) * mps;
-        QLength distance = interpointDistance(current_point, prev_point);
+        QLength distance = Vector2D::dist(current_point, prev_point);
 
         double limited_velocity = std::sqrt(SQ(current_point.velocity.convert(mps)) + (2 * robot_props.max_acceleration.convert(mps2) * distance.convert(meter)));
         QSpeed actual_velocity = std::min(desired_velocity.convert(mps), limited_velocity) * mps;
@@ -125,28 +53,9 @@ Path PathBuilder::calculatePath()
 {
     std::uint32_t timestamp = pros::micros();
     Path computed_path;
-    std::vector<PathPoint> points;
 
-    switch(generation_mode)
-    {
-        case Spline:
-        {
-            QuinticPathGenerator generator(path_waypoints, gen_params.spline_resolution, gen_params.smoothing_constant);
-            points = generator.getPath();
-            break;
-        }
-        case ConstrainedSpline:
-        {
-            //STACK EM HIGH AND SELL EM CHEAP
-            points = stripConstrainedSplineForExport(generateConstrainedSplinePath(transformToCartesian()));
-            break;
-        }
-        case Rough:
-        {
-            points = injectPoints();
-            break;
-        }
-    }
+    QuinticPathGenerator generator(path_waypoints, gen_params.spline_resolution, gen_params.smoothing_constant);
+    std::vector<PathPoint> points = generator.getPath();
 
     computed_path.points = points;
     computed_path.name = path_name;
@@ -156,19 +65,13 @@ Path PathBuilder::calculatePath()
     calculateVelocities(computed_path);
 
     std::uint32_t elapsed = pros::micros() - timestamp;
-    PRINT("Finished generating path " + path_name + ", took " + std::to_string(elapsed) + " micros.");
+    PRINT("Finished generating path " + path_name + ", took " + std::to_string(elapsed) + " microseconds.");
     return computed_path;
 }
 
 PathBuilder PathBuilder::withRobotProperties(RobotProperties r_props)
 {
     robot_props = r_props;
-    return *this;
-}
-
-PathBuilder PathBuilder::withGenerationMode(int mode)
-{
-    generation_mode = mode;
     return *this;
 }
 

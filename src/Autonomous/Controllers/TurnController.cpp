@@ -2,7 +2,7 @@
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
 #include "robokauz/CONTROLLERS.hpp"
-#include "robokauz/Autonomous/VectorMath.hpp"
+#include "robokauz/Autonomous/Vector2D.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
 QAngle getRobotHeading()
@@ -17,9 +17,9 @@ void turnRelative(QAngle target_angle, bool goal)
 	double integral;
 	double derivative;
 	double prevError;
-	double kp = goal ? 1.2 : 1.35;
-	double ki = goal ? 0.0000045 : 0.0000045;
-	double kd = goal ? 14 : 6;
+	double kp = goal ? 1.5 : 1.7;
+	double ki = goal ? 0.000045 : 0.0000045;
+	double kd = goal ? 16 : 5;
 
     while(true)
     {  

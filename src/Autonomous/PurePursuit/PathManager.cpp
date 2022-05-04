@@ -57,14 +57,13 @@ void PathManager::synchronousTraverse(std::string path_name)
 void PathManager::asynchronousTraverse(std::string path_name)
 {
     PathTraverser traverser = getTraverser(path_name);
-    traverser.traversePathAsync();
     current_traverser.emplace(traverser);
+    current_traverser.value().traversePathAsync();
 }
 
 void PathManager::traverseLinear(Point point, bool backwards)
 {   
     buildPath("TRANSIENT_PATH", {1, 5_in, 30, 1.0})
-        .withGenerationMode(Spline)
         .withRobotProperties({0.25_mps, 1.25_mps, 1.5_mps2, 12.0_in, 4.125_in, drive_controller})
         .withCurrentPosition(imu_odometer)
         .withPoint({point.x, point.y})
@@ -77,7 +76,6 @@ void PathManager::traverseLinear(Point point, bool backwards)
 void PathManager::traverseLinearAsync(Point point, bool backwards)
 {
     buildPath("TRANSIENT_PATH", {1, 5_in, 30, 1.0})
-        .withGenerationMode(Spline)
         .withRobotProperties({0.25_mps, 1.25_mps, 1.5_mps2, 12.0_in, 4.125_in, drive_controller})
         .withCurrentPosition(imu_odometer)
         .withPoint({point.x, point.y})
@@ -89,21 +87,21 @@ void PathManager::traverseLinearAsync(Point point, bool backwards)
 
 void PathManager::traverseDistance(QLength distance)
 {
-    Vector position = imu_odometer.getPosition();
+    Vector2D position = imu_odometer.getPosition();
     QAngle heading = constrainAngle360(imu_odometer.getPosition().theta);
     heading = (distance < 0_m) ? 180_deg + heading : heading;
-    Vector difference = {distance, heading};
-    Vector target = position + difference;
+    Vector2D difference = {distance, heading};
+    Vector2D target = position + difference;
     traverseLinear({target.x_component, target.y_component}, (distance < 0_m));
 }
 
 void PathManager::traverseDistanceAsync(QLength distance)
 {
-    Vector position = imu_odometer.getPosition();
+    Vector2D position = imu_odometer.getPosition();
     QAngle heading = constrainAngle360(imu_odometer.getPosition().theta);
     heading = (distance < 0_m) ? 180_deg + heading : heading;
-    Vector difference = {distance, heading};
-    Vector target = position + difference;
+    Vector2D difference = {distance, heading};
+    Vector2D target = position + difference;
     traverseLinearAsync({target.x_component, target.y_component}, (distance < 0_m));
 }
 

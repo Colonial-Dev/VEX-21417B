@@ -1,6 +1,6 @@
 #pragma once
 
-class Vector;
+class Vector2D;
 #define PRINT(x) std::cout << x << std::endl
 #define SQ(x) std::pow(x, 2)
 
@@ -17,6 +17,6 @@ QAngle constrainAngle180(QAngle angle);
 
 QAngle rollAngle180(QAngle angle);
 
-QAngle angleBetweenPoints(Vector start, Vector target);
+QAngle angleBetweenPoints(Vector2D start, Vector2D target);
 
-QAngle angleToPoint(Vector start, Vector target, QAngle heading);
+QAngle angleToPoint(Vector2D start, Vector2D target, QAngle heading);

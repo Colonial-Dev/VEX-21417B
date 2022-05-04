@@ -78,7 +78,7 @@ class IMUOdometer
          * @param displacement_vector The displacement vector from the previous position.
          * @param heading The robot's current rotation.
          */
-        void updatePosition(Vector displacement_vector, QAngle heading);
+        void updatePosition(Vector2D displacement_vector, QAngle heading);
 
         /**
          * @brief Task loop - updates the robot's position every ~10 milliseconds.

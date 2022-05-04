@@ -24,12 +24,18 @@ void LiftController::bangLoop()
 {
     QAngle error = getError();
     QAngle starting_error = error;
+    int jam_threshold_ct = 0;
     while(true)
     {
         if(!is_settled)
         {
             error = getError();
-            //if(sgnum(error.convert(degree)) != sgnum(starting_error.convert(degree))) { is_settled = true; lift_motor.move_voltage(0); }
+
+            if(lift_motor.get_efficiency() <= 0.1) { jam_threshold_ct++; }
+            else { jam_threshold_ct = 0; }
+
+            if(jam_threshold_ct >= 20) { is_settled = true; jam_threshold_ct = 0; lift_motor.move_voltage(0); continue; }
+
             if(error.abs() < 2_deg) { is_settled = true; lift_motor.move_voltage(0); }
             else { lift_motor.move_voltage(12000 * sgnum(error.convert(degree))); }
         }

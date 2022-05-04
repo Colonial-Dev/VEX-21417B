@@ -152,7 +152,7 @@
 #define USE_LV_FONT_DEJAVU_40 1
 #define USE_LV_FONT_DEJAVU_40_LATIN_SUP 0
 #define USE_LV_FONT_DEJAVU_40_CYRILLIC 0
-#define USE_LV_FONT_SYMBOL_40 0
+#define USE_LV_FONT_SYMBOL_40 1
 
 /* PROS adds the mono variant of DejaVu sans */
 #define USE_PROS_FONT_DEJAVU_MONO_10 4

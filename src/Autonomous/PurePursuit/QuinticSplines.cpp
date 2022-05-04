@@ -1,6 +1,6 @@
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/Autonomous/VectorMath.hpp"
+#include "robokauz/Autonomous/Vector2D.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
 #include "robokauz/Autonomous/PurePursuit/QuinticSplines.hpp"
 
@@ -100,7 +100,7 @@ void QuinticPathGenerator::generateVelocities()
     {
         SplinePoint start_point = path_points.at(i);
         SplinePoint end_point = path_points.at(i + 1);
-        double velocity = SMOOTHING * interpointDistance(start_point, end_point).convert(meter);
+        double velocity = SMOOTHING * Vector2D::dist(start_point, end_point).convert(meter);
 
         path_points.at(i).velocity = velocity * mps;
 

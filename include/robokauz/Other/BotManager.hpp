@@ -84,7 +84,7 @@ class BotManager
          * @brief Sets the brake mode of the manipulators.
          * @param brake_mode A pros::motor_brake_mode_e_t value.
          */
-        void setManipulatorBrakeMode(pros::motor_brake_mode_e_t brake_mode);
+        void setManipulatorBrakeModes(pros::motor_brake_mode_e_t arm_brake_mode, pros::motor_brake_mode_e_t conv_brake_mode = MOTOR_BRAKE_BRAKE);
         
         /**
          * @brief Simulates a program restart; all sensors and odometry implementations are zeroed out and/or recalibrated.

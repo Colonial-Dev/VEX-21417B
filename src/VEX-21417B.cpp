@@ -46,19 +46,23 @@ void awaitCommand()
 
 void initialize() 
 {
-  PRINT("21417B Competition Suite - v4.0 Worldsbound\n(C) 2021-2022 SomewhereOutInSpace/James Haywood");
   overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  overwatch.setManipulatorBrakeModes(pros::E_MOTOR_BRAKE_HOLD);
   initializeDisplay();
   initializeOpcontrol();
   pros::Task cmd(awaitCommand);
+
+  //Dirty, unverified way of preventing the OdomChassisController from eating up my fucking processor cycles
+  //I would replace it with a regular chassis controller or even a custom one, but that causes regressions I don't have time to debug, soo
+  drive_controller->getOdomThread()->notifyTake(TIMEOUT_MAX);
 }
 
 void autonomous()
 {
   driver_control_gate.closeGate();
+
   overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
-  overwatch.setManipulatorBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  overwatch.setManipulatorBrakeModes(pros::E_MOTOR_BRAKE_HOLD);
 
   targetAutonSide = Skills;
   selectRoutine(targetAutonSide, targetAutonStrategy);

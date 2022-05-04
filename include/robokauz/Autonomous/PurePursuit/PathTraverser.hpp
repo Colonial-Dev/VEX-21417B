@@ -1,7 +1,7 @@
 #pragma once
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
-#include "robokauz/Autonomous/VectorMath.hpp"
+#include "robokauz/Autonomous/Vector2D.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathBuilder.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathTraverser.hpp"
@@ -29,7 +29,7 @@ struct TraversalPoints
 {
     OdomState current_position;
     PathPoint closest_point;
-    Vector lookahead_point;
+    Vector2D lookahead_point;
     int closest_index = 0;
     int lookahead_index = 0;
 };
@@ -69,7 +69,7 @@ class PathTraverser
 
         void findClosestPoint();
 
-        double findIntersect(Vector start, Vector end, Vector pos, QLength lookahead);
+        double findIntersect(Vector2D start, Vector2D end, Vector2D pos, QLength lookahead);
 
         void calculateLookahead();
 

@@ -2,7 +2,7 @@
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 #include "robokauz/ROBOT.hpp"
-#include "robokauz/Autonomous/VectorMath.hpp"
+#include "robokauz/Autonomous/Vector2D.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
 /**

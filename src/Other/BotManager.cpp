@@ -138,10 +138,10 @@ void BotManager::setDriveBrakeMode(pros::motor_brake_mode_e_t brake_mode)
     left_front.set_brake_mode(brake_mode);
 }
 
-void BotManager::setManipulatorBrakeMode(pros::motor_brake_mode_e_t brake_mode)
+void BotManager::setManipulatorBrakeModes(pros::motor_brake_mode_e_t arm_brake_mode, pros::motor_brake_mode_e_t conv_brake_mode)
 {
-    arm_motor.set_brake_mode(brake_mode);
-    conveyor_motor.set_brake_mode(brake_mode);
+    arm_motor.set_brake_mode(arm_brake_mode);
+    conveyor_motor.set_brake_mode(conv_brake_mode);
 }
 
 //Resets all relative sensor values to default, simulating a restart of the program.
