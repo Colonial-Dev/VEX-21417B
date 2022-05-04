@@ -11,7 +11,6 @@ int targetAutonStrategy = FullWinPoint;
 lv_theme_t * theme =  lv_theme_alien_init(180, NULL);
 lv_style_t status_style;
 lv_style_t confirm_style;
-lv_style_t symbol_style;
 
 LVOBJ home_page;
 
@@ -27,7 +26,6 @@ LVOBJ right_panel;
 LVOBJ side_page;
 LVOBJ strat_page;
 LVOBJ ready_page;
-LVOBJ symbol_label;
 LVOBJ ready_label;
 LVOBJ ready_container;
 LVOBJ waiting_label;

@@ -38,9 +38,7 @@ void initializeDisplay()
 
     ready_page = createPage(right_panel, 240, 239, LV_ALIGN_IN_TOP_LEFT, 0, 0, true);
     ready_container = createContainer(ready_page, 240, 214, LV_ALIGN_IN_RIGHT_MID, -120, 0, LV_LAYOUT_CENTER);
-    symbol_label = createLabel(ready_container, "", LV_LABEL_ALIGN_CENTER, LV_ALIGN_CENTER, -25, 0);
     ready_label = createLabel(ready_container, "Error", LV_LABEL_ALIGN_CENTER, LV_ALIGN_CENTER, -25, 0);
-    lv_obj_set_style(symbol_label, &symbol_style);
     lv_obj_set_style(ready_label, &confirm_style);
     lv_obj_set_size(ready_label, 240, 214);
     selector_finalized = createButton(ready_page, "#FF0000 Cancel#", 240, 25, LV_ALIGN_IN_BOTTOM_MID, 0, 24, *handleSelectionCancel);

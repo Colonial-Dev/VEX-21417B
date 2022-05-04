@@ -25,7 +25,7 @@ void routineUpdateTask(void*)
 {
     std::string routineReadout;
 
-    routineReadout += "\n";
+    routineReadout += "#00AA00 Ready!#\n";
 
     switch(targetAutonSide)
     {

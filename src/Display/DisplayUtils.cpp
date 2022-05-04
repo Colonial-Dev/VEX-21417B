@@ -35,7 +35,6 @@ void configureStyling()
 {
     confirm_style.text.font = &lv_font_dejavu_40;
     status_style.text.font = &lv_font_monospace_8;
-    symbol_style.text.font = &lv_font_symbol_40;
 }
 
 lv_obj_t * createButton(lv_obj_t *parent, std::string label, int size_x, int size_y, lv_align_t alignment, int x_offset, int y_offset, lv_action_t action = NULL)
