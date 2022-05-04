@@ -41,9 +41,7 @@ void AutonomousRoutines::skills()
     SETROT(-90_deg) //We start facing left
     arm_controller.setTargetAsync(0_deg);
 
-    CLAMP_CLOSE
-    DELAY(350_ms)
-    CLAMP_OPEN
+    CLAMP_UNFOLD
 
     CLIP_CLOSE //Clip mogo
     DELAY(350_ms)

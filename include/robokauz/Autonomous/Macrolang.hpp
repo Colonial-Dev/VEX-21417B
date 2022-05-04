@@ -22,6 +22,7 @@
 
 #define CLAMP_OPEN clamp_piston.set_value(false);
 #define CLAMP_CLOSE clamp_piston.set_value(true);
+#define CLAMP_UNFOLD CLAMP_CLOSE DELAY(350_ms) CLAMP_OPEN
 
 #define CLIP_OPEN back_piston.set_value(false);
 #define CLIP_CLOSE back_piston.set_value(true);

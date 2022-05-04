@@ -10,14 +10,17 @@ void AutonomousRoutines::leftSingleRush()
         .generatePath();
     
     arm_controller.setTargetAsync(0_deg);
-    CLAMP_OPEN
+    
     SETBRK(COAST)
-    wayfarer.synchronousTraverse("Round_LSR");
+    wayfarer.asynchronousTraverse("Round_LSR");
+    CLAMP_UNFOLD
+    wayfarer.waitUntilSettled();
     CLAMP_CLOSE
     LOCK_CLOSE
     pros::delay(100);
     SETBRK(HOLD)
-    arm_controller.setTargetAsync(20_deg);
+
+    arm_controller.setTargetAsync(30_deg);
     wayfarer.synchronousTraverse("Round_LSR_rev");
 }
 
@@ -31,13 +34,15 @@ void AutonomousRoutines::rightSingleRush()
         .generatePath();
     
     arm_controller.setTargetAsync(0_deg);
-    CLAMP_OPEN
+    
     SETBRK(COAST)
-    wayfarer.synchronousTraverse("Round_RSR");
+    wayfarer.asynchronousTraverse("Round_RSR");
+    CLAMP_UNFOLD
+    wayfarer.waitUntilSettled();
     CLAMP_CLOSE
     LOCK_CLOSE
     pros::delay(100);
     SETBRK(HOLD)
-    arm_controller.setTargetAsync(20_deg);
+    arm_controller.setTargetAsync(30_deg);
     wayfarer.synchronousTraverse("Round_RSR_rev");
 }
