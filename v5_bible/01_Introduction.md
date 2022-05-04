@@ -30,7 +30,7 @@ However, this is ***NOT*** a guide to the general fundamentals of programming, w
 
 - Variables - `x = 5`, `y = "Hello World!"`.
   - Knowledge of static typing (explicitly specifying the type of a variable, e.g. `int x = 5`) will be helpful, but is not required.
-- Control structures - `if`, `then`, `else`.
+- Control structures - `if`, `else if`, `else`, `switch`.
 - Loop structures - `while` and `for`.
 - Functions/subroutines - e.g. `def add(x, y):` or `int add(int x, int y)`.
 - Basic data structures, such as lists or arrays.

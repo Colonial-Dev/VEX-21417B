@@ -25,7 +25,7 @@ Fortunately, there is a third way! Using a battery-powered Raspberry Pi (a cheap
 While this would obviously be very illegal at a competition, it's a massive boon to programming everywhere else, and it can be had for $50 or less. If you're interested, read on!
 
 ![An example RPi setup.](../media/rpi_example.jpg)
-*My original implementation, using a Pi 3B+ with a 5000mAh power bank.*
+<p style="text-align:center"><i>My original implementation, using a Pi 3B+ with a 5000mAh power bank.</i></p>
 
 ## Supplies
 
