@@ -5,12 +5,10 @@ void AutonomousRoutines::leftHalfWP()
     //Start facing left with in-belt preloads. 
     //Immediately grab the ramp mogo and hurl preloads into it.
     //At the same time, curve out, grab the small neutral and retreat.
-
-    wayfarer.buildPath("Round_LHWP", {4, 18_in, 30, 0.7})
-        .withRobotProperties({0.25_mps, 1.4_mps, 2.5_mps2, 12.0_in, 4.125_in, drive_controller})
+    wayfarer.buildPath("Round_LHWP", {4, 18_in, 30, 1.0})
         .withOrigin()
-        .withPoint({1_ft, 0_ft})
-        .withPoint({5.5_ft, 4.5_ft})
+        .withPoint({1.3_ft, -1.0_ft})
+        .withPoint({5.5_ft, -0.1_ft})
         .makeReversed()
         .generatePath();
     
@@ -44,4 +42,41 @@ void AutonomousRoutines::rightHalfWP()
     //Zip out and grab the small neutral.
     //Curve backwards and clip the line mogo. Hurl preloads into it.
     //Retreat into scoring zone at the same time.
+
+    wayfarer.buildPath("Round_RHWP_1", {2.5, 18_in, 30, 1})
+        .withOrigin()
+        .withPoint({4.5_ft, 0_ft})
+        .generatePath();
+    
+    arm_controller.setTargetAsync(0_deg);
+    
+    SETBRK(COAST)
+    wayfarer.asynchronousTraverse("Round_RHWP_1");
+    CLAMP_UNFOLD
+    CLIP_OPEN
+    wayfarer.waitUntilSettled();
+    CLAMP_CLOSE
+    LOCK_CLOSE
+    pros::delay(100);
+    SETBRK(HOLD)
+
+    arm_controller.setTargetAsync(30_deg);
+
+    wayfarer.buildPath("Round_RHWP_2", {2.5, 18_in, 30, 0.75})
+        .withCurrentPosition(imu_odometer)
+        .withPoint({3.5_ft, 0_ft})
+        .withPoint({2.5_ft, 1_ft})
+        .isReversed()
+        .generatePath();
+    
+    SETBRK(COAST)
+    wayfarer.synchronousTraverse("Round_RHWP_2");
+    CLIP_CLOSE
+    DELAY(250_ms)
+    SETBRK(HOLD)
+
+    CONVEYOR_ON
+    TURNREL(0_deg)
+    wayfarer.traverseDistance(2.5_ft);
+    wayfarer.traverseDistance(-4_ft);
 }
