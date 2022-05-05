@@ -1,8 +1,9 @@
 #pragma once
-
-class Vector2D;
 #define PRINT(x) std::cout << x << std::endl
 #define SQ(x) std::pow(x, 2)
+#define MOTOR_MAX_VOLTAGE 12000
+
+class Vector2D;
 
 template <typename T> int sgnum(T val) 
 {

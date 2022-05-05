@@ -7,14 +7,6 @@
 #include "robokauz/Other/TaskGate.hpp"
 #include "robokauz/Autonomous/IMUOdometry.hpp"
 
-//Robot state enums
-enum ConveyorStatus
-{
-  Idle,
-  Forward,
-  Reverse
-};
-
 enum AutonSide
 {
   Left,
@@ -56,6 +48,7 @@ extern pros::ADIAnalogIn potentiometer;
 extern const double GEAR_RATIO;
 
 extern LiftController arm_controller;
+extern ConveyorController conveyor_controller;
 extern std::shared_ptr<okapi::OdomChassisController> drive_controller;
 
 extern EncoderGroup encoders;

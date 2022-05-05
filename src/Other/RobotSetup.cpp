@@ -35,6 +35,7 @@ pros::ADIAnalogIn potentiometer ('H');
 const double GEAR_RATIO = 60.0/84.0;
 
 LiftController arm_controller(arm_motor, potentiometer);
+ConveyorController conveyor_controller(conveyor_motor);
 std::shared_ptr<okapi::OdomChassisController> drive_controller = okapi::ChassisControllerBuilder()
   .withMotors({19, 6, 9}, {12, 15, 16})
   .withSensors

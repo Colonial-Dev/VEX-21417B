@@ -16,9 +16,9 @@
 #define BRAKE pros::E_MOTOR_BRAKE_BRAKE
 #define SETBRK(x) overwatch.setDriveBrakeMode(x);
 
-#define CONVEYOR_OFF conveyor_motor.move_velocity(0);
-#define CONVEYOR_ON conveyor_motor.move_velocity(-600);
-#define CONVEYOR_REVERSE conveyor_motor.move_velocity(600);
+#define CONVEYOR_OFF conveyor_controller.setState(Idle);
+#define CONVEYOR_ON conveyor_controller.setState(Forward);
+#define CONVEYOR_REVERSE conveyor_controller.setState(Reverse);
 
 #define CLAMP_OPEN clamp_piston.set_value(false);
 #define CLAMP_CLOSE clamp_piston.set_value(true);

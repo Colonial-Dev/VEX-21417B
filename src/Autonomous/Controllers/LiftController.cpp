@@ -4,6 +4,11 @@
 
 QAngle LiftController::getLiftAngle()
 {
+    //1800 top limit, 4095 bottom limit
+    //Transforming this to a more friendly reference frame, that's 0 for the top limit and 2295 for the bottom limit
+    //Another transformation gets our limits at 0 degrees for the top limit and 140 degrees for the bottom limit
+    //We can use (140 - desired angle) to flip the limits to 140 for the top and 0 for the bottom
+    
     int pot_value = std::clamp(lift_potentiometer.get_value() - 1800, (int32_t)0, (int32_t)2295);
     QAngle angle = 140_deg - ((pot_value / POTENTIOMETER_SCALE_FACTOR) * degree);
     return std::clamp(angle, 0_deg, 140_deg);
@@ -37,9 +42,9 @@ void LiftController::bangLoop()
             if(jam_threshold_ct >= 20) { is_settled = true; jam_threshold_ct = 0; lift_motor.move_voltage(0); continue; }
 
             if(error.abs() < 2_deg) { is_settled = true; lift_motor.move_voltage(0); }
-            else { lift_motor.move_voltage(12000 * sgnum(error.convert(degree))); }
+            else { lift_motor.move_voltage(MOTOR_MAX_VOLTAGE * sgnum(error.convert(degree))); }
         }
-        pros::delay(15);
+        pros::delay(10);
     }
 }
 

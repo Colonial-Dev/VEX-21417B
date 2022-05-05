@@ -2,11 +2,6 @@
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
 
-//1800 top limit, 4095 bottom limit
-//Transforming this to a more friendly reference frame, that's 0 for the top limit and 2295 for the bottom limit
-//Another transformation gets our limits at 0 degrees for the top limit and 140 degrees for the bottom limit
-//We can use (140 - desired angle) to flip the limits to 140 for the top and 0 for the bottom
-
 class LiftController
 {
     private:
