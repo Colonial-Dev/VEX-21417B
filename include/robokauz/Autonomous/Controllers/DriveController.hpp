@@ -20,6 +20,8 @@ class DriveController
 
         void tank(int left_voltage, int right_voltage);
 
+        void tankPercentage(double left_pct, double right_pct);
+
         void splitArcade(int translation_axis_value, int rotation_axis_value);
 
         void brake();

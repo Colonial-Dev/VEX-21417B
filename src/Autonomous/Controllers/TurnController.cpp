@@ -50,5 +50,5 @@ void turnRelative(QAngle target_angle, bool goal)
 
 		pros::delay(10);
 	}
-    drive_controller->getModel()->driveVector(0, 0);
+    drive_controller->tank(0, 0);
 }

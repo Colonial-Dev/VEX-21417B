@@ -30,6 +30,14 @@ void DriveController::tank(int left_voltage, int right_voltage)
     outputRight(right_voltage);
 }
 
+void DriveController::tankPercentage(double left_pct, double right_pct)
+{
+    left_pct = std::clamp(left_pct, -1.0, 1.0);
+    right_pct = std::clamp(right_pct, -1.0, 1.0);
+    tank(left_pct * MOTOR_MAX_VOLTAGE, right_pct * MOTOR_MAX_VOLTAGE);
+}
+
+
 void DriveController::splitArcade(int translation_axis_value, int rotation_axis_value)
 {
     int right_output = ((translation_axis_value - rotation_axis_value) / INPUT_FACTOR) * MOTOR_MAX_VOLTAGE;

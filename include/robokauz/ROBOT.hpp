@@ -49,7 +49,7 @@ extern const double GEAR_RATIO;
 
 extern LiftController arm_controller;
 extern ConveyorController conveyor_controller;
-extern std::shared_ptr<okapi::OdomChassisController> drive_controller;
+extern std::shared_ptr<DriveController> drive_controller;
 
 extern EncoderGroup encoders;
 extern IMUOdometer imu_odometer;
