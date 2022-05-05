@@ -30,21 +30,24 @@ void ConveyorController::controlLoop()
             }
             case Forward:
             {
-                conveyor_motor.move_voltage(MOTOR_MAX_VOLTAGE);
+                conveyor_motor.move_voltage(-MOTOR_MAX_VOLTAGE);
+                break;
             }
             case Reverse:
             {
-                conveyor_motor.move_voltage(-MOTOR_MAX_VOLTAGE);
+                conveyor_motor.move_voltage(MOTOR_MAX_VOLTAGE);
+                break;
             }
         }
-
-        if(conveyor_motor.get_efficiency() <= 0.1 && getState() != Idle) { jam_threshold_ct++; }
+        
+        //PRINT(std::to_string(conveyor_motor.get_efficiency()));
+        if(conveyor_motor.get_efficiency() <= 10 && getState() != Idle) { jam_threshold_ct++; }
         else { jam_threshold_ct = 0; }
 
         if(jam_threshold_ct >= 50 && unjam_enabled)
-        {
-            conveyor_motor.move_voltage(-MOTOR_MAX_VOLTAGE);
-            pros::delay(1000);
+        {   
+            conveyor_motor.move_voltage(MOTOR_MAX_VOLTAGE);
+            pros::delay(5000);
             continue;
         }
 

@@ -227,14 +227,14 @@ void AutonomousRoutines::skills()
     DELAY(250_ms)
 
     //Back away from the balance
-    /*wayfarer.traverseDistance(-0.5_ft);
+    wayfarer.traverseDistance(-0.5_ft);
     arm_controller.setTarget(120_deg);
     arm_controller.setTargetAsync(0_deg);
     wayfarer.traverseDistance(-1.5_ft);
 
     //Turn to face right, move to the end of the balance, then turn to face the last mogo
-    TURNREL(90_deg)
-    wayfarer.traverseLinear({9_ft, 6_ft});
+    /*TURNREL(90_deg)
+    wayfarer.traverseLinear({imu_odometer.getPosition().x, 6_ft});
     TURNREL(0_deg)
 
     //Very carefully grab last mogo and back away with it

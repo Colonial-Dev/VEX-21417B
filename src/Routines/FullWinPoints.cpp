@@ -11,9 +11,9 @@ void AutonomousRoutines::leftFullWP()
     wayfarer.buildPath("Round_LFWP", {4, 18_in, 30, 0.75})
         .withOrigin()
         .withPoint({1.3_ft, -1.0_ft})
-        .withPoint({2_ft, 2_ft})
-        .withPoint({2_ft, 4_ft})
-        .withPoint({2_ft, 8_ft})
+        .withPoint({3_ft, 2_ft})
+        .withPoint({3_ft, 4_ft})
+        .withPoint({3_ft, 8_ft})
         .makeReversed()
         .generatePath();
     
@@ -27,18 +27,19 @@ void AutonomousRoutines::leftFullWP()
     SETBRK(COAST)
     wayfarer.asynchronousTraverse("Round_LFWP");
     CLAMP_UNFOLD
-    DELAY(5000_ms)
+    DELAY(2500_ms)
     CLIP_OPEN
     CONVEYOR_OFF
     wayfarer.waitUntilSettled();
 
     TURNREL(-60_deg)
     SETBRK(COAST)
-    wayfarer.traverseLinear({2_ft, 9_ft});
+    wayfarer.traverseLinear({2_ft, 9_ft}, true);
     CLIP_CLOSE
     DELAY(250_ms)
     SETBRK(HOLD)
     CONVEYOR_ON
+    wayfarer.traverseDistance(0.5_ft);
     TURNREL(0_deg)
     wayfarer.traverseDistance(2_ft);
     wayfarer.traverseDistance(-4_ft);
@@ -53,6 +54,7 @@ void AutonomousRoutines::rightFullWP()
     //Overshoot the end of the balance and drop the small neutral.
     //Point-turn to face away from the ramp mogo. Back in and clip it, and add ringles.
 
-    //For the moment, we'll just redirect this to the half win point routine:
+    //For the moment, we'll just redirect this to the half win point routine.
+    //This is primarily because the chances of our alliance partner NOT being in the way are damn near zero.
     AutonomousRoutines::rightHalfWP();
 }

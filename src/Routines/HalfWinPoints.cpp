@@ -45,7 +45,7 @@ void AutonomousRoutines::rightHalfWP()
 
     wayfarer.buildPath("Round_RHWP_1", {2.5, 18_in, 30, 1})
         .withOrigin()
-        .withPoint({4.5_ft, 0_ft})
+        .withPoint({3.75_ft, 0_ft})
         .generatePath();
     
     arm_controller.setTargetAsync(0_deg);
@@ -53,30 +53,36 @@ void AutonomousRoutines::rightHalfWP()
     SETBRK(COAST)
     wayfarer.asynchronousTraverse("Round_RHWP_1");
     CLAMP_UNFOLD
-    CLIP_OPEN
     wayfarer.waitUntilSettled();
     CLAMP_CLOSE
     LOCK_CLOSE
-    pros::delay(100);
+    pros::delay(250);
     SETBRK(HOLD)
 
-    arm_controller.setTargetAsync(30_deg);
+    arm_controller.setTarget(40_deg);
 
-    wayfarer.buildPath("Round_RHWP_2", {2.5, 18_in, 30, 0.75})
+    wayfarer.buildPath("Round_RHWP_2", {2.5, 16_in, 30, 0.75})
+        .withPoint({0.75_ft, 2.95_ft})
+        .withPoint({3.25_ft, 0_ft})
         .withCurrentPosition(imu_odometer)
-        .withPoint({3.5_ft, 0_ft})
-        .withPoint({2.5_ft, 1_ft})
-        .isReversed()
+        .makeReversed()
         .generatePath();
     
     SETBRK(COAST)
-    wayfarer.synchronousTraverse("Round_RHWP_2");
+    wayfarer.synchronousTraverse("Round_RHWP_2_rev");
     CLIP_CLOSE
     DELAY(250_ms)
     SETBRK(HOLD)
 
+    wayfarer.buildPath("Round_RHWP_3", {2.5, 16_in, 30, 0.75})
+        .withCurrentPosition(imu_odometer)
+        .withPoint({1.5_ft, 2.95_ft})
+        .withPoint({3.25_ft, 2.95_ft})
+        .generatePath();
+
     CONVEYOR_ON
-    TURNREL(0_deg)
-    wayfarer.traverseDistance(2.5_ft);
+    arm_controller.setTargetAsync(80_deg);
+    wayfarer.synchronousTraverse("Round_RHWP_3");
     wayfarer.traverseDistance(-4_ft);
+    CONVEYOR_OFF
 }

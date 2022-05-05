@@ -26,7 +26,7 @@ pros::ADIDigitalOut lock_piston ({{11, 'F'}});
 
 //Initialize sensors
 pros::IMU inertial_sensor (14);
-pros::ADIEncoder left_encoder ('A', 'B');
+pros::ADIEncoder left_encoder ('A', 'B', true);
 pros::ADIEncoder right_encoder ('C', 'D');
 pros::ADIEncoder middle_encoder ('E', 'F');
 pros::ADIAnalogIn potentiometer ('H'); 

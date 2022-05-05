@@ -17,8 +17,8 @@ void turnRelative(QAngle target_angle, bool goal)
 	double integral;
 	double derivative;
 	double prevError;
-	double kp = goal ? 1.5 : 1.7;
-	double ki = goal ? 0.000045 : 0.0000045;
+	double kp = goal ? 1.45 : 1.7;
+	double ki = goal ? 0.0000045 : 0.0000045;
 	double kd = goal ? 16 : 5;
 
     while(true)
