@@ -5,9 +5,9 @@ void AutonomousRoutines::leftHalfWP()
     //Start facing left with in-belt preloads. 
     //Immediately grab the ramp mogo and hurl preloads into it.
     //At the same time, curve out, grab the small neutral and retreat.
-    wayfarer.buildPath("Round_LHWP", {4, 18_in, 30, 1.0})
+    wayfarer.buildPath("Round_LHWP", {3, 18_in, 30, 1.0})
         .withOrigin()
-        .withPoint({1.3_ft, -1.0_ft})
+        .withPoint({1.0_ft, -1.0_ft})
         .withPoint({5.5_ft, -0.1_ft})
         .makeReversed()
         .generatePath();
@@ -22,7 +22,12 @@ void AutonomousRoutines::leftHalfWP()
     SETBRK(COAST)
     wayfarer.asynchronousTraverse("Round_LHWP");
     CLAMP_UNFOLD
-    DELAY(3500_ms)
+
+    while(imu_odometer.getPosition().x < 2.5_ft)
+    {
+        DELAY(10_ms)
+    }
+
     arm_controller.setTargetAsync(0_deg);
     wayfarer.waitUntilSettled();
     CONVEYOR_OFF
@@ -32,8 +37,9 @@ void AutonomousRoutines::leftHalfWP()
     DELAY(250_ms)
     SETBRK(HOLD)
 
-    arm_controller.setTargetAsync(30_deg);
+    arm_controller.setTargetAsync(40_deg);
     wayfarer.synchronousTraverse("Round_LHWP_rev");
+    CLIP_OPEN
 }
 
 void AutonomousRoutines::rightHalfWP()
@@ -45,7 +51,7 @@ void AutonomousRoutines::rightHalfWP()
 
     wayfarer.buildPath("Round_RHWP_1", {2.5, 18_in, 30, 1})
         .withOrigin()
-        .withPoint({3.75_ft, 0_ft})
+        .withPoint({4.25_ft, 0_ft})
         .generatePath();
     
     arm_controller.setTargetAsync(0_deg);
@@ -59,7 +65,7 @@ void AutonomousRoutines::rightHalfWP()
     pros::delay(250);
     SETBRK(HOLD)
 
-    arm_controller.setTarget(40_deg);
+    arm_controller.setTarget(30_deg);
 
     wayfarer.buildPath("Round_RHWP_2", {2.5, 16_in, 30, 0.75})
         .withPoint({0.75_ft, 2.95_ft})
@@ -74,15 +80,13 @@ void AutonomousRoutines::rightHalfWP()
     DELAY(250_ms)
     SETBRK(HOLD)
 
-    wayfarer.buildPath("Round_RHWP_3", {2.5, 16_in, 30, 0.75})
-        .withCurrentPosition(imu_odometer)
-        .withPoint({1.5_ft, 2.95_ft})
-        .withPoint({3.25_ft, 2.95_ft})
-        .generatePath();
-
     CONVEYOR_ON
-    arm_controller.setTargetAsync(80_deg);
-    wayfarer.synchronousTraverse("Round_RHWP_3");
-    wayfarer.traverseDistance(-4_ft);
+    wayfarer.traverseDistance(0.5_ft);
+    TURNREL(0_deg)
+    SETBRK(COAST)
+    wayfarer.traverseDistance(2.5_ft);
+    DELAY(500_ms)
+    wayfarer.traverseDistance(-3.5_ft);
     CONVEYOR_OFF
+    SETBRK(HOLD)
 }

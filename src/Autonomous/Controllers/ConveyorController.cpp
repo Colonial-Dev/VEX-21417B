@@ -12,7 +12,9 @@ void ConveyorController::disableUnjam() { unjam_enabled = false; }
 
 ConveyorController::ConveyorController(pros::Motor& motor) : conveyor_motor(motor) 
 {
-     /*Everything else is default-initialized*/
+    //Everything else is default-initialized.
+    
+    //Lambda-launch the control loop task.
     pros::Task conveyor([this] { controlLoop(); }, TASK_PRIORITY_DEFAULT); 
 }
 
@@ -40,16 +42,16 @@ void ConveyorController::controlLoop()
             }
         }
         
-        //PRINT(std::to_string(conveyor_motor.get_efficiency()));
-        if(conveyor_motor.get_efficiency() <= 10 && getState() != Idle) { jam_threshold_ct++; }
-        else { jam_threshold_ct = 0; }
+        //Disabled auto-unjam code.
+        /*if(conveyor_motor.get_efficiency() <= 10 && getState() != Idle) { jam_threshold_ct++; }
+        /else { jam_threshold_ct = 0; }
 
         if(jam_threshold_ct >= 50 && unjam_enabled)
         {   
             conveyor_motor.move_voltage(MOTOR_MAX_VOLTAGE);
             pros::delay(5000);
             continue;
-        }
+        }*/
 
         pros::delay(10);
     }

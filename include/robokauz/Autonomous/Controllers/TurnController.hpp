@@ -17,3 +17,5 @@ QAngle getRobotHeading();
  * @param target_angle The target angle.
  */
 void turnRelative(QAngle target_angle, bool goal = false);
+
+void turnOkapi(QAngle target_angle);

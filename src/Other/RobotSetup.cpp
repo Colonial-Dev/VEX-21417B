@@ -37,6 +37,11 @@ const double GEAR_RATIO = 60.0/84.0;
 LiftController arm_controller(arm_motor, potentiometer);
 ConveyorController conveyor_controller(conveyor_motor);
 std::shared_ptr<DriveController> drive_controller = std::make_shared<DriveController>(DriveController({19, 6, 9}, {12, 15,16}));
+std::shared_ptr<okapi::ChassisController> okapi_controller = okapi::ChassisControllerBuilder()
+    .withMotors({19, 6, 9}, {12, 15, 16})
+    .withDimensions({AbstractMotor::gearset::green, GEAR_RATIO}, {{3.98_in, 12_in}, imev5GreenTPR})
+    .withClosedLoopControllerTimeUtil(1.0, 1.0, 250_ms)
+    .build();
 
 EncoderGroup encoders = {left_encoder, middle_encoder, right_encoder};
 IMUOdometer imu_odometer(inertial_sensor, encoders, 2.875_in);

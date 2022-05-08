@@ -6,16 +6,25 @@
 #include "robokauz/Autonomous/PurePursuit/PathBuilder.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathTraverser.hpp"
 
+/**
+ * @brief Wrapper class for a speed change limiter using elapsed time between calls and maximum permissible acceleration as limits.
+ */
 class RateLimiter
 {
     private:
 
-        uint64_t last_called = pros::millis();
+        uint64_t last_called = pros::millis(); /** The last timestamp the limiter was called at. */
 
-        QSpeed last_output;
+        QSpeed last_output; /** The last value output by the limiter. */
     
     public:
 
+        /**
+         * @brief Calculate the limited velocity from an input velocity and acceleration limit.
+         * 
+         * @param input The original, un-limited velocity.
+         * @param limit The maximum permissible acceleration.
+         */
         QSpeed getLimited(QSpeed input, QAcceleration limit);
 };
 
@@ -85,6 +94,8 @@ class PathTraverser
 
         bool integrateCalculations();
 
+        bool checkIfJammed();
+
         void traversalLoop();
 
         void reset();
@@ -101,4 +112,5 @@ class PathTraverser
 
         void waitUntilSettled();
 
+        void forceAbort();
 };

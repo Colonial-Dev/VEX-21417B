@@ -113,6 +113,14 @@ void PathManager::waitUntilSettled()
     }
 }
 
+void PathManager::forceAbort()
+{
+    if(current_traverser.has_value())
+    {
+        current_traverser.value().forceAbort();
+    }
+}
+
 PathTraverser PathManager::getTraverser(std::string path_name)
 {
     Path path = stored_paths.at(path_name);

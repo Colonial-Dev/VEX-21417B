@@ -3,9 +3,9 @@
 void AutonomousRoutines::leftSingleRush()
 {
     //Zip out, grab small neutral, retreat
-    wayfarer.buildPath("Round_LSR", {2.5, 18_in, 30, 1})
+    wayfarer.buildPath("Round_LSR", {2.5, 16_in, 30, 1})
         .withOrigin()
-        .withPoint({4.5_ft, 2_ft})
+        .withPoint({4.2_ft, 1_ft})
         .makeReversed()
         .generatePath();
     
@@ -17,11 +17,24 @@ void AutonomousRoutines::leftSingleRush()
     wayfarer.waitUntilSettled();
     CLAMP_CLOSE
     LOCK_CLOSE
-    pros::delay(100);
+    pros::delay(250);
     SETBRK(HOLD)
 
-    arm_controller.setTargetAsync(30_deg);
-    wayfarer.synchronousTraverse("Round_LSR_rev");
+    arm_controller.setTargetAsync(40_deg);
+    wayfarer.buildPath("Round_LSR_2", {2.5, 16_in, 30, 1})
+        .withPoint({-1_ft, 1.5_ft})
+        .withPoint({2_ft, 0_ft})
+        .withCurrentPosition(imu_odometer)
+        .makeReversed()
+        .generatePath();
+    
+    wayfarer.synchronousTraverse("Round_LSR_2_rev");
+    CLIP_CLOSE
+    CONVEYOR_ON
+    DELAY(1000_ms)
+    wayfarer.traverseDistance(0.5_ft);
+    CLIP_OPEN
+    CONVEYOR_OFF
 }
 
 void AutonomousRoutines::rightSingleRush()
@@ -43,6 +56,6 @@ void AutonomousRoutines::rightSingleRush()
     LOCK_CLOSE
     pros::delay(100);
     SETBRK(HOLD)
-    arm_controller.setTargetAsync(30_deg);
+    arm_controller.setTargetAsync(40_deg);
     wayfarer.synchronousTraverse("Round_RSR_rev");
 }

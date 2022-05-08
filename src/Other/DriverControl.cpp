@@ -18,9 +18,9 @@ void mainLiftControl()
 {
   	while(true)
 	{
-		if(master.get_digital(DIGITAL_L1)) { arm_motor.move_voltage(MOTOR_MAX_VOLTAGE); }
-		else if(master.get_digital(DIGITAL_L2)) { arm_motor.move_voltage(-MOTOR_MAX_VOLTAGE); }
-		else { arm_motor.move_voltage(0); }
+		if(master.get_digital(DIGITAL_L1)) { arm_motor.move_velocity(200); }
+		else if(master.get_digital(DIGITAL_L2)) { arm_motor.move_velocity(-200); }
+		else { arm_motor.move_velocity(0); }
 		driver_control_gate.enterGate();
 	}
 }

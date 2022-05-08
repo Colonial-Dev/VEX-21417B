@@ -10,6 +10,13 @@ QAngle getRobotHeading()
     return (inertial_sensor.get_rotation()) * degree;
 }
 
+void turnOkapi(QAngle target_angle)
+{
+    QAngle relative_angle = target_angle - imu_odometer.getPosition().theta;
+    okapi_controller->turnAngle(relative_angle);
+}
+
+//This PID code is highly suspect, but it works fine once tuned so long as the center of mass stays the same... lol
 void turnRelative(QAngle target_angle, bool goal)
 {
 	double error = target_angle.convert(degree) - getRobotHeading().convert(degree);
@@ -17,9 +24,9 @@ void turnRelative(QAngle target_angle, bool goal)
 	double integral;
 	double derivative;
 	double prevError;
-	double kp = goal ? 1.45 : 1.7;
+	double kp = goal ? 1.25 : 1.35;
 	double ki = goal ? 0.0000045 : 0.0000045;
-	double kd = goal ? 16 : 5;
+	double kd = goal ? 16 : 12;
 
     while(true)
     {  

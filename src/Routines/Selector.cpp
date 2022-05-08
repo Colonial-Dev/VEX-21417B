@@ -36,9 +36,9 @@ void selectRoutine(int side, int strategy)
                     AutonomousRoutines::leftSingleRush();
                     return;
                 }
-                case DoubleGoalRush:
+                case MiddleGoalRush:
                 {
-                    AutonomousRoutines::leftDoubleRush();
+                    AutonomousRoutines::leftMiddleRush();
                     return;
                 }
             }
@@ -62,9 +62,9 @@ void selectRoutine(int side, int strategy)
                     AutonomousRoutines::rightSingleRush();
                     return;
                 }
-                case DoubleGoalRush:
+                case MiddleGoalRush:
                 {
-                    AutonomousRoutines::rightDoubleRush();
+                    AutonomousRoutines::rightMiddleRush();
                     return;
                 }
             }

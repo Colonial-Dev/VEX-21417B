@@ -67,8 +67,75 @@ void AutonomousRoutines::skills()
     //Back out and drop the mogo from the back clip
     arm_controller.setTargetAsync(100_deg);
     wayfarer.traverseDistance(-1_ft);
-    TURNRELGOAL(90_deg);
+    TURNRELSKILLS(90_deg);
     DELAY(250_ms)
+    CLIP_OPEN
+    DELAY(250_ms)
+    wayfarer.traverseDistance(0.5_ft);
+
+    //Lower the arm and turn to face the mogo
+    arm_controller.setTargetAsync(0_deg);
+    TURNRELSKILLS(imu_odometer.getPosition().theta - 180_deg);
+
+    //Coast into the mogo and grab it
+    SETBRK(COAST)
+    wayfarer.traverseDistance(2_ft);
+    CLAMP_CLOSE
+    DELAY(250_ms)
+    SETBRK(HOLD)
+    arm_controller.setTarget(40_deg);
+    wayfarer.traverseDistance(-1.5_ft);
+
+    //Slightly lift the mogo, turn to face the balance
+    arm_controller.setTarget(138_deg);
+    TURNREL(-25_deg)
+    wayfarer.traverseDistance(1.3_ft);
+    
+    arm_controller.setTarget(70_deg);
+    CLAMP_OPEN
+    DELAY(250_ms)
+
+    //Back away from the balance and turn to face opposite the next alliance mogo
+    arm_controller.setTargetAsync(100_deg);
+    wayfarer.traverseDistance(-1.5_ft);
+    arm_controller.setTargetAsync(0_deg);
+    TURNRELSKILLS(100_deg)
+
+    //Start lowering the arm, and boost/coast into/clip the new mogo
+    SETBRK(COAST)
+    wayfarer.traverseLinear({8.25_ft, -2.35_ft}, true);
+    CLIP_CLOSE
+    DELAY(250_ms)
+    SETBRK(HOLD)
+
+    //Path to the large neutral and grab it
+    wayfarer.synchronousTraverse("Skills_3");
+    CLAMP_CLOSE
+    DELAY(250_ms)
+
+    //Slightly raise the arm and correct to face the balance
+    arm_controller.setTarget(40_deg);
+    TURNREL(180_deg)
+    arm_controller.setTarget(120_deg);
+    DELAY(250_ms)
+    
+    //Raise the arm to stack height and path to the balance
+    CONVEYOR_ON
+    wayfarer.synchronousTraverse("Skills_4");
+
+    //Drop large neutral - the long delays allow it to settle better
+    arm_controller.setTarget(70_deg);
+    arm_controller.setTargetAsync(70_deg);
+    DELAY(750_ms);
+    CLAMP_OPEN
+    DELAY(750_ms);
+
+    //Back out and drop the mogo from the back clip
+    wayfarer.traverseDistance(-0.5_ft);
+    arm_controller.setTarget(100_deg);
+    wayfarer.traverseDistance(-1.25_ft);
+    CONVEYOR_OFF
+    arm_controller.setTargetAsync(0_deg);
     CLIP_OPEN
     DELAY(250_ms)
     wayfarer.traverseDistance(0.5_ft);
@@ -83,74 +150,12 @@ void AutonomousRoutines::skills()
     CLAMP_CLOSE
     DELAY(250_ms)
     SETBRK(HOLD)
-    arm_controller.setTargetAsync(110_deg);
-    wayfarer.traverseDistance(-1.5_ft);
-
-    //Slightly lift the mogo, turn to face the balance
-    TURNRELGOAL(0_deg)
-    wayfarer.traverseDistance(0.75_ft);
-    
-    arm_controller.setTarget(70_deg);
-    CLAMP_OPEN
-    DELAY(250_ms)
-
-    //Back away from the balance and turn to face opposite the next alliance mogo
-    arm_controller.setTargetAsync(100_deg);
-    wayfarer.traverseDistance(-1.5_ft);
-    arm_controller.setTargetAsync(0_deg);
-    TURNREL(100_deg)
-
-    //Start lowering the arm, and boost/coast into/clip the new mogo
-    SETBRK(COAST)
-    wayfarer.traverseLinear({8.25_ft, -2.1_ft}, true);
-    CLIP_CLOSE
-    DELAY(250_ms)
-    SETBRK(HOLD)
-
-    //Path to the large neutral and grab it
-    wayfarer.synchronousTraverse("Skills_3");
-    CLAMP_CLOSE
-    DELAY(250_ms)
-
-    //Slightly raise the arm and correct to face the balance
-    arm_controller.setTargetAsync(110_deg);
-    DELAY(250_ms)
-    
-    //Raise the arm to stack height and path to the balance
-    CONVEYOR_ON
-    wayfarer.synchronousTraverse("Skills_4");
-
-    //Drop large neutral - the long delays allow it to settle better
-    arm_controller.setTarget(70_deg);
-    arm_controller.setTarget(70_deg);
-    DELAY(750_ms);
-    CLAMP_OPEN
-    DELAY(750_ms);
-
-    //Back out and drop the mogo from the back clip
-    wayfarer.traverseDistance(-0.5_ft);
-    arm_controller.setTarget(100_deg);
-    wayfarer.traverseDistance(-1.25_ft);
-    CONVEYOR_OFF
-    arm_controller.setTargetAsync(0_deg);
-    DELAY(350_ms)
-    CLIP_OPEN
-    wayfarer.traverseDistance(0.5_ft);
-
-    //Lower the arm and turn to face the mogo
-    arm_controller.setTargetAsync(0_deg);
-    TURNREL(imu_odometer.getPosition().theta + 180_deg);
-
-    //Coast into the mogo and grab it
-    SETBRK(COAST)
-    wayfarer.traverseDistance(1.25_ft);
-    CLAMP_CLOSE
-    DELAY(250_ms)
-    SETBRK(HOLD)
 
     //Turn to face the balance and raise the arm to stacking height
-    arm_controller.setTarget(20_deg);
-    TURNRELGOAL(imu_odometer.getPosition().theta + 170_deg);
+    arm_controller.setTarget(40_deg);
+    arm_controller.setTarget(40_deg);
+    TURNRELSKILLS(180_deg);
+    arm_controller.setTarget(110_deg);
     arm_controller.setTarget(110_deg);
 
     //Drive to the balance and stack the mogo
@@ -167,7 +172,7 @@ void AutonomousRoutines::skills()
 
     //Coast into + clip the new mogo
     SETBRK(COAST)
-    wayfarer.traverseLinear({2.25_ft, 7.5_ft}, true);
+    wayfarer.traverseLinear({2.5_ft, 7.7_ft}, true);
     DELAY(250_ms)
     SETBRK(HOLD)
     CLIP_CLOSE
@@ -182,10 +187,12 @@ void AutonomousRoutines::skills()
     DELAY(250_ms)
 
     //Path to the far balance and stack the small neutral
-    arm_controller.setTarget(30_deg);
-    TURNRELGOAL(290_deg)
+    arm_controller.setTarget(40_deg);
+    TURNREL(290_deg)
     arm_controller.setTarget(110_deg);
+    CONVEYOR_ON
     wayfarer.synchronousTraverse("Skills_6");
+    CONVEYOR_OFF
     CLAMP_OPEN
     DELAY(250_ms)
     
@@ -193,35 +200,35 @@ void AutonomousRoutines::skills()
     wayfarer.traverseDistance(-0.5_ft);
     arm_controller.setTarget(120_deg);
     arm_controller.setTargetAsync(0_deg);
-    wayfarer.traverseDistance(-0.75_ft);
+    wayfarer.traverseDistance(-1.25_ft);
 
     //Turn to face right and unclip the mogo
-    TURNREL(450_deg)
-    SETROT(90_deg);
+    TURNREL(360_deg)
+    SETROT(0_deg);
     DELAY(350_ms);
     CLIP_OPEN
     DELAY(250_ms)
 
     //Lower the arm, drive directly away from the mogo then turn to face it
     arm_controller.setTargetAsync(0_deg);
-    wayfarer.traverseDistance(1.25_ft);
-    TURNREL(-90_deg)
+    wayfarer.traverseDistance(0.5_ft);
+    TURNREL(180_deg)
 
     //Coast into the mogo and grab it
     SETBRK(COAST)
-    wayfarer.traverseDistance(1.4_ft);
+    wayfarer.traverseDistance(1_ft);
     CLAMP_CLOSE
     DELAY(250_ms)
     SETBRK(HOLD)
     
     //Slightly lift the mogo, turn to face the balance
-    arm_controller.setTarget(30_deg);
-    TURNRELGOAL(0_deg)
+    arm_controller.setTarget(40_deg);
+    TURNREL(0_deg)
     DELAY(250_ms)
 
     //Raise the arm to stacking height and drive to + drop it on the balance
-    arm_controller.setTarget(120_deg);
-    wayfarer.traverseDistance(1.6_ft);
+    arm_controller.setTarget(110_deg);
+    wayfarer.traverseDistance(2.5_ft);
     arm_controller.setTarget(70_deg);
     CLAMP_OPEN
     DELAY(250_ms)

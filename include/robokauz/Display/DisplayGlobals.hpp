@@ -50,10 +50,10 @@ static const char * controls_map_locked[] = {"#00ff00 Unlock#", "\261#808080 Loc
 
 static const char * side_map[] = {"#0000FF Left#", "#FF0000 Right#", "\n", 
                                   "#FFFF00 Skills#", "#808080 None#", ""}; 
-static const char * strat_map[] = {"Win Point (Full)", "\n",
+static const char * strat_map[] = {"Clip Rush", "\n",
                                    "Win Point (Half)", "\n", 
                                    "Single Rush", "\n",
-                                   "Double Rush", ""}; 
+                                   "Middle Rush", ""}; 
 
 extern lv_theme_t * theme;
 extern lv_style_t status_style;

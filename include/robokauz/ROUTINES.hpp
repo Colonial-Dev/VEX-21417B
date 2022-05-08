@@ -1,3 +1,4 @@
+//Note: ROUTINES declares all possible auton routines within their own namespace, as well as an external function that executes a routine based on enum values.
 #pragma once
 #include "robokauz/PRELUDE.hpp"
 #include "robokauz/COMMON.hpp"
@@ -18,7 +19,7 @@ namespace AutonomousRoutines
 
     void rightSingleRush();
 
-    void rightDoubleRush();
+    void rightMiddleRush();
 
     void leftFullWP();
 
@@ -26,5 +27,5 @@ namespace AutonomousRoutines
 
     void leftSingleRush();
 
-    void leftDoubleRush();
+    void leftMiddleRush();
 }

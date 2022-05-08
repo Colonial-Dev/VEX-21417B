@@ -5,8 +5,8 @@
 #include "robokauz/ROBOT.hpp"
 
 //Global state variables
-int targetAutonSide = Right;
-int targetAutonStrategy = FullWinPoint;
+int targetAutonSide = None;
+int targetAutonStrategy = -1;
 
 lv_theme_t * theme =  lv_theme_alien_init(180, NULL);
 lv_style_t status_style;

@@ -16,17 +16,29 @@ void initialize()
   overwatch.setManipulatorBrakeModes(pros::E_MOTOR_BRAKE_HOLD);
   initializeDisplay();
   initializeOpcontrol();
+  conveyor_controller.disableUnjam();
+}
+
+void disabled()
+{
+  driver_control_gate.openGate();
+  conveyor_controller.disableUnjam();
+  wayfarer.forceAbort();
+  overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  overwatch.setManipulatorBrakeModes(pros::E_MOTOR_BRAKE_HOLD);
 }
 
 void autonomous()
 {
   driver_control_gate.closeGate();
+  conveyor_controller.enableUnjam();
 
   overwatch.setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
   overwatch.setManipulatorBrakeModes(pros::E_MOTOR_BRAKE_HOLD);
 
   selectRoutine(targetAutonSide, targetAutonStrategy);
   
+  conveyor_controller.disableUnjam();
   driver_control_gate.openGate();
 }
 

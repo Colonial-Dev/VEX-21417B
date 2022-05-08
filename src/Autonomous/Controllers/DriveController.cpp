@@ -49,3 +49,21 @@ void DriveController::brake()
 {
     tank(0, 0);
 }
+
+double DriveController::getAverageEfficiency()
+{
+    double result = 0.0;
+    
+    for(pros::Motor motor : left_motors)
+    {
+        result += motor.get_efficiency();
+    }
+    
+    for(pros::Motor motor : right_motors)
+    {
+        result += motor.get_efficiency();
+    }
+
+    result = result / (left_motors.size() + right_motors.size());
+    return result;
+}

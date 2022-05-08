@@ -39,9 +39,9 @@ void LiftController::bangLoop()
             if(lift_motor.get_efficiency() <= 0.1) { jam_threshold_ct++; }
             else { jam_threshold_ct = 0; }
 
-            if(jam_threshold_ct >= 20) { is_settled = true; jam_threshold_ct = 0; lift_motor.move_voltage(0); continue; }
+            if(jam_threshold_ct >= 20) { is_settled = true; jam_threshold_ct = 0; lift_motor.move_velocity(0); continue; }
 
-            if(error.abs() < 2_deg) { is_settled = true; lift_motor.move_voltage(0); }
+            if(error.abs() < 2_deg) { is_settled = true; lift_motor.move_velocity(0); }
             else { lift_motor.move_voltage(MOTOR_MAX_VOLTAGE * sgnum(error.convert(degree))); }
         }
         pros::delay(10);

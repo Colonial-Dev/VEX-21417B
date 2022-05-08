@@ -24,7 +24,8 @@ void PathBuilder::calculateCurvatures(Path& path)
         double triangle_area = std::sqrt(semi_perimeter * (semi_perimeter - distance_alpha) * (semi_perimeter - distance_beta) * (semi_perimeter - distance_gamma));
         
         double radius = (side_product) / (4 * triangle_area);
-        double curvature = std::isnan(curvature) ? 0 : 1 / radius;
+        double curvature = 1/radius;
+        curvature = std::isnan(curvature) ? 0 : curvature;
 
         path.at(i).curvature = curvature;
     }
@@ -54,9 +55,11 @@ Path PathBuilder::calculatePath()
     std::uint32_t timestamp = pros::micros();
     Path computed_path;
 
+    //Given the provided waypoints and settings, use quintic spline interpolation to generate the path's points.
     QuinticPathGenerator generator(path_waypoints, gen_params.spline_resolution, gen_params.smoothing_constant);
     std::vector<PathPoint> points = generator.getPath();
 
+    //Transfer configuration to the new Path instance and perform final curvature/velocity calculations.
     computed_path.points = points;
     computed_path.name = path_name;
     computed_path.lookahead_distance = gen_params.lookahead_distance;

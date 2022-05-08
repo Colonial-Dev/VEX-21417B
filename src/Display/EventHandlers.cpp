@@ -61,7 +61,7 @@ void routineUpdateTask(void*)
     {
         case FullWinPoint:
         {
-            routineReadout += "WP Full";
+            routineReadout += "Clip Rush";
             break;
         }
         case HalfWinPoint:
@@ -74,9 +74,9 @@ void routineUpdateTask(void*)
             routineReadout += "Single Rush";
             break;
         }
-        case DoubleGoalRush:
+        case MiddleGoalRush:
         {
-            routineReadout += "Double Rush";
+            routineReadout += "Middle Rush";
             break;
         }
     }
@@ -188,9 +188,9 @@ lv_res_t handleStratSelect(lv_obj_t * obj, const char *txt)
             switchSelectorStage(Complete);
             break;
         }
-        case DoubleGoalRush:
+        case MiddleGoalRush:
         {
-            targetAutonStrategy = DoubleGoalRush;
+            targetAutonStrategy = MiddleGoalRush;
             switchSelectorStage(Complete);
             break;
         }

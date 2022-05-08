@@ -7,8 +7,8 @@
 
 #define DELAY(x) pros::delay((x).convert(millisecond));
 
-#define TURNREL(x) turnRelative(x);
-#define TURNRELGOAL(x) turnRelative(x, true);
+#define TURNREL(x) turnOkapi(x);
+#define TURNRELSKILLS(x) turnRelative(x);
 
 #define SETROT(x) inertial_sensor.set_rotation((x).convert(degree));
 #define HOLD pros::E_MOTOR_BRAKE_HOLD

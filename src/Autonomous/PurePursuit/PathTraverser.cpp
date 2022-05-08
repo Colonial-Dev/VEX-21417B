@@ -251,7 +251,17 @@ bool PathTraverser::integrateCalculations()
     }
 
     if(conditions.is_finished) { return true; }
+    else if(overwatch.getOperatingMode() == Manager::Disabled || overwatch.getOperatingMode() == Manager::Driver) { return true; }
     else { return false; }
+}
+
+bool PathTraverser::checkIfJammed()
+{
+    if(robot_properties.controller->getAverageEfficiency() <= 5)
+    {
+        return false;
+    }
+    return false;
 }
 
 void PathTraverser::traversalLoop()
@@ -259,10 +269,16 @@ void PathTraverser::traversalLoop()
     reset();
     conditions.is_running = true;
     std::uint32_t delay_timestamp = pros::millis();
+    int jam_threshold_ct = 0;
     while(true)
     {
         calculateAll();
         if(integrateCalculations()) { break; }
+
+        if(checkIfJammed()) { jam_threshold_ct++; }
+        else { jam_threshold_ct = 0; }
+
+        if(jam_threshold_ct >= 250) { break; }
 
         pros::Task::delay_until(&delay_timestamp, 10);
     }
@@ -301,4 +317,10 @@ void PathTraverser::waitUntilSettled()
     {
         pros::Task::delay_until(&delay_timestamp, 10);
     }
+}
+
+void PathTraverser::forceAbort()
+{
+    conditions.is_finished = true;
+    conditions.is_running = false;
 }

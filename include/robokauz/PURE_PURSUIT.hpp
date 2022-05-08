@@ -1,3 +1,4 @@
+//Note: PURE_PURSUIT brings all header files related to pure pursuit into scope, as well as a few useful macro definitions and necessary forward class declarations.
 #include "robokauz/Autonomous/PurePursuit/PathComponents.hpp"
 #include "robokauz/Autonomous/PurePursuit/QuinticSplines.hpp"
 #include "robokauz/Autonomous/PurePursuit/PathBuilder.hpp"
