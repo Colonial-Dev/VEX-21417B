@@ -20,7 +20,7 @@ Fortunately, there is a third way! Using a battery-powered Raspberry Pi (a cheap
 > 
 > If you are using macOS (which is derived from BSD, making it a sort of distant sibling to Linux) you *might* be able to adapt this guide to it, but I make no promises. You'll need to find a version of `socat` that works with your macOS iteration.
 > 
-> Windows, however, is just far too primitive to support this level of advanced hackery.
+> Windows, however, just doesn't seem to support this level of hackery.
 
 While this would obviously be very illegal at a competition, it's a massive boon to programming everywhere else, and it can be had for $50 or less. If you're interested, read on!
 
