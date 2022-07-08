@@ -47,9 +47,6 @@ You should be presented with a screen like the one below:
 
 If you'd like, you can change the color scheme. Once it's to your liking, open the `Extensions` drawer using <kbd>CRTL</kbd>+<kbd>SHIFT</kbd>+<kbd>X</kbd> or the fifth button from the top in the sidebar. This will present you with a sort of "app store" for VSCode extensions. In the search bar at the top, enter `PROS` to find the PROS extension; the author should be `Purdue ACM SIGBots`. Go ahead and install the extension.
 
-{: .info }
-> **You should also install the C/C++ extension pack provided by Microsoft.** It provides a variety of useful tools to make working with C++ prettier and easier - just search `C/C++ Extension Pack` and hit install.
-
 ![PROS extension page.](../media/VSC_PROS.png)
 
 Once it installs (it may take a few seconds), a new PROS icon should appear in your sidebar. Opening it should generate some notifications like the ones below. (If you miss them, they can be brought back via the little notification bell in the bottom right corner.)
@@ -76,6 +73,8 @@ Now it's time to actually create a PROS project.
 4. The final prompt will ask which PROS version you want to use; just hit <kbd>ENTER</kbd> again to select `latest`.
 
 PROS will take a moment to download some files and create the project. You will probably get a security prompt asking `Do you trust the authors of the files in this folder?` - just choose `Yes, I trust the authors` to enable full access.
+
+Finally, you'll want to enable VSCode's autosave feature. Open the settings with <kbd>CTRL</kbd>+<kbd>,</kbd> and search for `autosave`, then set it to `afterDelay`. This will make sure any new changes are saved so the C++ compiler can pick up on them - trust me, it can be quite frustrating to wonder why your new code isn't working only to realize you merely didn't save the file.
 
 Tada! You're now ready to program with PROS!
 

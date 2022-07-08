@@ -1,6 +1,6 @@
 ---
 layout: default
-title: PID Control
+title: Git and GitHub
 parent: The V5 Programming Bible
 nav_order: 6
 ---
