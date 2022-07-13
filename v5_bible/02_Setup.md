@@ -28,7 +28,7 @@ There are several advantages to using PROS - in no particular order, they includ
 
 {: .info }
 > **This guide assumes you are using Windows and have administrative privileges.** 
-> - If you are using a different operating system, platform specific installation instructions can be found at the bottom of [this](https://pros.cs.purdue.edu/v5/getting-started/) page.
+> - If you are using a different operating system, the following instructions should still work. Linux users may need to manually install the `arm-none-eabi-gcc` toolchain (or equivalent) through their distribution's package manager - more info can be found at the bottom of [this](https://pros.cs.purdue.edu/v5/getting-started/index.html) page.
 > - If you do not have administrative privileges on your machine (say, because you use a school-provided or parentally-controlled laptop) then talk to your coach, network administrator, parent or other relevant authority figure.
 
 In the past, installing PROS could be something of a headache, especially on Windows. Fortunately, the PROS team has since graciously created a "one-click" extension for Microsoft's Visual Studio Code editor to handle all that hassle for us!
